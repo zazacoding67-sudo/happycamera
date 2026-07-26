@@ -1,0 +1,44 @@
+import type { Metadata } from "next";
+import NavbarWrapper from "@/components/layout/NavbarWrapper";
+import SmoothScrolling from "@/components/layout/SmoothScrolling";
+import Footer from "@/components/layout/Footer";
+import CartDrawer from "@/components/ui/CartDrawer";
+import WishlistDrawer from "@/components/ui/WishlistDrawer";
+import WhatsAppButton from "@/components/ui/WhatsAppButton";
+import { CartProvider } from "@/lib/CartContext";
+import { WishlistProvider } from "@/lib/WishlistContext";
+import PageTransition from "@/components/layout/PageTransition";
+import "@/styles/globals.css";
+
+export const metadata: Metadata = {
+  title: "Happy Camera",
+  description: "Premium camera gear — new and preloved.",
+  icons: { icon: "/favicon.svg" },
+};
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <html lang="en">
+      <body>
+        <CartProvider>
+          <WishlistProvider>
+            <NavbarWrapper />
+            <main className="min-h-screen pt-16">
+              <SmoothScrolling>
+                <PageTransition>{children}</PageTransition>
+              </SmoothScrolling>
+            </main>
+            <CartDrawer />
+            <WishlistDrawer />
+            <Footer />
+            <WhatsAppButton />
+          </WishlistProvider>
+        </CartProvider>
+      </body>
+    </html>
+  );
+}
