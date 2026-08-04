@@ -134,7 +134,12 @@ export default function OrdersClient({ orders }: { orders: Order[] }) {
                       </span>
                     </td>
                     <td className="py-3 px-4 text-xs text-[var(--color-text-secondary)]">
-                      {new Date(order.createdAt).toLocaleDateString()}
+                      {new Date(order.createdAt).toLocaleDateString("en-MY", {
+                        timeZone: "Asia/Kuala_Lumpur",
+                        year: "numeric",
+                        month: "2-digit",
+                        day: "2-digit",
+                      })}
                     </td>
                   </tr>
                 ))}
