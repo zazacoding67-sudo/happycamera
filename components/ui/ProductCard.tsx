@@ -15,16 +15,21 @@ export default function ProductCard({
   price,
   condition,
   images,
+  stockQuantity,
   categorySlug,
 }: ProductCardProps) {
   const imageUrl = images?.[0] || "";
   const { isWishlisted, toggleWishlist } = useWishlist();
   const wishlisted = isWishlisted(id);
+  const soldOut = stockQuantity !== undefined && stockQuantity <= 0;
 
   return (
     <div className="group relative bg-white cursor-pointer">
       <Link href={`/product/${slug}`} className="block">
-        <div className="relative aspect-[4/3] w-full bg-zinc-50 overflow-hidden p-8 flex items-center justify-center">
+        <div className={cn(
+          "relative aspect-[4/3] w-full bg-zinc-50 overflow-hidden p-8 flex items-center justify-center",
+          soldOut && "opacity-60 grayscale"
+        )}>
           {imageUrl ? (
             <img
               src={imageUrl}
@@ -53,7 +58,12 @@ export default function ProductCard({
           )}
         />
       </button>
-      <div className="absolute top-3 left-3 z-10">
+      <div className="absolute top-3 left-3 z-10 flex flex-col gap-1.5">
+        {soldOut && (
+          <span className="bg-zinc-900 text-white text-[10px] font-bold uppercase tracking-[0.15em] px-2.5 py-1.5">
+            SOLD OUT
+          </span>
+        )}
         <span className="bg-yellow-400 text-black text-[10px] font-bold uppercase tracking-[0.15em] px-2.5 py-1.5">
           {condition === "new" ? "NEW" : "PRELOVED"}
         </span>

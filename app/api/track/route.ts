@@ -13,9 +13,11 @@ export async function GET(request: Request) {
     );
   }
 
+  const normalisedEmail = email.trim().toLowerCase();
+
   try {
     const order = await prisma.order.findUnique({
-      where: { id: orderId },
+      where: { id: orderId.trim() },
       include: {
         items: {
           include: {
@@ -27,9 +29,9 @@ export async function GET(request: Request) {
       },
     });
 
-    if (!order || order.customerEmail.toLowerCase() !== email.toLowerCase()) {
+    if (!order || order.customerEmail.trim().toLowerCase() !== normalisedEmail) {
       return NextResponse.json(
-        { error: "Order not found" },
+        { error: "We couldn't find an order matching that number and email. Please double-check both fields and try again." },
         { status: 404 }
       );
     }

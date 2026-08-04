@@ -28,7 +28,11 @@ export async function POST(req: Request) {
         },
       });
 
-      const resetUrl = `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/admin/reset-password/${token}`;
+      const baseUrl =
+        process.env.NEXT_PUBLIC_BASE_URL ||
+        process.env.NEXTAUTH_URL ||
+        "http://localhost:3000";
+      const resetUrl = `${baseUrl}/admin/reset-password/${token}`;
 
       await resend.emails.send({
         from: "Happy Camera <noreply@happycamera.com>",

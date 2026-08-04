@@ -28,6 +28,7 @@ export default async function WishlistPage() {
             price: p.price,
             condition: p.condition as "new" | "preloved",
             images: p.images,
+            stockQuantity: p.stockQuantity,
           }))}
         />
       </div>

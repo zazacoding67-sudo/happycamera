@@ -13,7 +13,7 @@ const nextConfig: NextConfig = {
         hostname: "**.supabase.co",
       },
     ],
-    qualities: [75, 80, 100],
+    qualities: [75, 80, 90, 100],
   },
   allowedDevOrigins: [
     "smoke-handmade-continues-offshore.trycloudflare.com",

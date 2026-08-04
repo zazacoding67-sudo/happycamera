@@ -4,7 +4,7 @@ import SmoothScrolling from "@/components/layout/SmoothScrolling";
 import Footer from "@/components/layout/Footer";
 import CartDrawer from "@/components/ui/CartDrawer";
 import WishlistDrawer from "@/components/ui/WishlistDrawer";
-import WhatsAppButton from "@/components/ui/WhatsAppButton";
+import AuthSessionProvider from "@/components/layout/AuthSessionProvider";
 import { CartProvider } from "@/lib/CartContext";
 import { WishlistProvider } from "@/lib/WishlistContext";
 import PageTransition from "@/components/layout/PageTransition";
@@ -24,20 +24,21 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <CartProvider>
-          <WishlistProvider>
-            <NavbarWrapper />
-            <main className="min-h-screen pt-16">
-              <SmoothScrolling>
-                <PageTransition>{children}</PageTransition>
-              </SmoothScrolling>
-            </main>
-            <CartDrawer />
-            <WishlistDrawer />
-            <Footer />
-            <WhatsAppButton />
-          </WishlistProvider>
-        </CartProvider>
+        <AuthSessionProvider>
+          <CartProvider>
+            <WishlistProvider>
+              <NavbarWrapper />
+              <main className="min-h-screen pt-16">
+                <SmoothScrolling>
+                  <PageTransition>{children}</PageTransition>
+                </SmoothScrolling>
+              </main>
+              <CartDrawer />
+              <WishlistDrawer />
+              <Footer />
+            </WishlistProvider>
+          </CartProvider>
+        </AuthSessionProvider>
       </body>
     </html>
   );

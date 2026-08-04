@@ -3,6 +3,7 @@ import ProductCard from "@/components/ui/ProductCard";
 import FilterSidebar from "@/components/shop/FilterSidebar";
 import SortSelect from "@/components/shop/SortSelect";
 import CategoryHero from "@/components/shop/CategoryHero";
+import ShopHero from "@/components/shop/ShopHero";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -122,12 +123,16 @@ export default async function ShopPage({
   return (
     <div className="bg-white min-h-screen">
       <div className="mb-12 md:mb-16">
-        <CategoryHero
-          title={heroTitle}
-          description={heroDescription}
-          videoFilenames={heroVideoFilenames}
-          playbackRate={category === "lenses" ? 0.8 : 1}
-        />
+        {!category && !searchQuery ? (
+          <ShopHero productCount={resultCount} />
+        ) : (
+          <CategoryHero
+            title={heroTitle}
+            description={heroDescription}
+            videoFilenames={heroVideoFilenames}
+            playbackRate={category === "lenses" ? 0.8 : 1}
+          />
+        )}
       </div>
     <div className="w-full px-8">
 
@@ -184,6 +189,7 @@ export default async function ShopPage({
                   price={product.price}
                   condition={product.condition as "new" | "preloved"}
                   images={product.images}
+                  stockQuantity={product.stockQuantity}
                   categorySlug={product.category?.slug}
                   categoryName={product.category?.name}
                 />

@@ -10,6 +10,7 @@ export interface ProductCardProps {
   condition: ProductCondition;
   brand: string;
   slug: string;
+  stockQuantity?: number;
   categorySlug?: string;
   categoryName?: string;
 }

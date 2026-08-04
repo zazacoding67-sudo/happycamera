@@ -89,16 +89,46 @@ export async function POST(request: Request) {
     return new Response("OK", { status: 200 });
   }
 
-  await prisma.order.update({
-    where: { id: order.id },
-    data: { status: "PAID" },
+  const oversoldItems: { productId: string; requested: number; available: number }[] = [];
+
+  await prisma.$transaction(async (tx) => {
+    const currentOrder = await tx.order.findFirst({
+      where: { id: order.id, status: { not: "PAID" } },
+      include: { items: true },
+    });
+
+    if (!currentOrder) return;
+
+    await tx.order.update({
+      where: { id: order.id },
+      data: { status: "PAID" },
+    });
+
+    for (const item of currentOrder.items) {
+      if (!item.productId) continue;
+      const result = await tx.product.updateMany({
+        where: { id: item.productId, stockQuantity: { gte: item.quantity } },
+        data: { stockQuantity: { decrement: item.quantity } },
+      });
+      if (result.count === 0) {
+        const product = await tx.product.findUnique({
+          where: { id: item.productId },
+          select: { stockQuantity: true },
+        });
+        oversoldItems.push({
+          productId: item.productId,
+          requested: item.quantity,
+          available: product?.stockQuantity ?? 0,
+        });
+      }
+    }
   });
 
-  for (const item of order.items) {
-    if (!item.productId) continue;
-    await prisma.product.update({
-      where: { id: item.productId },
-      data: { stockQuantity: { decrement: item.quantity } },
+  if (oversoldItems.length > 0) {
+    console.error("CHIP webhook: oversold items at payment confirmation", {
+      orderId: order.id,
+      chipPurchaseId,
+      oversoldItems,
     });
   }
 

@@ -3,8 +3,9 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Menu, X, ShoppingBag, Heart } from "lucide-react";
+import { Menu, X, ShoppingBag, Heart, User } from "lucide-react";
 import { AnimatePresence, motion, LayoutGroup } from "framer-motion";
+import { useSession, signIn, signOut } from "next-auth/react";
 import { useCart } from "@/lib/CartContext";
 import { useWishlist } from "@/lib/WishlistContext";
 import { useNavVisibility } from "@/lib/useNavVisibility";
@@ -23,15 +24,18 @@ const Navbar = () => {
   const [overlayVisible, setOverlayVisible] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [hoveredLink, setHoveredLink] = useState<number | null>(null);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const touchOpened = useRef(false);
   const navRoot = useRef<HTMLDivElement>(null);
+  const userMenuRef = useRef<HTMLDivElement>(null);
   const isTouch = useRef(false);
   const lastTouchTime = useRef(0);
   const ignoreNextClose = useRef(false);
   const { openCart, isOpen: cartOpen, items, lastAddedId } = useCart();
   const { openWishlist, isOpen: wishlistOpen, items: wishlistItems } = useWishlist();
   const scrollVisible = useNavVisibility();
+  const { data: session } = useSession();
 
   const isVisible =
     scrollVisible ||
@@ -218,6 +222,60 @@ const Navbar = () => {
 
               <div className="flex items-center justify-end gap-5">
                 <SearchModal />
+                <div className="relative" ref={userMenuRef}>
+                  <button
+                    onClick={() => {
+                      if (!session) {
+                        signIn("google");
+                      } else {
+                        setUserMenuOpen((p) => !p);
+                      }
+                    }}
+                    className="relative text-black group"
+                    aria-label={session ? "Account" : "Sign in"}
+                  >
+                    {session?.user?.image ? (
+                      <img
+                        src={session.user.image}
+                        alt=""
+                        className="w-[22px] h-[22px] rounded-full object-cover"
+                      />
+                    ) : (
+                      <User size={22} />
+                    )}
+                  </button>
+                  {userMenuOpen && session && (
+                    <>
+                      <div className="fixed inset-0 z-40" onClick={() => setUserMenuOpen(false)} />
+                      <div className="absolute right-0 top-full mt-2 w-56 bg-white border border-zinc-200 shadow-lg z-50 py-1">
+                        <div className="px-4 py-3 border-b border-zinc-100">
+                          <p className="text-sm font-medium text-zinc-900 truncate">
+                            {session.user?.name || session.user?.email}
+                          </p>
+                          <p className="text-xs text-zinc-400 truncate mt-0.5">
+                            {session.user?.email}
+                          </p>
+                        </div>
+                        <Link
+                          href="/account"
+                          onClick={() => setUserMenuOpen(false)}
+                          className="block px-4 py-2.5 text-sm text-zinc-700 hover:bg-zinc-50 transition-colors"
+                        >
+                          My Orders
+                        </Link>
+                        <button
+                          onClick={() => {
+                            setUserMenuOpen(false);
+                            signOut();
+                          }}
+                          className="w-full text-left px-4 py-2.5 text-sm text-zinc-700 hover:bg-zinc-50 transition-colors"
+                        >
+                          Sign Out
+                        </button>
+                      </div>
+                    </>
+                  )}
+                </div>
                 <button
                   onClick={openWishlist}
                   className="relative text-black group"
