@@ -18,17 +18,21 @@ export async function sendOrderConfirmationEmail({
 }) {
   if (!resend) return;
 
-  const { error } = await resend.emails.send({
-    from: "Happy Camera <orders@happycamera.com>",
-    to,
-    subject: `Order Confirmed — #${paymentReference.slice(0, 8)}`,
-    html: `<p>Hi ${customerName},</p>
+  try {
+    const { error } = await resend.emails.send({
+      from: "Happy Camera <orders@happycamera.com>",
+      to,
+      subject: `Order Confirmed — #${paymentReference.slice(0, 8)}`,
+      html: `<p>Hi ${customerName},</p>
 <p>Your payment was successful. Reference: <strong>${paymentReference}</strong></p>
 <p>Total: ${formatPrice(totalAmount)}</p>
 <p>We'll notify you once the order ships.</p>`,
-  });
+    });
 
-  if (error) console.error("Resend error:", error);
+    if (error) console.error("Resend error:", error);
+  } catch (err) {
+    console.error("Resend send threw:", err);
+  }
 }
 
 export async function sendOrderShippedEmail({
@@ -51,15 +55,19 @@ export async function sendOrderShippedEmail({
     trackingHtml = `<p>Courier: ${courierName}<br>Tracking: ${trackingNumber}</p>`;
   }
 
-  const { error } = await resend.emails.send({
-    from: "Happy Camera <orders@happycamera.com>",
-    to,
-    subject: subjectOverride || "Your Order Has Shipped!",
-    html: `<p>Hi ${customerName},</p>
+  try {
+    const { error } = await resend.emails.send({
+      from: "Happy Camera <orders@happycamera.com>",
+      to,
+      subject: subjectOverride || "Your Order Has Shipped!",
+      html: `<p>Hi ${customerName},</p>
 <p>Your order is on the way!</p>
 ${trackingHtml}
 <p>Happy shooting!</p>`,
-  });
+    });
 
-  if (error) console.error("Resend error:", error);
+    if (error) console.error("Resend error:", error);
+  } catch (err) {
+    console.error("Resend send threw:", err);
+  }
 }
