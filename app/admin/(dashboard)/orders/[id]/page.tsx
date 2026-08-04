@@ -32,7 +32,10 @@ export default async function OrderDetailPage({
     CANCELLED: "bg-red-50 text-red-700 border-red-200",
   };
 
-  const subtotal = order.items.reduce((s, i) => s + i.price * i.quantity, 0);
+  const subtotal = order.items.reduce(
+    (s: number, i: { price: number; quantity: number }) => s + i.price * i.quantity,
+    0
+  );
 
   return (
     <div className="p-8">
