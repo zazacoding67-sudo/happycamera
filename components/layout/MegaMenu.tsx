@@ -75,6 +75,7 @@ export default function MegaMenu({ menu }: MegaMenuProps) {
                       src={active.image}
                       alt={active.title}
                       fill
+                      sizes="(max-width: 768px) 100vw, 300px"
                       className="object-cover transition-transform duration-500 group-hover:scale-105"
                       quality={75}
                     />

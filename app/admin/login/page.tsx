@@ -92,6 +92,7 @@ export default function AdminLoginPage() {
           src="/images/login-logo.jpg"
           alt="Happy Camera — curated gear"
           fill
+          sizes="(max-width: 768px) 100vw, 60vw"
           className="object-cover"
           priority
           quality={80}
