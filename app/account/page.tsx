@@ -47,14 +47,22 @@ export default function AccountPage() {
   useEffect(() => {
     if (!session?.user?.id) return;
     setLoading(true);
-    fetch(`/api/orders/customer?userId=${session.user.id}`)
-      .then((r) => r.json())
+    fetch("/api/orders/customer")
+      .then((r) => {
+        if (r.status === 401) {
+          router.push("/login");
+          return null;
+        }
+        return r.json();
+      })
       .then((data) => {
-        setOrders(data.orders || []);
-        setLoading(false);
+        if (data) {
+          setOrders(data.orders || []);
+          setLoading(false);
+        }
       })
       .catch(() => setLoading(false));
-  }, [session?.user?.id]);
+  }, [session?.user?.id, router]);
 
   if (status === "loading" || loading) {
     return (
