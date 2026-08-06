@@ -2,10 +2,11 @@
 
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import { Package, Clock, CheckCircle2, Truck, XCircle, ExternalLink } from "lucide-react";
 import { formatPrice } from "@/lib/format";
+import { usePolling } from "@/lib/usePolling";
 
 interface OrderItem {
   name: string;
@@ -44,25 +45,24 @@ export default function AccountPage() {
     }
   }, [status, router]);
 
-  useEffect(() => {
-    if (!session?.user?.id) return;
-    setLoading(true);
-    fetch("/api/orders/customer")
-      .then((r) => {
-        if (r.status === 401) {
-          router.push("/login");
-          return null;
-        }
-        return r.json();
-      })
-      .then((data) => {
-        if (data) {
-          setOrders(data.orders || []);
-          setLoading(false);
-        }
-      })
-      .catch(() => setLoading(false));
-  }, [session?.user?.id, router]);
+  const loadOrders = useCallback(async () => {
+    try {
+      const res = await fetch("/api/orders/customer");
+      if (res.status === 401) {
+        router.push("/login");
+        return;
+      }
+      if (!res.ok) return;
+      const data = await res.json();
+      setOrders(data.orders || []);
+    } catch {
+      // Keep the last known order list.
+    } finally {
+      setLoading(false);
+    }
+  }, [router]);
+
+  usePolling(loadOrders, 60_000, !!session?.user?.id);
 
   if (status === "loading" || loading) {
     return (
@@ -81,16 +81,24 @@ export default function AccountPage() {
   return (
     <div className="min-h-screen bg-white pt-16">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
-        <div className="max-w-xl mb-12">
-          <span className="text-[11px] tracking-[0.25em] uppercase text-yellow-500 font-medium">
-            Your Account
-          </span>
-          <h1 className="text-3xl md:text-4xl font-light tracking-tight text-zinc-900 leading-tight mt-4">
-            Order History
-          </h1>
-          <p className="text-sm text-zinc-400 mt-3 leading-relaxed">
-            Welcome back, {session.user?.name || "there"}. Here are your past orders.
-          </p>
+        <div className="flex items-start justify-between max-w-xl mb-12">
+          <div>
+            <span className="text-[11px] tracking-[0.25em] uppercase text-yellow-500 font-medium">
+              Your Account
+            </span>
+            <h1 className="text-3xl md:text-4xl font-light tracking-tight text-zinc-900 leading-tight mt-4">
+              Order History
+            </h1>
+            <p className="text-sm text-zinc-400 mt-3 leading-relaxed">
+              Welcome back, {session.user?.name || "there"}. Here are your past orders.
+            </p>
+          </div>
+          {orders.length > 0 && (
+            <span className="inline-flex items-center gap-1.5 text-[10px] font-medium uppercase tracking-widest text-zinc-400 mt-1 shrink-0">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+              Auto-refreshing
+            </span>
+          )}
         </div>
 
         {orders.length === 0 ? (

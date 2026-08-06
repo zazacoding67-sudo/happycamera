@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import AddToCartButton from "@/components/ui/AddToCartButton";
+import BuyArea from "@/components/ui/BuyArea";
 import Gallery from "@/components/ui/Gallery";
 import ReviewSection from "@/components/ui/ReviewSection";
 import StickyAddToCart from "@/components/ui/StickyAddToCart";
@@ -63,7 +63,6 @@ export default async function ProductPage({
   };
 
   const inStock = product.stockQuantity > 0;
-  const lowStock = product.stockQuantity > 0 && product.stockQuantity <= 3;
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -104,29 +103,14 @@ export default async function ProductPage({
               {formatPrice(product.price)}
             </p>
 
-            <div className="flex flex-row gap-2 mt-3">
-              {!inStock && (
-                <span className="border border-red-500 text-red-600 text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full">
-                  OUT OF STOCK
-                </span>
-              )}
-              {product.stockQuantity === 1 && inStock && (
-                <span className="border border-red-500 text-red-600 text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full">
-                  ONLY 1 LEFT
-                </span>
-              )}
-              <span className="bg-yellow-400 text-black text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full">
-                {product.condition === "new" ? "NEW" : "PRELOVED"}
-              </span>
-            </div>
+            <BuyArea
+              product={cartProduct}
+              initialStock={product.stockQuantity}
+            />
 
             <p className="text-base text-gray-500 mt-6">
               {product.description}
             </p>
-
-            <div className="mt-8 flex flex-col gap-3">
-              {inStock && <AddToCartButton product={cartProduct} />}
-            </div>
 
             <div className="mt-8">
               <div className="flex justify-between py-4 border-b border-[#E5E5E5]">

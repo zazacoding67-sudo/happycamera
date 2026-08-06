@@ -4,6 +4,7 @@ import { useState, useCallback } from "react";
 import Link from "next/link";
 import { Package, Search, CheckCircle2, Clock, Truck, XCircle, AlertCircle } from "lucide-react";
 import { formatPrice } from "@/lib/format";
+import { usePolling } from "@/lib/usePolling";
 
 interface OrderItem {
   name: string;
@@ -43,6 +44,17 @@ export default function TrackPage() {
   const [order, setOrder] = useState<OrderData | null>(null);
   const [error, setError] = useState("");
 
+  const lookupOrder = useCallback(async (orderId: string, email: string) => {
+    const res = await fetch(
+      `/api/track?orderId=${encodeURIComponent(orderId.trim())}&email=${encodeURIComponent(email.trim())}`
+    );
+    if (!res.ok) {
+      const data = await res.json();
+      throw new Error(data.error || "We couldn't find that order.");
+    }
+    return res.json();
+  }, []);
+
   const handleSubmit = useCallback(
     async (e: React.FormEvent) => {
       e.preventDefault();
@@ -53,23 +65,31 @@ export default function TrackPage() {
       setError("");
 
       try {
-        const res = await fetch(
-          `/api/track?orderId=${encodeURIComponent(orderId.trim())}&email=${encodeURIComponent(email.trim())}`
-        );
-        if (!res.ok) {
-          const data = await res.json();
-          setError(data.error || "We couldn't find that order.");
-          return;
-        }
-        const data = await res.json();
+        const data = await lookupOrder(orderId, email);
         setOrder(data);
-      } catch {
-        setError("Something went wrong. Please try again.");
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Something went wrong. Please try again.");
       } finally {
         setLoading(false);
       }
     },
-    [orderId, email]
+    [orderId, email, lookupOrder]
+  );
+
+  const terminal = order?.status === "DELIVERED" || order?.status === "CANCELLED";
+
+  usePolling(
+    async () => {
+      if (!orderId.trim() || !email.trim()) return;
+      try {
+        const data = await lookupOrder(orderId, email);
+        setOrder(data);
+      } catch {
+        // Keep the last known status while polling.
+      }
+    },
+    30_000,
+    order !== null && !terminal
   );
 
   const currentIdx = order ? STATUS_ORDER.indexOf(order.status) : -1;
@@ -177,6 +197,15 @@ export default function TrackPage() {
                 Placed on {new Date(order.createdAt).toLocaleDateString("en-MY", { year: "numeric", month: "long", day: "numeric" })}
               </p>
             </div>
+
+            {!terminal && (
+              <div className="flex items-center justify-end">
+                <span className="inline-flex items-center gap-1.5 text-[10px] font-medium uppercase tracking-widest text-zinc-400">
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                  Auto-refreshing
+                </span>
+              </div>
+            )}
 
             {cancelled ? (
               <div className="border border-red-100 bg-red-50 p-6 text-center">
