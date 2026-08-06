@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { normalizeBrand } from "@/lib/brand";
 
 function parseCSV(text: string): Record<string, string>[] {
   const lines: string[] = [];
@@ -74,7 +75,7 @@ export async function POST(request: Request) {
 
       const name = row.name?.trim();
       const slug = row.slug?.trim();
-      const brand = row.brand?.trim();
+      const brand = normalizeBrand(row.brand?.trim() ?? "");
       const priceStr = row.price?.trim();
       const condition = row.condition?.trim().toLowerCase();
       const categorySlug = row.categorySlug?.trim();

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { normalizeBrand } from "@/lib/brand";
 
 const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
@@ -37,7 +38,7 @@ export async function POST(request: Request) {
       data: {
         name: name.trim(),
         slug: slug.trim(),
-        brand: brand.trim(),
+        brand: normalizeBrand(brand),
         price: Number(price),
         condition,
         conditionGrade: conditionGrade || null,

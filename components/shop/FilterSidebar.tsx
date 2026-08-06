@@ -30,7 +30,6 @@ export default function FilterSidebar({ brands, hideCondition }: Props) {
   const currentMax = searchParams.get("maxPrice") || "";
   const currentBrands = (searchParams.get("brand") || "").split(",").filter(Boolean);
   const currentCondition = searchParams.get("condition") || "";
-  const currentCategory = searchParams.get("category") || "";
 
   const buildUrl = useCallback(
     (updates: Record<string, string | null>) => {
@@ -46,8 +45,9 @@ export default function FilterSidebar({ brands, hideCondition }: Props) {
   );
 
   const toggleBrand = (brand: string) => {
-    const next = currentBrands.includes(brand)
-      ? currentBrands.filter((b) => b !== brand)
+    const exists = currentBrands.some((b) => b.toLowerCase() === brand.toLowerCase());
+    const next = exists
+      ? currentBrands.filter((b) => b.toLowerCase() !== brand.toLowerCase())
       : [...currentBrands, brand];
     router.push(buildUrl({ brand: next.length ? next.join(",") : null }));
   };
@@ -62,7 +62,6 @@ export default function FilterSidebar({ brands, hideCondition }: Props) {
   };
 
   const filterCount = [
-    currentCategory,
     hideCondition ? null : currentCondition,
     currentBrands.length > 0 ? "brand" : null,
     currentMin || currentMax ? "price" : null,
@@ -100,7 +99,7 @@ export default function FilterSidebar({ brands, hideCondition }: Props) {
               >
                 <input
                   type="checkbox"
-                  checked={currentBrands.includes(brand)}
+                  checked={currentBrands.some((b) => b.toLowerCase() === brand.toLowerCase())}
                   onChange={() => toggleBrand(brand)}
                   className="w-6 h-6 border-2 border-gray-300 rounded-none cursor-pointer focus:ring-0 checked:bg-black checked:border-black"
                 />

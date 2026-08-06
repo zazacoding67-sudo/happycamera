@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { normalizeBrand } from "@/lib/brand";
 import ProductCard from "@/components/ui/ProductCard";
 import FilterSidebar from "@/components/shop/FilterSidebar";
 import SortSelect from "@/components/shop/SortSelect";
@@ -54,7 +55,15 @@ export default async function ShopPage({
   }
 
   if (brand) {
-    where.brand = { in: brand.split(",") };
+    const and = Array.isArray(where.AND) ? (where.AND as unknown[]) : [];
+    where.AND = [
+      ...and,
+      {
+        OR: brand.split(",").map((b) => ({
+          brand: { equals: b.trim(), mode: "insensitive" },
+        })),
+      },
+    ];
   }
 
   if (condition) {
@@ -86,7 +95,12 @@ export default async function ShopPage({
     prisma.product.findMany({ select: { brand: true } }),
   ]);
 
-  const brands = [...new Set(allProducts.map((p) => p.brand))].sort();
+  const brandMap = new Map<string, string>();
+  for (const p of allProducts) {
+    const key = p.brand.trim().toLowerCase();
+    if (!brandMap.has(key)) brandMap.set(key, normalizeBrand(p.brand));
+  }
+  const brands = [...brandMap.values()].sort();
   const searchQuery = q || "";
   const resultCount = products.length;
 

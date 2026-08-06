@@ -1,7 +1,24 @@
-import { test, expect } from "@playwright/test";
+import { test, expect, type Page } from "@playwright/test";
 
 const ADMIN_EMAIL = "admin@happycamera.com";
 const ADMIN_PASSWORD = "wilson123";
+
+// Opens the first product that renders an Add to Cart button (skips out-of-stock
+// products, where BuyArea intentionally hides the CTA).
+async function gotoFirstInStockProduct(page: Page) {
+  await page.goto("/shop");
+  const links = page.locator("a[href^='/product/']");
+  await links.first().waitFor({ state: "visible", timeout: 10000 });
+  const hrefs = await links.evaluateAll((els) =>
+    els.map((el) => (el as HTMLAnchorElement).href)
+  );
+  for (const href of hrefs) {
+    await page.goto(href);
+    const addBtn = page.locator("button").filter({ hasText: /Add to Cart — RM/i });
+    if ((await addBtn.count()) > 0) return;
+  }
+  throw new Error("No in-stock product found in /shop");
+}
 
 // ---------------------------------------------------------------------------
 // 1. Homepage
@@ -49,12 +66,7 @@ test("filter sidebar toggles and filters products", async ({ page }) => {
 // 4. Product detail page
 // ---------------------------------------------------------------------------
 test("product detail shows gallery, price, and add-to-cart", async ({ page }) => {
-  await page.goto("/shop");
-
-  const productLink = page.locator("a[href^='/product/']").first();
-  await productLink.waitFor({ state: "visible", timeout: 10000 });
-  const href = await productLink.getAttribute("href");
-  await page.goto(href!);
+  await gotoFirstInStockProduct(page);
 
   // Gallery renders (h-[480px] bg-[#f5f5f5] region)
   await expect(page.locator("div.bg-\\[\\#f5f5f5\\]").first()).toBeVisible();
@@ -74,12 +86,7 @@ test("product detail shows gallery, price, and add-to-cart", async ({ page }) =>
 // 5. Cart flow
 // ---------------------------------------------------------------------------
 test("add to cart and verify cart drawer", async ({ page }) => {
-  await page.goto("/shop");
-
-  const productLink = page.locator("a[href^='/product/']").first();
-  await productLink.waitFor({ state: "visible", timeout: 10000 });
-  const href = await productLink.getAttribute("href");
-  await page.goto(href!);
+  await gotoFirstInStockProduct(page);
 
   // Primary CTA
   const addBtn = page.locator("button").filter({ hasText: /Add to Cart — RM/i }).first();

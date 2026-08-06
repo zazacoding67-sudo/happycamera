@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
+import { normalizeBrand } from "../lib/brand";
 
 const adapter = new PrismaPg(process.env.DATABASE_URL!);
 const prisma = new PrismaClient({ adapter });
@@ -498,11 +499,11 @@ async function main() {
   ];
 
   for (const product of products) {
-    const { slug, ...data } = product;
+    const { slug, brand, ...data } = product;
     await prisma.product.upsert({
       where: { slug },
-      update: data,
-      create: { slug, ...data },
+      update: { ...data, brand: normalizeBrand(brand) },
+      create: { slug, ...data, brand: normalizeBrand(brand) },
     });
   }
 
