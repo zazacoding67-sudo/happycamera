@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { createOrderWithOrderNumber } from "@/lib/orderFactory";
 
 export async function POST(request: Request) {
   try {
@@ -31,22 +32,20 @@ export async function POST(request: Request) {
       0
     );
 
-    const order = await prisma.order.create({
-      data: {
-        customerName,
-        customerEmail,
-        customerPhone,
-        totalAmount,
-        status: "PENDING",
-        items: {
-          create: items.map(
-            (item: { productId: string; quantity: number; price: number }) => ({
-              productId: item.productId,
-              quantity: item.quantity,
-              price: item.price,
-            })
-          ),
-        },
+    const order = await createOrderWithOrderNumber({
+      customerName,
+      customerEmail,
+      customerPhone,
+      totalAmount,
+      status: "PENDING",
+      items: {
+        create: items.map(
+          (item: { productId: string; quantity: number; price: number }) => ({
+            productId: item.productId,
+            quantity: item.quantity,
+            price: item.price,
+          })
+        ),
       },
     });
 

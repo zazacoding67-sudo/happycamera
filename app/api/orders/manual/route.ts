@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { createOrderWithOrderNumber } from "@/lib/orderFactory";
 import { sendOrderShippedEmail } from "@/lib/email";
 
 function validate(errors: Record<string, string>, body: {
@@ -42,23 +43,21 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Validation failed", fields: errors }, { status: 400 });
     }
 
-    const order = await prisma.order.create({
-      data: {
-        customerName: customerName.trim(),
-        customerEmail: customerEmail.trim(),
-        customerPhone: customerPhone || "",
-        totalAmount,
-        status: "SHIPPED",
-        source: "MANUAL",
-        courierName: courierName.trim(),
-        trackingNumber: trackingNumber.trim(),
-        items: {
-          create: {
-            description: itemsDescription.trim(),
-            quantity: 1,
-            price: totalAmount,
-            productId: null,
-          },
+    const order = await createOrderWithOrderNumber({
+      customerName: customerName.trim(),
+      customerEmail: customerEmail.trim(),
+      customerPhone: customerPhone || "",
+      totalAmount,
+      status: "SHIPPED",
+      source: "MANUAL",
+      courierName: courierName.trim(),
+      trackingNumber: trackingNumber.trim(),
+      items: {
+        create: {
+          description: itemsDescription.trim(),
+          quantity: 1,
+          price: totalAmount,
+          productId: null,
         },
       },
     });
@@ -70,7 +69,10 @@ export async function POST(request: Request) {
       trackingNumber: order.trackingNumber,
     });
 
-    return NextResponse.json({ id: order.id }, { status: 201 });
+    return NextResponse.json(
+      { id: order.id, orderNumber: order.orderNumber },
+      { status: 201 }
+    );
   } catch (error) {
     console.error("Failed to create manual order:", error);
     return NextResponse.json({ error: "Failed to create order" }, { status: 500 });

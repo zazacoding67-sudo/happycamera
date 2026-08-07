@@ -16,6 +16,7 @@ interface OrderItem {
 
 interface OrderData {
   id: string;
+  orderNumber: string | null;
   customerName: string;
   customerEmail: string;
   totalAmount: number;
@@ -120,7 +121,7 @@ export default function TrackPage() {
               type="text"
               value={orderId}
               onChange={(e) => setOrderId(e.target.value)}
-              placeholder="Paste your full order ID"
+              placeholder="e.g. HC-7X2K9M1Q"
               className="w-full border border-zinc-200 px-4 py-3 text-sm text-zinc-900 placeholder:text-zinc-300 focus:outline-none focus:border-zinc-900 transition-colors rounded-none"
               required
             />
@@ -172,7 +173,7 @@ export default function TrackPage() {
                     Order
                   </p>
                   <p className="text-sm font-medium text-zinc-900 mt-0.5 font-mono">
-                    {order.id}
+                    {order.orderNumber ?? order.id.slice(0, 8)}
                   </p>
                 </div>
                 <div className="text-right">

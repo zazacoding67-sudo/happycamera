@@ -135,7 +135,7 @@ export async function POST(request: Request) {
   await sendOrderConfirmationEmail({
     to: order.customerEmail,
     customerName: order.customerName,
-    paymentReference: order.paymentReference || chipPurchaseId,
+    orderNumber: order.orderNumber || "",
     totalAmount: order.totalAmount,
   });
 

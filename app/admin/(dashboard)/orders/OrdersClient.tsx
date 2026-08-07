@@ -17,6 +17,7 @@ const statusColors: Record<string, string> = {
 
 interface Order {
   id: string;
+  orderNumber: string | null;
   customerName: string;
   customerEmail: string;
   totalAmount: number;
@@ -34,7 +35,8 @@ export default function OrdersClient({ orders }: { orders: Order[] }) {
       orders.filter(
         (o) =>
           o.customerName.toLowerCase().includes(search.toLowerCase()) ||
-          o.id.toLowerCase().includes(search.toLowerCase())
+          o.id.toLowerCase().includes(search.toLowerCase()) ||
+          (o.orderNumber ?? "").toLowerCase().includes(search.toLowerCase())
       ),
     [orders, search]
   );
@@ -99,8 +101,11 @@ export default function OrdersClient({ orders }: { orders: Order[] }) {
                         href={`/admin/orders/${order.id}`}
                         className="font-mono text-xs text-yellow-600 underline underline-offset-2 hover:no-underline"
                       >
-                        #{order.id.slice(0, 8)}
+                        {order.orderNumber ?? `#${order.id.slice(0, 8)}`}
                       </Link>
+                      <p className="text-[10px] text-[var(--color-text-secondary)] font-mono mt-0.5">
+                        ID: {order.id.slice(0, 8)}
+                      </p>
                     </td>
                     <td className="py-3 px-4">
                       <p className="text-[var(--color-text-primary)]">{order.customerName}</p>
@@ -156,9 +161,14 @@ export default function OrdersClient({ orders }: { orders: Order[] }) {
                 className="block bg-[var(--color-surface)] border border-[var(--color-border)] p-4 hover:bg-[var(--color-bg)] transition-colors"
               >
                 <div className="flex items-start justify-between mb-2">
-                  <span className="font-mono text-xs text-yellow-600 underline underline-offset-2">
-                    #{order.id.slice(0, 8)}
-                  </span>
+                  <div>
+                    <span className="font-mono text-xs text-yellow-600 underline underline-offset-2">
+                      {order.orderNumber ?? `#${order.id.slice(0, 8)}`}
+                    </span>
+                    <p className="text-[10px] text-[var(--color-text-secondary)] font-mono mt-0.5">
+                      ID: {order.id.slice(0, 8)}
+                    </p>
+                  </div>
                   <span
                     className={cn(
                       "text-[10px] font-semibold uppercase tracking-widest px-2.5 py-1 border",

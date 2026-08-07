@@ -48,7 +48,7 @@ export default async function SuccessPage({ searchParams }: Props) {
               </p>
 
               <p className="mt-6 text-[11px] font-medium uppercase tracking-[0.1em] text-[var(--color-text-secondary)]">
-                Reference: {order.id.slice(0, 8).toUpperCase()}
+                Order Number: {order.orderNumber ?? order.id.slice(0, 8).toUpperCase()}
               </p>
 
               <div className="mt-8 border border-[var(--color-border)] rounded-none text-left">

@@ -103,7 +103,7 @@ test("add to cart and verify cart drawer", async ({ page }) => {
 // ---------------------------------------------------------------------------
 // 6. Checkout → Tracking (bypasses Toyyibpay via manual order)
 // ---------------------------------------------------------------------------
-test("manual order creation and tracking API work", async ({ page, request }) => {
+test("manual order creation, success page order number, and tracking API work", async ({ page, request }) => {
   // Login as admin
   await page.goto("/admin/login");
   await page.fill("input[type='email']", ADMIN_EMAIL);
@@ -128,24 +128,39 @@ test("manual order creation and tracking API work", async ({ page, request }) =>
   await page.waitForURL(/\/admin\/orders\/(?!new-manual)[^/]+/, { timeout: 10000 });
   const orderId = page.url().match(/\/orders\/(?!new-manual)([^/]+)/)?.[1] || "";
 
+  // Detail page shows the customer-facing order number
+  const heading = (await page.locator("h1").filter({ hasText: /^Order HC-/ }).first().textContent())?.trim() || "";
+  const orderNumber = heading.match(/^Order (HC-[A-Z2-9]+)$/)?.[1] || "";
+  expect(orderNumber, "expected order number on admin order detail page").toMatch(/^HC-[A-Z2-9]{8}$/);
+
   // Verify page content
   await expect(page.locator("text=E2E Test User")).toBeVisible();
   await expect(page.locator("text=Test Camera x1")).toBeVisible();
   await expect(page.locator("input[value='MY1234567890']")).toBeVisible();
   await expect(page.locator("text=RM 100").first()).toBeVisible();
 
-  // Tracking API returns correct data
-  const trackRes = await request.get(`/api/track?orderId=${orderId}&email=e2e-test@happycamera.com`);
+  // Success page shows the full order number
+  await page.goto(`/shop/success?ref=${orderId}`);
+  await expect(page.locator("text=Payment Confirmed")).toBeVisible();
+  await expect(page.locator(`text=${orderNumber}`).first()).toBeVisible();
+
+  // Tracking API resolves the order by its order number (lowercased → case-insensitive)
+  const trackRes = await request.get(`/api/track?orderId=${orderNumber.toLowerCase()}&email=e2e-test@happycamera.com`);
   if (!trackRes.ok()) {
     const errBody = await trackRes.text();
     throw new Error(`Tracking API returned ${trackRes.status()}: ${errBody}`);
   }
   const trackData = await trackRes.json();
+  expect(trackData.orderNumber).toBe(orderNumber);
   expect(trackData.status).toBe("SHIPPED");
   expect(trackData.courierName).toBe("J&T");
   expect(trackData.trackingNumber).toBe("MY1234567890");
   expect(trackData.items.length).toBeGreaterThan(0);
   expect(trackData.items[0].name).toBe("Test Camera x1");
+
+  // Wrong order number returns a generic 404 (no order-existence leak)
+  const wrongRes = await request.get(`/api/track?orderId=HC-00000000&email=e2e-test@happycamera.com`);
+  expect(wrongRes.status()).toBe(404);
 });
 
 // ---------------------------------------------------------------------------

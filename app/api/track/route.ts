@@ -3,21 +3,24 @@ import { prisma } from "@/lib/prisma";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
-  const orderId = searchParams.get("orderId");
+  const orderNumber = searchParams.get("orderId");
   const email = searchParams.get("email");
 
-  if (!orderId || !email) {
+  if (!orderNumber || !email) {
     return NextResponse.json(
-      { error: "Order ID and email are required" },
+      { error: "Order number and email are required" },
       { status: 400 }
     );
   }
 
   const normalisedEmail = email.trim().toLowerCase();
+  const normalisedOrderNumber = orderNumber.trim();
 
   try {
-    const order = await prisma.order.findUnique({
-      where: { id: orderId.trim() },
+    const order = await prisma.order.findFirst({
+      where: {
+        orderNumber: { equals: normalisedOrderNumber, mode: "insensitive" },
+      },
       include: {
         items: {
           include: {
@@ -38,6 +41,7 @@ export async function GET(request: Request) {
 
     return NextResponse.json({
       id: order.id,
+      orderNumber: order.orderNumber,
       customerName: order.customerName,
       customerEmail: order.customerEmail,
       totalAmount: order.totalAmount,

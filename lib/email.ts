@@ -8,12 +8,12 @@ const resend = process.env.RESEND_API_KEY
 export async function sendOrderConfirmationEmail({
   to,
   customerName,
-  paymentReference,
+  orderNumber,
   totalAmount,
 }: {
   to: string;
   customerName: string;
-  paymentReference: string;
+  orderNumber: string;
   totalAmount: number;
 }) {
   if (!resend) return;
@@ -22,9 +22,9 @@ export async function sendOrderConfirmationEmail({
     const { error } = await resend.emails.send({
       from: "Happy Camera <orders@happycamera.com>",
       to,
-      subject: `Order Confirmed — #${paymentReference.slice(0, 8)}`,
+      subject: orderNumber ? `Order Confirmed — #${orderNumber}` : "Order Confirmed",
       html: `<p>Hi ${customerName},</p>
-<p>Your payment was successful. Reference: <strong>${paymentReference}</strong></p>
+<p>Your payment was successful. Order number: <strong>${orderNumber}</strong></p>
 <p>Total: ${formatPrice(totalAmount)}</p>
 <p>We'll notify you once the order ships.</p>`,
     });

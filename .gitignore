@@ -6,6 +6,12 @@ node_modules/
 out/
 build/
 
+# generated build artifacts
+next-env.d.ts
+tsconfig.tsbuildinfo
+test-results/
+playwright-report/
+
 # environment variables (SECURITY)
 .env
 .env.local

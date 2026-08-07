@@ -52,7 +52,7 @@ export default async function OrderDetailPage({
           <div>
             <div className="flex items-center gap-3">
               <h1 className="text-2xl font-bold tracking-tight text-[var(--color-text-primary)]">
-                Order #{order.id.slice(0, 8)}
+                Order {order.orderNumber ?? `#${order.id.slice(0, 8)}`}
               </h1>
               <span
                 className={`text-[9px] font-semibold uppercase tracking-widest px-2 py-0.5 border ${
@@ -65,6 +65,9 @@ export default async function OrderDetailPage({
               </span>
             </div>
             <p className="text-sm text-[var(--color-text-secondary)] mt-1">
+              {order.orderNumber && (
+                <span className="font-mono mr-3">Internal ID: {order.id}</span>
+              )}
               {order.createdAt.toLocaleDateString()}
             </p>
           </div>

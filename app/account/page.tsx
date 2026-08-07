@@ -16,6 +16,7 @@ interface OrderItem {
 
 interface Order {
   id: string;
+  orderNumber: string | null;
   totalAmount: number;
   status: string;
   courierName: string | null;
@@ -128,7 +129,7 @@ export default function AccountPage() {
                         Order
                       </p>
                       <p className="text-sm font-medium text-zinc-900 mt-0.5 font-mono">
-                        {order.id.slice(0, 12)}...
+                        {order.orderNumber ?? `${order.id.slice(0, 12)}...`}
                       </p>
                     </div>
                     <div className="flex items-center gap-1.5">
