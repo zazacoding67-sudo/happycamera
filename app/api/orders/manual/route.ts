@@ -31,6 +31,9 @@ export async function POST(request: Request) {
   if (!session) {
     return NextResponse.json({ error: "Authentication required" }, { status: 401 });
   }
+  if ((session.user as Record<string, unknown>).role !== "admin") {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
+  }
 
   try {
     const body = await request.json();
