@@ -38,6 +38,8 @@ export default function OrderDetailClient({
   const [tracking, setTracking] = useState(currentTracking);
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState("");
+  const [resending, setResending] = useState(false);
+  const [resendMessage, setResendMessage] = useState<{ ok: boolean; text: string } | null>(null);
   const [showingBlockedHint, setShowingBlockedHint] = useState(false);
 
   const trackingChanged =
@@ -78,6 +80,27 @@ export default function OrderDetailClient({
     } else {
       const data = await res.json();
       setSaveError(data.error || "Failed to save changes.");
+    }
+  };
+
+  const handleResendConfirmation = async () => {
+    setResending(true);
+    setResendMessage(null);
+
+    const res = await fetch(`/api/orders/${orderId}/resend-confirmation`, {
+      method: "POST",
+    });
+
+    setResending(false);
+
+    if (res.ok) {
+      setResendMessage({
+        ok: true,
+        text: `Confirmation email re-sent to the customer.`,
+      });
+    } else {
+      const data = await res.json();
+      setResendMessage({ ok: false, text: data.error || "Failed to resend confirmation email." });
     }
   };
 
@@ -175,13 +198,29 @@ export default function OrderDetailClient({
         <p className="text-sm text-red-500">{saveError}</p>
       )}
 
-      <button
-        onClick={handleSave}
-        disabled={saving}
-        className="bg-yellow-400 text-black text-sm font-semibold px-6 py-2.5 tracking-wide hover:bg-yellow-300 transition-colors disabled:opacity-60 rounded-none"
-      >
-        {saving ? "Saving..." : "Save Changes"}
-      </button>
+      {resendMessage && (
+        <p className={`text-sm ${resendMessage.ok ? "text-green-600" : "text-red-500"}`}>
+          {resendMessage.text}
+        </p>
+      )}
+
+      <div className="flex flex-wrap items-center gap-3">
+        <button
+          onClick={handleSave}
+          disabled={saving}
+          className="bg-yellow-400 text-black text-sm font-semibold px-6 py-2.5 tracking-wide hover:bg-yellow-300 transition-colors disabled:opacity-60 rounded-none"
+        >
+          {saving ? "Saving..." : "Save Changes"}
+        </button>
+
+        <button
+          onClick={handleResendConfirmation}
+          disabled={resending}
+          className="text-sm font-semibold px-6 py-2.5 tracking-wide border border-[var(--color-border)] text-[var(--color-text-primary)] hover:border-yellow-400 hover:text-yellow-600 transition-colors disabled:opacity-60 rounded-none"
+        >
+          {resending ? "Sending..." : "Resend Confirmation Email"}
+        </button>
+      </div>
     </div>
   );
 }

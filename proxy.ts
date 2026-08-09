@@ -14,7 +14,7 @@ const ADMIN_API_RULES: { prefix: string; methods: string[] }[] = [
   { prefix: "/api/products", methods: ["POST"] },
   { prefix: "/api/products/", methods: ["PATCH", "DELETE"] },
   { prefix: "/api/orders/manual", methods: ["POST"] },
-  { prefix: "/api/orders/", methods: ["PATCH"] },
+  { prefix: "/api/orders/", methods: ["PATCH", "POST"] },
   { prefix: "/api/reviews/", methods: ["PATCH"] },
 ];
 
