@@ -43,6 +43,15 @@
   - **ProductCard**: Image container changed to `relative aspect-square w-full bg-[#f4f4f4] rounded-2xl p-6 flex items-center justify-center`. Image changed from Next.js `Image fill` to `<img>` tag with `max-w-full max-h-full object-contain` (respects padding, no stretching). Title changed to `text-[14px] text-black font-medium mt-3`.
   - **Shop page**: Category pills restored as `border border-gray-300 rounded-full px-4 py-1.5 text-[13px] text-gray-600` horizontal row. Product count moved to right side grouped with SortSelect (`justify-end`). Layout gap-fixes.
 - **THIS SESSION — Preloved Edit redesigned**: Hero replaced from video to static `home-1.jpg`. Brand New/Preloved toggle + swap-carousel removed. Non-interactive trust strip (always preloved). NEW `GradingScale` component — 4-panel MINT/EXCELLENT/GOOD/FAIR explainer with `whileInView` staggered reveal, grade-colored labels/bars. NEW `PinnedScrollSequence` — sticky scroll-driven crossfade through 3 story beats (Character & History → Verified Condition → Built to Last), opacity-only via `useScroll`/`useTransform`, native CSS `sticky`, progress indicator via `scaleY`, reduced-motion fallback (static stacked `whileInView`), mobile disables pinning below `md`. Product gallery replaced from horizontal carousel to CSS columns masonry grid with `conditionNotes` on hover. MarqueeStrip removed from Preloved Edit page (stays on homepage). PrelovedEditorial kept as-is. Server page fetches preloved products only.
+- **THIS SESSION — Customer-facing order numbers (committed `967002a`, deployed)**: `Order.orderNumber` (`String? @unique`, format `HC-` + 8 uppercase alphanumerics, alphabet excludes I/O/0/1). **Adopted Prisma migrations for the first time**: baselined the db-push DB as `0_init` (marked applied via `prisma migrate resolve`, never re-run) + `20260808000000_add_order_number` applied via `prisma migrate deploy`. `lib/orderNumber.ts` (generator) + `lib/orderFactory.ts` `createOrderWithOrderNumber()` (P2002 retry loop, max 5) used by `/api/checkout` AND `/api/orders/manual` (manual orders need one too). Backfilled all 53 existing orders via `scripts/backfill-order-numbers.ts --apply` (dry-run by default). Surfaced: success page full number, `/account` + `/api/orders/customer`, confirmation email (replaces CHIP `paymentReference`), admin OrdersClient + `[id]` page (orderNumber alongside internal ID). `/api/track` + `/track` now look up by orderNumber (case-insensitive, trimmed, generic 404). Playwright test 6 updated to cover success page + `/track` by orderNumber. Full suite 14/14 green, `tsc` clean. Verified live on Vercel prod by real order.
+- **THIS SESSION — Auto-apply migrations on Vercel**: Added `"vercel-build": "prisma migrate deploy && next build"` to `package.json` (Vercel auto-runs `vercel-build` over `build` when present; `postinstall` already runs `prisma generate`). First deploy after this succeeded but `migrate deploy` was a **no-op** (migration already applied manually) — the NEXT schema change is the real test of auto-migration. Caveat: a custom Build Command in Vercel dashboard overrides the script; build log should show `npm run vercel-build` + `prisma migrate deploy && next build`.
+- **THIS SESSION — Generated-artifact hygiene**: `next-env.d.ts`, `tsconfig.tsbuildinfo`, `test-results/.last-run.json` were accidentally tracked; untracked (`git rm --cached`) and added to `.gitignore` (also `playwright-report/`).
+- **THIS SESSION — Phase 7 e2e verification complete (all four areas)**:
+  - **Area 1 — CHIP sandbox round-trip (REAL sandbox UI)**: Success leg PASS (`HC-7FFTWUQJ` PAID via webhook, stock decrement Sony lens 4→3, success page shows full order number, `/admin/orders` confirms). Failure leg PASS (`HC-MHDLG2PL` stayed PENDING, Nikon D610 stock unchanged 1→1). Confirmation email NOT VERIFIABLE locally — `RESEND_API_KEY` absent → `lib/email.ts` silently no-ops (real prod webhook presumably has it in Vercel env). FLAG: `NEXT_PUBLIC_BASE_URL` points to a dead Cloudflare tunnel → CHIP success/cancel redirects hit chrome-error (webhook base is separate and worked).
+  - **Area 2 — ProductForm**: all empty-submit inline errors render; `price=0` inline error shows; `price=-5`/`stock=-1` blocked by native `min="0"` (input keeps value, server 400s too) — no inline JS error for those (acceptable, noted); preloved-without-grade inline error shows; `normalizeBrand()` confirmed on save via POST + PATCH (`pgytech`→`PGYTECH`, `f-stop`→`F-Stop`); throwaway product created then deleted.
+  - **Area 3 — Crop/upload**: T1 unsupported type, T2 >5MB, T3 valid-file-opens-modal + low-res warning, T4 single confirm uploads+appends, T5 batch appends (1→2→3) all PASS. Initial "0 thumbnails after first upload" anomaly NOT reproducible across 20 consecutive runs (10 instrumented); every run showed deterministic success path (upload 200 + storage object + thumbnail). Root-cause hypothesis: confirm click before `onCropComplete` set `croppedAreaPct` (early-return leaves image un-uploaded; batch then proceeds) — dev-mode timing flake, not a code bug. Storage finding: bucket `camera-images` has ONLY an INSERT RLS policy ("Allow Public Uploads") — anon can upload but not SELECT/DELETE; public-URL GET works (public bucket), so the app is unaffected; the anon SDK `list()` returning empty is expected.
+  - **Area 4 — Login**: `e2e/auth.spec.ts` 4/4 green — admin creds → dashboard; customer creds blocked from `/admin` (role gate via proxy.ts); failed login → single generic message, no account-existence leak; customer Google sign-in UI with generic OAuth error handling.
+  - **Cleanup (approved)**: deleted 63 orphaned 762-byte 1×1 test JPEGs from `camera-images` bucket (temp SELECT+DELETE RLS policy added then dropped; removed via Storage API so S3 files + rows both cleaned); deleted stray PENDING probe orders `HC-NBX9JK9E` + `HC-PTZFERKW` (items first — `OrderItem.order` FK is Restrict). Kept evidence: `HC-7FFTWUQJ` (PAID) + `HC-MHDLG2PL` (PENDING). All scratch scripts (chip-probe/success/failure, area2/area3 diags, list-*, verify-admin-orders, check-resend, cleanup-e2e) deleted; real user orders (ilhamammar55@gmail.com) untouched.
 
 ### In Progress
 - (none)
@@ -66,10 +75,12 @@
 - MultiImageUpload `onChange` appends via ref `uploadedInBatchRef.current = [...uploadedInBatchRef.current, urlData.publicUrl]` — fixes stale closure bug during batch processing.
 - All prices formatted via centralised `formatPrice()` in `lib/format.ts` — no inline `$` strings remain.
 - Login pages (public `/login` and `/admin/login`) share the same split-screen layout but differ in headline/subheading.
+- **Order numbers**: `Order.orderNumber` kept nullable + unique so existing rows backfill cleanly. Generated at creation time (never lazy) in both checkout and manual-order paths via `createOrderWithOrderNumber()`. `/api/track` matches by orderNumber, `mode: "insensitive"`, trimmed, generic 404 (no existence leak). Generated artifacts (`next-env.d.ts`, `tsconfig.tsbuildinfo`, `test-results/`, `playwright-report/`) are gitignored and untracked.
 
 ## Next Steps
 1. **Phase 5 — Admin / Operations**: Replace dashboard overview with recharts revenue chart + top products. Build CSV bulk product upload page (`/admin/products/upload`).
-2. **Phase 7 — Testing**: Run full e2e flow (browse → filter → add to cart → checkout → payment callback → order status update → tracking). Verify field-level validation on ProductForm, crop modal interaction (4:3 aspect, fill-frame default), sequential multi-image cropping (appends via ref), and all four login scenarios.
+2. **Auto-migration real test**: The NEXT schema change must go through the normal flow (`prisma migrate dev` to create the migration, commit it) — Vercel's `vercel-build` (`prisma migrate deploy && next build`) should auto-apply it during deploy. That deploy is the first genuine test of auto-migration (the `add_order_number` deploy was a no-op since it was already applied manually). Confirm the build log shows `npm run vercel-build` and no migrate error. Do NOT `db push` or manually apply schema changes anymore — always a committed migration.
+3. **Env fix before next live test**: `NEXT_PUBLIC_BASE_URL` in `.env.local` points to a dead Cloudflare tunnel (`smoke-handmade-continues-offshore.trycloudflare.com` → curl 000). CHIP `success_redirect`/`cancel_redirect` are built from it, so sandbox round-trips redirect to chrome-error. Set it to the real Vercel prod URL (or a live tunnel) for any future payment round-trip test. Consider adding `RESEND_API_KEY` to `.env.local` if confirmation-emails need local verification.
 
 ## Critical Context
 - `prisma db push --accept-data-loss` was used multiple times. No production data exists so this is acceptable.
@@ -77,6 +88,7 @@
 - WhatsApp number env var: `NEXT_PUBLIC_WHATSAPP_NUMBER`.
 - Image crop: `react-easy-crop` v6, CSS imported as `"react-easy-crop/react-easy-crop.css"`, canvas-to-blob JPEG quality 0.85, max 2400px longest side. Crop aspect 4:3. Default zoom=1 (fill frame). Background `#1A1A1A`.
 - Upload appends to images array via ref: `uploadedInBatchRef.current = [...uploadedInBatchRef.current, urlData.publicUrl]` — old URLs are preserved during batch.
+- Storage bucket `camera-images` is public with only an INSERT RLS policy ("Allow Public Uploads"). Anon clients can upload and GET public URLs but canNOT `list()`/`remove()` (no SELECT/DELETE policy). Cleanups must use a temporary SELECT+DELETE policy (added via `storage.objects` SQL, then dropped) or the service_role key.
 - Products in DB: 20 total (7 cameras, 6 bags, 5 dry boxes + Zeiss lens in Lenses category). Product names no longer have `(Preloved)`/`(New)` suffixes.
 - 7 categories in DB: Film Cameras, Digital Bodies, Lenses, Accessories, Dry Box, Bag, Camera.
 - Public `/login` redirects admin users to `/admin` on success, others to `/`. NextAuth `pages.signIn` set to `/login`.
@@ -84,9 +96,11 @@
 - **Navbar**: Replaced mega menu with simple 3-column grid layout (`grid grid-cols-3 items-center`). Left: Home, Shop, News, Contact text links. Center: logo. Right: search bar + cart.
 - **CartDrawer.tsx** has `"use client"` and uses `useCart()` from `CartContext` — includes checkout button.
 - **Pinned Scroll Sequence**: opacity-only crossfade via `useScroll`/`useTransform`; native CSS `sticky` for pinning; legibility overlays (`bg-gradient-to-r from-black/80 via-black/40 to-transparent` on static `div`, never on animated element); full static-stack fallback under reduced motion or mobile <768px. 3 beat panels with ~5% overlap crossfade, progress indicator via `scaleY`.
+- **Migrations**: `prisma/migrations/` exists now (`0_init` baseline + `20260808000000_add_order_number`). All 53 orders have `orderNumber` backfilled. Schema changes go through committed migrations (`prisma migrate dev` locally), applied automatically on Vercel via `vercel-build`. Never `db push` on the live DB.
+- **Vercel build**: `package.json` `vercel-build = prisma migrate deploy && next build`; `postinstall = prisma generate`. A custom Build Command in the Vercel dashboard would override `vercel-build` — if auto-migration stops working, check that setting first.
 
 ## Relevant Files
-- `prisma/schema.prisma`: 8 models/2 enums — no `inStock`/`imageUrl`; has `mount` (String?), `format` (String?).
+- `prisma/schema.prisma`: 8 models/2 enums — no `inStock`/`imageUrl`; has `mount` (String?), `format` (String?), `Order.orderNumber` (String? @unique).
 - `prisma/seed.ts`: 7 categories, 20 products with all fields + correctly matched Unsplash photo IDs; uses `upsert` pattern. Product names stripped of condition suffixes.
 - `lib/format.ts`: `formatPrice()` — returns `RM 4,299`.
 - `lib/policies.ts`: centralized policy text.
@@ -141,6 +155,16 @@
 - `app/api/reviews/route.ts`: POST (create review).
 - `app/api/reviews/[id]/route.ts`: PATCH (approve/reject).
 - `app/api/payment/callback/route.ts`: decrements stockQuantity on success.
+- `app/api/orders/manual/route.ts`: POST manual orders (via `createOrderWithOrderNumber`, starts SHIPPED, sends tracking email, returns `{ id, orderNumber }`).
+- `app/api/orders/customer/route.ts`: GET customer orders (returns `orderNumber`).
+- `app/api/track/route.ts` + `app/track/page.tsx`: lookup by `orderNumber` (case-insensitive, trimmed, generic 404).
+- `app/shop/success/page.tsx`: shows full `orderNumber` (not truncated ID).
+- `app/account/page.tsx`: order list/detail shows full `orderNumber`.
+- `lib/orderNumber.ts`: `generateOrderNumber()` — `HC-` + 8 uppercase alphanumerics (excludes I/O/0/1).
+- `lib/orderFactory.ts`: `createOrderWithOrderNumber()` — create order with generated orderNumber, P2002 retry loop (max 5).
+- `scripts/backfill-order-numbers.ts`: backfills `orderNumber` for existing orders; dry-run by default, `--apply` writes.
+- `prisma/migrations/`: `0_init` (baseline, marked applied) + `20260808000000_add_order_number`.
+- `package.json`: `vercel-build = prisma migrate deploy && next build`.
 - `app/api/auth/[...nextauth]/route.ts`: `pages.signIn` set to `/login`.
 - `middleware.ts`: `pages.signIn` set to `/login`.
 - `next.config.ts`: remotePatterns for supabase.co + unsplash.
