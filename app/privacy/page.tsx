@@ -13,7 +13,7 @@ export default function PrivacyPage() {
         <p>We collect only the information necessary to process your order and provide support: your name, email, phone, and shipping address.</p>
         <p>Payment details are handled entirely by Toyyibpay — we never see or store your card information.</p>
         <p>We do not sell, rent, or share your personal data with third parties except as required to fulfill your order (e.g., courier services).</p>
-        <p>You may request deletion of your data at any time by contacting <a href="mailto:hello@happycamera.com" className="underline underline-offset-2 text-[#1A1A1A]">hello@happycamera.com</a>.</p>
+        <p>You may request deletion of your data at any time by contacting <a href="mailto:hello@happycameratrading.com" className="underline underline-offset-2 text-[#1A1A1A]">hello@happycameratrading.com</a>.</p>
         <p className="text-xs text-[#888] pt-8">Last updated: January 2026</p>
       </div>
     </div>

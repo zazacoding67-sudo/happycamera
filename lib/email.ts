@@ -1,8 +1,8 @@
 import { Resend } from "resend";
 import { formatPrice } from "./format";
 
-// TODO: Switch back to "Happy Camera <orders@happycamera.com>" once the
-// happycamera.com domain is bought and verified in Resend. Until then we use
+// TODO: Switch back to "Happy Camera <orders@happycameratrading.com>" once the
+// happycameratrading.com domain is bought and verified in Resend. Until then we use
 // Resend's default onboarding sender, which only delivers to the Resend
 // account owner's email address.
 

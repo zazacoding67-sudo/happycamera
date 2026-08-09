@@ -35,7 +35,7 @@ export async function POST(req: Request) {
       const resetUrl = `${baseUrl}/admin/reset-password/${token}`;
 
       await resend.emails.send({
-        from: "Happy Camera <noreply@happycamera.com>",
+        from: "Happy Camera <noreply@happycameratrading.com>",
         to: email,
         subject: "Reset your admin password",
         html: `<p>Hi,</p>
