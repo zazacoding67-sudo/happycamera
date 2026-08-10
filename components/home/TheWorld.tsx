@@ -23,8 +23,8 @@ export default function TheWorld() {
           quality={75}
         />
       </div>
-      <div className="absolute inset-0 bg-amber-800/15" />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+      <div className="absolute inset-0 bg-amber-800/10" />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/25 to-transparent" />
       <div className="relative z-10 text-center px-4 max-w-3xl">
         <motion.p
           initial={reduced ? {} : { opacity: 0, y: 20 }}
