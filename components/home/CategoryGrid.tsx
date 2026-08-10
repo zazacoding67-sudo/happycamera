@@ -91,7 +91,7 @@ export default function CategoryGrid({
   condition?: "new" | "preloved";
 }) {
   return (
-    <section className="bg-black">
+    <section id="shop" className="bg-black scroll-mt-20">
       <StripeFrame />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-32">
         <div className="text-center mb-16">

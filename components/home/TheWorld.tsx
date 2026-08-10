@@ -50,6 +50,24 @@ export default function TheWorld() {
         >
           The gear you trust shapes what you see — and what the world gets to witness.
         </motion.p>
+        <motion.div
+          initial={reduced ? {} : { opacity: 0, y: 24 }}
+          animate={inView || reduced ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1], delay: 0.45 }}
+          className="mt-10 flex items-center justify-center"
+        >
+          <button
+            type="button"
+            onClick={() =>
+              document
+                .getElementById("shop")
+                ?.scrollIntoView({ behavior: "smooth", block: "start" })
+            }
+            className="inline-flex items-center justify-center px-8 py-4 text-sm font-semibold tracking-wider uppercase bg-yellow-400 text-black rounded-none hover:bg-yellow-300 min-w-[220px] transition-all"
+          >
+            Browse Cameras
+          </button>
+        </motion.div>
       </div>
     </section>
   );
