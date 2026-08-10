@@ -156,7 +156,7 @@ const Navbar = () => {
           style={{ willChange: "transform" }}
         >
           <nav className="bg-yellow-400 border-b border-black/10">
-            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 h-16 grid grid-cols-3 items-center">
+            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 h-20 grid grid-cols-3 items-center">
               <div className="flex items-center justify-start gap-6">
                 <button
                   className="md:hidden p-2 text-black -ml-2"
@@ -177,7 +177,7 @@ const Navbar = () => {
                     {navigationMenus.map((menu, i) => (
                       <div
                         key={menu.name}
-                        className="relative h-16 flex items-center"
+                        className="relative h-20 flex items-center"
                         onMouseEnter={() => {
                           setHoveredLink(i);
                           openMenu(menu.name);
@@ -211,11 +211,11 @@ const Navbar = () => {
                   <Image
                     src="/images/logo-transparent.png"
                     alt="Happy Camera"
-                    width={58}
-                    height={58}
+                    width={70}
+                    height={70}
                     priority
                     quality={100}
-                    className="h-12 md:h-[58px] w-auto object-contain"
+                    className="h-14 md:h-[70px] w-auto object-contain"
                   />
                 </Link>
               </div>
