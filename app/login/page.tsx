@@ -41,7 +41,7 @@ function LoginContent() {
                 </p>
                 {error === "OAuthCallback" && (
                   <p className="text-xs text-red-500 mt-1 font-mono">
-                    If this persists, contact hello@happycameratrading.com
+                    If this persists, contact hello@happycamera.com.my
                   </p>
                 )}
               </div>

@@ -1,10 +1,10 @@
 import { Resend } from "resend";
 import { formatPrice } from "./format";
 
-// TODO: Switch back to "Happy Camera <orders@happycameratrading.com>" once the
-// happycameratrading.com domain is bought and verified in Resend. Until then we use
-// Resend's default onboarding sender, which only delivers to the Resend
-// account owner's email address.
+// TODO: Switch back to "Happy Camera <orders@happycamera.com.my>" once the
+// happycamera.com.my domain is verified in Resend (SPF/DKIM/MX records).
+// Until then we use Resend's default onboarding sender, which only delivers
+// to the Resend account owner's email address.
 
 const resend = process.env.RESEND_API_KEY
   ? new Resend(process.env.RESEND_API_KEY)

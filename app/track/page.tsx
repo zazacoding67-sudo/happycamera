@@ -159,7 +159,7 @@ export default function TrackPage() {
             <AlertCircle size={28} className="mx-auto text-zinc-300 mb-3" />
             <p className="text-sm text-zinc-600">{error}</p>
             <p className="text-xs text-zinc-400 mt-1">
-              Double-check your order number and email, or contact us at hello@happycameratrading.com
+              Double-check your order number and email, or contact us at hello@happycamera.com.my
             </p>
           </div>
         )}

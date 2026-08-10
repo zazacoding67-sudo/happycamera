@@ -34,8 +34,10 @@ export async function POST(req: Request) {
         "http://localhost:3000";
       const resetUrl = `${baseUrl}/admin/reset-password/${token}`;
 
+      // NOTE: this sender stays non-functional until happycamera.com.my is
+      // verified in Resend (SPF/DKIM/MX records), same as the order emails.
       await resend.emails.send({
-        from: "Happy Camera <noreply@happycameratrading.com>",
+        from: "Happy Camera <noreply@happycamera.com.my>",
         to: email,
         subject: "Reset your admin password",
         html: `<p>Hi,</p>

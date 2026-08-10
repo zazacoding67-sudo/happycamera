@@ -20,7 +20,7 @@ export default function Footer() {
               Contact
             </h4>
             <ul className="mt-3 space-y-1 text-xs text-gray-400">
-              <li>hello@happycameratrading.com</li>
+              <li>hello@happycamera.com.my</li>
               <li>SSM: 202401234567 (K)</li>
               <li>KL Sentral, 50470 KL</li>
             </ul>
