@@ -47,14 +47,14 @@ export default function BrandEthos() {
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.15 }}
         >
           <Image
-            src="/images/ethos-yellow-image.jpg"
+            src="/images/ethos-yellow-image.png"
             alt=""
             fill
             className="object-cover"
             sizes="(max-width: 768px) 100vw, 50vw"
           />
           <Image
-            src="/images/ethos-image.jpg"
+            src="/images/ethos-image.png"
             alt="Camera lifestyle"
             fill
             className="object-cover transition-opacity duration-700 ease-in-out group-hover:opacity-0"

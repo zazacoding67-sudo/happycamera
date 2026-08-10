@@ -14,7 +14,7 @@ export default function TheWorld() {
     <section ref={ref} className="relative z-10 h-[80vh] min-h-[500px] md:min-h-[600px] flex items-center justify-center overflow-hidden">
       <div className="absolute inset-0">
         <Image
-          src="/images/home-2.jpg"
+          src="/images/home-2.png"
           alt=""
           fill
           className="object-cover object-center"
