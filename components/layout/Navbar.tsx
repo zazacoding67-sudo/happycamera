@@ -222,7 +222,7 @@ const Navbar = () => {
 
               <div className="flex items-center justify-end gap-5">
                 <SearchModal />
-                <div className="relative" ref={userMenuRef}>
+                <div className="relative flex items-center" ref={userMenuRef}>
                   <button
                     onClick={() => {
                       if (!session) {
