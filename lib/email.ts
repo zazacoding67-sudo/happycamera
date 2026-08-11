@@ -1,11 +1,6 @@
 import { Resend } from "resend";
 import { formatPrice } from "./format";
 
-// TODO: Switch back to "Happy Camera <orders@happycamera.com.my>" once the
-// happycamera.com.my domain is verified in Resend (SPF/DKIM/MX records).
-// Until then we use Resend's default onboarding sender, which only delivers
-// to the Resend account owner's email address.
-
 const resend = process.env.RESEND_API_KEY
   ? new Resend(process.env.RESEND_API_KEY)
   : null;
@@ -25,7 +20,7 @@ export async function sendOrderConfirmationEmail({
 
   try {
     const { error } = await resend.emails.send({
-      from: "Happy Camera <onboarding@resend.dev>",
+      from: "Happy Camera <orders@happycamera.com.my>",
       to,
       subject: orderNumber ? `Order Confirmed — #${orderNumber}` : "Order Confirmed",
       html: `<p>Hi ${customerName},</p>
@@ -62,7 +57,7 @@ export async function sendOrderShippedEmail({
 
   try {
     const { error } = await resend.emails.send({
-      from: "Happy Camera <onboarding@resend.dev>",
+      from: "Happy Camera <orders@happycamera.com.my>",
       to,
       subject: subjectOverride || "Your Order Has Shipped!",
       html: `<p>Hi ${customerName},</p>
