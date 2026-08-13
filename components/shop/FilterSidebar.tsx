@@ -30,6 +30,7 @@ export default function FilterSidebar({ brands, hideCondition }: Props) {
   const currentMax = searchParams.get("maxPrice") || "";
   const currentBrands = (searchParams.get("brand") || "").split(",").filter(Boolean);
   const currentCondition = searchParams.get("condition") || "";
+  const currentSubcategory = searchParams.get("subcategory") || "";
 
   const buildUrl = useCallback(
     (updates: Record<string, string | null>) => {
@@ -65,6 +66,7 @@ export default function FilterSidebar({ brands, hideCondition }: Props) {
     hideCondition ? null : currentCondition,
     currentBrands.length > 0 ? "brand" : null,
     currentMin || currentMax ? "price" : null,
+    currentSubcategory ? "subcategory" : null,
   ].filter(Boolean).length;
 
   const activePriceIndex = priceRanges.findIndex(

@@ -11,7 +11,7 @@ import { useWishlist } from "@/lib/WishlistContext";
 import { useNavVisibility } from "@/lib/useNavVisibility";
 import SearchModal from "@/components/layout/SearchModal";
 import MegaMenu from "@/components/layout/MegaMenu";
-import { navigationMenus } from "@/lib/navigation";
+import type { MegaMenuItem } from "@/lib/navigation";
 import { cn } from "@/lib/utils";
 import { materialEase } from "@/lib/motion";
 
@@ -19,7 +19,7 @@ const OVERLAY_DELAY = 50;
 const SYNTHETIC_EVENT_WINDOW = 500;
 const IGNORE_DOCUMENT_WINDOW = 200;
 
-const Navbar = () => {
+const Navbar = ({ navMenus }: { navMenus: MegaMenuItem[] }) => {
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
   const [overlayVisible, setOverlayVisible] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -174,7 +174,7 @@ const Navbar = () => {
                   }}
                 >
                   <LayoutGroup>
-                    {navigationMenus.map((menu, i) => (
+                    {navMenus.map((menu, i) => (
                       <div
                         key={menu.name}
                         className="relative h-20 flex items-center"
@@ -322,7 +322,7 @@ const Navbar = () => {
                 onMouseEnter={cancelClose}
                 onMouseLeave={scheduleClose}
               >
-                {navigationMenus
+                {navMenus
                   .filter((m) => m.name === activeMenu)
                   .map((m) => (
                     <MegaMenu key={m.name} menu={m} />
@@ -338,7 +338,7 @@ const Navbar = () => {
             )}
           >
             <div className="flex flex-col px-4 py-4 gap-3">
-              {navigationMenus.map((menu) => (
+              {navMenus.map((menu) => (
                 <Link
                   key={menu.name}
                   href={menu.path}

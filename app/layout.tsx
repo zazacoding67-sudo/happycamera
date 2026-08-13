@@ -8,6 +8,7 @@ import AuthSessionProvider from "@/components/layout/AuthSessionProvider";
 import { CartProvider } from "@/lib/CartContext";
 import { WishlistProvider } from "@/lib/WishlistContext";
 import PageTransition from "@/components/layout/PageTransition";
+import { buildNavMenus } from "@/lib/nav";
 import "@/styles/globals.css";
 
 export const metadata: Metadata = {
@@ -16,18 +17,20 @@ export const metadata: Metadata = {
   icons: { icon: "/favicon.svg" },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const navMenus = await buildNavMenus();
+
   return (
     <html lang="en">
       <body>
         <AuthSessionProvider>
           <CartProvider>
             <WishlistProvider>
-              <NavbarWrapper />
+              <NavbarWrapper navMenus={navMenus} />
               <main className="min-h-screen pt-16">
                 <SmoothScrolling>
                   <PageTransition>{children}</PageTransition>

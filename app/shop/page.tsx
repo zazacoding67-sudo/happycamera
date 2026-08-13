@@ -19,17 +19,14 @@ type ShopParams = {
   brand?: string;
   condition?: string;
   category?: string;
+  subcategory?: string;
   sort?: string;
 };
 
 const categoryPills = [
-  { label: "Digital Bodies", slug: "digital-bodies" },
-  { label: "Mirrorless", slug: "mirrorless" },
-  { label: "DSLR", slug: "dslr" },
+  { label: "Cameras", slug: "cameras" },
   { label: "Lenses", slug: "lenses" },
   { label: "Accessories", slug: "accessories" },
-  { label: "Dry Box", slug: "dry-box" },
-  { label: "Bag", slug: "bag" },
 ];
 
 export default async function ShopPage({
@@ -37,7 +34,7 @@ export default async function ShopPage({
 }: {
   searchParams: Promise<ShopParams>;
 }) {
-  const { q, minPrice, maxPrice, brand, condition, category, sort } = await searchParams;
+  const { q, minPrice, maxPrice, brand, condition, category, subcategory, sort } = await searchParams;
 
   const where: Record<string, unknown> = {};
 
@@ -70,14 +67,21 @@ export default async function ShopPage({
     where.condition = { in: condition.split(",") };
   }
 
-  const CAMERA_CATEGORY_SLUGS = ["dslr", "mirrorless", "digital-bodies", "lenses", "accessories"];
+  const CAMERA_CATEGORY_SLUGS = ["cameras", "lenses", "accessories"];
 
   let categoryData = null;
-  if (category === "cameras") {
-    where.category = { slug: { in: CAMERA_CATEGORY_SLUGS } };
-  } else if (category) {
-    categoryData = await prisma.category.findUnique({ where: { slug: category } });
-    if (categoryData) where.categoryId = categoryData.id;
+  if (category) {
+    const slug = category.trim().toLowerCase();
+    if (CAMERA_CATEGORY_SLUGS.includes(slug)) {
+      categoryData = await prisma.category.findFirst({
+        where: { OR: [{ slug }, { name: { equals: category.trim(), mode: "insensitive" } }] },
+      });
+      if (categoryData) where.categoryId = categoryData.id;
+    }
+  }
+
+  if (subcategory) {
+    where.subcategory = { equals: subcategory.trim(), mode: "insensitive" };
   }
 
   const orderBy: Record<string, string> | undefined =
@@ -105,46 +109,40 @@ export default async function ShopPage({
   const resultCount = products.length;
 
   const categoryVideoMap: Record<string, string | string[]> = {
-    "mirrorless": "digital.mp4",
-    "digital-bodies": "film.mp4",
+    "cameras": ["digital.mp4", "film.mp4"],
     "lenses": "lens.mp4",
-    "bag": "bag.mp4",
     "accessories": "accesories.mp4",
-    "cameras": ["digital.mp4", "film.mp4", "lens.mp4", "accesories.mp4"],
-    "dslr": "dslr.mp4",
   };
 
-  const isVirtualCategory = category === "cameras";
+  const categoryKey = category?.trim().toLowerCase() ?? "";
 
-  const heroTitle = isVirtualCategory
-    ? "Cameras"
-    : categoryData
-      ? categoryData.name
-      : category === "dslr"
-        ? "DSLR"
-        : searchQuery || "All Gear";
+  const heroTitle = categoryData
+    ? categoryData.name
+    : subcategory
+      ? subcategory.trim()
+      : searchQuery || "All Gear";
 
-  const heroDescription = isVirtualCategory
-    ? "Digital and film bodies, lenses, and accessories for every shooter."
-    : categoryData
-      ? categoryData.description || null
-      : searchQuery
+  const heroDescription = categoryData
+    ? categoryData.description || null
+    : searchQuery
+      ? null
+      : subcategory
         ? null
         : "Explore our curated selection of new and pre-loved camera equipment, from classic film bodies to modern digital systems.";
 
-  const heroVideoFilenames = category ? (categoryVideoMap[category] ?? null) : null;
+  const heroVideoFilenames = categoryData ? (categoryVideoMap[categoryKey] ?? null) : null;
 
   return (
     <div className="bg-white min-h-screen">
       <div className="mb-12 md:mb-16">
-        {!category && !searchQuery ? (
+        {!categoryData && !subcategory && !searchQuery ? (
           <ShopHero productCount={resultCount} />
         ) : (
           <CategoryHero
             title={heroTitle}
             description={heroDescription}
             videoFilenames={heroVideoFilenames}
-            playbackRate={category === "lenses" ? 0.8 : 1}
+            playbackRate={categoryKey === "lenses" ? 0.8 : 1}
           />
         )}
       </div>
@@ -175,6 +173,7 @@ export default async function ShopPage({
             <form method="GET" action="/shop">
               {q && <input type="hidden" name="q" value={q} />}
               {category && <input type="hidden" name="category" value={category} />}
+              {subcategory && <input type="hidden" name="subcategory" value={subcategory} />}
               {condition && <input type="hidden" name="condition" value={condition} />}
               {brand && <input type="hidden" name="brand" value={brand} />}
               {minPrice && <input type="hidden" name="minPrice" value={minPrice} />}

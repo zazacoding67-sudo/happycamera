@@ -15,11 +15,11 @@ import StripeFrame from "@/components/home/StripeFrame";
 
 const categories = [
   { title: "Lenses", slug: "lenses", image: catLens },
-  { title: "Digital Bodies", slug: "digital-bodies", image: catFilm },
-  { title: "Mirrorless", slug: "mirrorless", image: catDigital },
+  { title: "Digital Bodies", slug: "cameras", image: catFilm },
+  { title: "Mirrorless", slug: "cameras", subcategory: "Mirrorless", image: catDigital },
   { title: "Accessories", slug: "accessories", image: catAcc },
-  { title: "Dry Box", slug: "dry-box", image: catDrybox },
-  { title: "Bag", slug: "bag", image: catBag },
+  { title: "Dry Cabinet", slug: "accessories", subcategory: "Others", image: catDrybox },
+  { title: "Bags", slug: "accessories", subcategory: "Bags", image: catBag },
 ];
 
 function CategoryCard({
@@ -48,7 +48,7 @@ function CategoryCard({
 
   return (
     <Link
-      href={`/shop?category=${cat.slug}&condition=${condition}`}
+      href={`/shop?category=${cat.slug}${cat.subcategory ? `&subcategory=${cat.subcategory}` : ""}&condition=${condition}`}
       className="group relative aspect-square overflow-hidden bg-zinc-900 border border-zinc-800 hover:border-yellow-400 transition-colors duration-300"
       onMouseMove={handleMouseMove}
       onTouchStart={handleTouchStart}
