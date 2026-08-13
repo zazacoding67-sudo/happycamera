@@ -12,6 +12,9 @@ tsconfig.tsbuildinfo
 test-results/
 playwright-report/
 
+# dev server logs
+dev-server.log
+
 # environment variables (SECURITY)
 .env
 .env.local

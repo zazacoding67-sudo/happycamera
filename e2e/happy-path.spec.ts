@@ -104,12 +104,15 @@ test("add to cart and verify cart drawer", async ({ page }) => {
 // 6. Checkout → Tracking (bypasses Toyyibpay via manual order)
 // ---------------------------------------------------------------------------
 test("manual order creation, success page order number, and tracking API work", async ({ page, request }) => {
+  // Cold `.next` builds recompile routes on demand; give this admin flow extra room.
+  test.setTimeout(120_000);
+
   // Login as admin
   await page.goto("/admin/login");
   await page.fill("input[type='email']", ADMIN_EMAIL);
   await page.fill("input[type='password']", ADMIN_PASSWORD);
   await page.click("button[type='submit']");
-  await page.waitForURL("/admin", { timeout: 10000 });
+  await page.waitForURL("/admin", { timeout: 30000 });
 
   await page.goto("/admin/orders/new-manual");
   await page.waitForURL("/admin/orders/new-manual");
@@ -125,7 +128,7 @@ test("manual order creation, success page order number, and tracking API work", 
 
   await page.locator("button[type='submit']").click();
   // Wait for URL to change from /new-manual to a detail page
-  await page.waitForURL(/\/admin\/orders\/(?!new-manual)[^/]+/, { timeout: 10000 });
+  await page.waitForURL(/\/admin\/orders\/(?!new-manual)[^/]+/, { timeout: 30000 });
   const orderId = page.url().match(/\/orders\/(?!new-manual)([^/]+)/)?.[1] || "";
 
   // Detail page shows the customer-facing order number
