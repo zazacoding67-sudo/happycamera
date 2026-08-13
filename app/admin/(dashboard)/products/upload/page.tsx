@@ -179,6 +179,7 @@ export default function UploadProductsPage() {
             <li><span className="text-[var(--color-accent)]">price</span> *</li>
             <li><span className="text-[var(--color-accent)]">condition</span> * (new / preloved)</li>
             <li><span className="text-[var(--color-accent)]">categorySlug</span> *</li>
+            <li><span className="text-[var(--color-accent)]">subcategory</span> (optional, must match categorySlug)</li>
             <li>description</li>
             <li>stockQuantity</li>
             <li>conditionGrade</li>

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { normalizeBrand } from "@/lib/brand";
+import { isValidSubcategory } from "@/lib/categories";
 
 function parseCSV(text: string): Record<string, string>[] {
   const lines: string[] = [];
@@ -65,6 +66,7 @@ export async function POST(request: Request) {
     // Fetch all categories for lookup
     const allCategories = await prisma.category.findMany();
     const categoryMap = new Map(allCategories.map((c) => [c.slug, c.id]));
+    const categoryNameMap = new Map(allCategories.map((c) => [c.slug, c.name]));
 
     const created: string[] = [];
     const errors: { row: number; message: string }[] = [];
@@ -102,6 +104,15 @@ export async function POST(request: Request) {
         continue;
       }
 
+      const subcategory = row.subcategory?.trim() || null;
+      if (subcategory) {
+        const categoryName = categoryNameMap.get(categorySlug);
+        if (!categoryName || !isValidSubcategory(categoryName, subcategory)) {
+          errors.push({ row: rowNum, message: `Invalid subcategory "${subcategory}" for category "${categorySlug}".` });
+          continue;
+        }
+      }
+
       const stockQuantity = parseInt(row.stockQuantity, 10) || 1;
 
       const includedAccessories = row.includedAccessories
@@ -135,6 +146,7 @@ export async function POST(request: Request) {
             warranty: row.warranty || null,
             stockQuantity,
             categoryId,
+            subcategory,
           },
           create: {
             name,
@@ -153,6 +165,7 @@ export async function POST(request: Request) {
             stockQuantity,
             images: [],
             categoryId,
+            subcategory,
           },
         });
         created.push(name);

@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Camera, Trash2 } from "lucide-react";
 import MultiImageUpload from "@/components/ui/MultiImageUpload";
 import { cn } from "@/lib/utils";
+import { CATEGORY_SUBCATEGORIES, isValidSubcategory } from "@/lib/categories";
 
 const CONDITION_GRADES = ["", "MINT", "EXCELLENT", "GOOD", "FAIR"];
 
@@ -25,6 +26,7 @@ type ProductFormData = {
   warranty: string | null;
   description: string;
   categoryId: string;
+  subcategory: string | null;
   images: string[];
   stockQuantity: number;
 };
@@ -54,7 +56,7 @@ const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
 function validate(errors: Record<string, string>, form: {
   name: string; slug: string; brand: string; price: string; stockQty: string;
-  categoryId: string; description: string; images: string[];
+  categoryId: string; subcategory: string; categoryName: string; description: string; images: string[];
   condition: string; conditionGrade: string; shutterCount: string;
 }) {
   if (!form.name.trim()) errors.name = "Name is required.";
@@ -73,6 +75,14 @@ function validate(errors: Record<string, string>, form: {
   else if (stockNum > 999_999) errors.stockQty = "Stock quantity seems too high (max 999,999).";
 
   if (!form.categoryId) errors.categoryId = "Category is required.";
+
+  if (form.categoryId) {
+    if (!form.subcategory.trim()) {
+      errors.subcategory = "Subcategory is required.";
+    } else if (form.categoryName && !isValidSubcategory(form.categoryName, form.subcategory)) {
+      errors.subcategory = `"${form.subcategory}" is not a valid subcategory for ${form.categoryName}.`;
+    }
+  }
 
   if (!form.description.trim()) errors.description = "Description is required.";
 
@@ -110,6 +120,7 @@ export default function ProductForm({ categories, initialData }: ProductFormProp
   const [stockQty, setStockQty] = useState(initialData ? String(initialData.stockQuantity) : "1");
   const [description, setDescription] = useState(initialData?.description ?? "");
   const [categoryId, setCategoryId] = useState(initialData?.categoryId ?? categories[0]?.id ?? "");
+  const [subcategory, setSubcategory] = useState(initialData?.subcategory ?? "");
   const [images, setImages] = useState<string[]>(initialData?.images ?? []);
   const [error, setError] = useState("");
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
@@ -141,8 +152,9 @@ export default function ProductForm({ categories, initialData }: ProductFormProp
     setFieldErrors({});
 
     const errors: Record<string, string> = {};
+    const categoryName = categories.find((c) => c.id === categoryId)?.name ?? "";
     validate(errors, {
-      name, slug, brand, price, stockQty, categoryId, description, images,
+      name, slug, brand, price, stockQty, categoryId, subcategory, categoryName, description, images,
       condition, conditionGrade, shutterCount,
     });
 
@@ -179,6 +191,7 @@ export default function ProductForm({ categories, initialData }: ProductFormProp
         stockQuantity: parseInt(stockQty, 10) || 1,
         description,
         categoryId,
+        subcategory: subcategory.trim() || null,
         images,
       }),
     });
@@ -432,7 +445,12 @@ export default function ProductForm({ categories, initialData }: ProductFormProp
             <div className="mt-4">
               <select
                 value={categoryId}
-                onChange={(e) => { setCategoryId(e.target.value); clearFieldError("categoryId"); }}
+                onChange={(e) => {
+                  setCategoryId(e.target.value);
+                  setSubcategory("");
+                  clearFieldError("categoryId");
+                  clearFieldError("subcategory");
+                }}
                 className={cn("bg-white", inpClass("categoryId"))}
               >
                 {categories.map((cat) => (
@@ -440,6 +458,21 @@ export default function ProductForm({ categories, initialData }: ProductFormProp
                 ))}
               </select>
               {errMsg("categoryId")}
+            </div>
+
+            <div className="mt-4">
+              <label className={labelBase}>Subcategory *</label>
+              <select
+                value={subcategory}
+                onChange={(e) => { setSubcategory(e.target.value); clearFieldError("subcategory"); }}
+                className={cn("mt-1.5 bg-white", inpClass("subcategory"))}
+              >
+                <option value="">Select subcategory</option>
+                {CATEGORY_SUBCATEGORIES[categories.find((c) => c.id === categoryId)?.name ?? ""]?.map((sub) => (
+                  <option key={sub} value={sub}>{sub}</option>
+                ))}
+              </select>
+              {errMsg("subcategory")}
             </div>
           </div>
 

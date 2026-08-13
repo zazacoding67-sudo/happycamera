@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { normalizeBrand } from "@/lib/brand";
+import { isValidSubcategory } from "@/lib/categories";
 
 const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
@@ -15,7 +16,7 @@ export async function PATCH(
     const {
       name, slug, brand, price, condition, conditionGrade, conditionNotes,
       includedAccessories, shutterCount, mount, format, warranty,
-      stockQuantity, description, categoryId, images,
+      stockQuantity, description, categoryId, subcategory, images,
     } = body;
 
     const fields: Record<string, string> = {};
@@ -26,6 +27,15 @@ export async function PATCH(
     if (price === undefined || price === null || isNaN(Number(price)) || Number(price) <= 0) fields.price = "Price must be greater than 0.";
     if (stockQuantity === undefined || stockQuantity === null || isNaN(Number(stockQuantity)) || Number(stockQuantity) < 0) fields.stockQty = "Stock quantity must be 0 or more.";
     if (!categoryId) fields.categoryId = "Category is required.";
+    else {
+      const cat = await prisma.category.findUnique({ where: { id: categoryId } });
+      if (!cat) fields.categoryId = "Category is required.";
+      else if (!subcategory || !subcategory.trim()) {
+        fields.subcategory = "Subcategory is required.";
+      } else if (!isValidSubcategory(cat.name, subcategory)) {
+        fields.subcategory = `"${subcategory}" is not a valid subcategory for ${cat.name}.`;
+      }
+    }
     if (!description || !description.trim()) fields.description = "Description is required.";
     if (condition === "preloved" && !conditionGrade) fields.conditionGrade = "Grade is required for preloved items.";
     if (!images || images.length === 0) fields.images = "At least one image is required.";
@@ -56,6 +66,7 @@ export async function PATCH(
         warranty: warranty || null,
         description,
         categoryId,
+        subcategory: subcategory?.trim() || null,
         stockQuantity: stockQuantity ? parseInt(String(stockQuantity), 10) : 1,
         images: images || [],
       },
