@@ -22,7 +22,7 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const navMenus = buildNavMenus();
+  const navMenus = await buildNavMenus();
 
   return (
     <html lang="en">

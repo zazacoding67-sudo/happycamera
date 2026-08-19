@@ -51,10 +51,9 @@ test("subcategory options change correctly when category changes", async ({ page
 
   await categorySelect.selectOption({ label: "Cameras" });
   let opts = await subcategoryOptions(page);
-  for (const sub of ["Mirrorless", "Compact", "DSLR", "Cinema", "Instant", "Medium Format"]) {
+  for (const sub of ["Mirrorless", "Compact", "DSLR", "Cinema", "Instant", "Film", "Medium Format"]) {
     expect(opts, `Cameras should include ${sub}`).toContain(sub);
   }
-  expect(opts, "Film should no longer be a Cameras subcategory").not.toContain("Film");
   expect(opts).not.toContain("Prime");
   expect(opts).not.toContain("Bags");
 
@@ -140,35 +139,4 @@ test("CSV importer rejects a mismatched category/subcategory pair and accepts a 
   const id = editHref!.match(/\/admin\/products\/([^/]+)\/edit$/)?.[1] || "";
   const del = await page.request.delete(`/api/products/${id}`);
   expect(del.status()).toBe(200);
-});
-
-test("form and CSV both reject Film as a Cameras subcategory", async ({ page }) => {
-  await adminLogin(page);
-
-  // The single-product form no longer offers Film under Cameras.
-  await page.goto("/admin/products/new");
-  await page.locator(CATEGORY_SELECT).selectOption({ label: "Cameras" });
-  const opts = await subcategoryOptions(page);
-  expect(opts).not.toContain("Film");
-
-  // CSV importer rejects a cameras/Film row.
-  const filmCsv = [
-    "name,slug,brand,price,condition,categorySlug,subcategory",
-    "E2E Film Test,e2e-film-test,TestBrand,100,new,cameras,Film",
-  ].join("\n");
-  const res = await page.request.post("/api/products/upload", {
-    multipart: {
-      file: { name: "film.csv", mimeType: "text/csv", buffer: Buffer.from(filmCsv) },
-    },
-  });
-  expect(res.status()).toBe(200);
-  const data = await res.json();
-  expect(data.created).toBe(0);
-  const filmRow = (data.errorDetails as { row: number; message: string }[]).find((e) => e.row === 2);
-  expect(filmRow?.message).toContain('Invalid subcategory "Film" for category "cameras"');
-});
-
-test("deleted Kodak Millennium Film Camera product is gone", async ({ page }) => {
-  await page.goto("/product/kodak-millennium-film-test");
-  await expect(page.getByRole("heading", { name: "Page not found" })).toBeVisible({ timeout: 10000 });
 });

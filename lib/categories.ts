@@ -1,5 +1,5 @@
 export const CATEGORY_SUBCATEGORIES: Record<string, readonly string[]> = {
-  Cameras: ["Mirrorless", "Compact", "DSLR", "Cinema", "Instant", "Medium Format"],
+  Cameras: ["Mirrorless", "Compact", "DSLR", "Cinema", "Instant", "Film", "Medium Format"],
   Lenses: ["Zoom", "Mount Adapters", "Prime", "Teleconverters"],
   Accessories: [
     "Batteries Chargers and Grips",
