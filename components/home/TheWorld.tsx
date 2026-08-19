@@ -11,7 +11,7 @@ export default function TheWorld() {
   const reduced = useReducedMotion();
 
   return (
-    <section ref={ref} className="relative z-10 h-[80vh] min-h-[500px] md:min-h-[600px] flex items-center justify-center overflow-hidden">
+    <section ref={ref} className="relative z-10 min-h-[45vh] md:min-h-[80vh] flex items-center justify-center overflow-hidden">
       <div className="absolute inset-0">
         <Image
           src="/images/home-2.png"
@@ -30,7 +30,7 @@ export default function TheWorld() {
           initial={reduced ? {} : { opacity: 0, y: 20 }}
           animate={inView || reduced ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-          className="text-[11px] tracking-[0.3em] uppercase text-yellow-400 font-medium mb-5"
+          className="text-[11px] tracking-[0.3em] uppercase text-yellow-400 font-medium mb-3 md:mb-5"
         >
           The Vibe
         </motion.p>
@@ -54,7 +54,7 @@ export default function TheWorld() {
           initial={reduced ? {} : { opacity: 0, y: 24 }}
           animate={inView || reduced ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1], delay: 0.45 }}
-          className="mt-10 flex items-center justify-center"
+          className="mt-6 md:mt-10 flex items-center justify-center"
         >
           <button
             type="button"

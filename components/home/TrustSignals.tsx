@@ -40,7 +40,7 @@ export default function TrustSignals() {
 
   return (
     <section ref={ref} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-32">
-      <div className="text-center mb-12">
+      <div className="text-center mb-6 md:mb-12">
         <span className="text-[13px] tracking-[0.3em] uppercase text-yellow-500 font-medium">
           Why Shop With Us
         </span>
