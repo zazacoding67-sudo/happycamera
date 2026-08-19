@@ -31,7 +31,7 @@ export default async function RootLayout({
           <CartProvider>
             <WishlistProvider>
               <NavbarWrapper navMenus={navMenus} />
-              <main className="min-h-screen pt-16">
+              <main className="min-h-screen pt-20">
                 <SmoothScrolling>
                   <PageTransition>{children}</PageTransition>
                 </SmoothScrolling>
