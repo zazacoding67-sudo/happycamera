@@ -69,7 +69,7 @@ export default function ProductCard({
         </span>
       </div>
       <Link href={`/product/${slug}`} className="block">
-        <p className="text-sm text-zinc-500 font-medium mt-4 mb-0.5 truncate">
+        <p className="text-sm text-zinc-500 font-medium mt-4 mb-0.5 line-clamp-2 md:line-clamp-1">
           {name}
         </p>
         <p className="text-base font-bold text-zinc-900">

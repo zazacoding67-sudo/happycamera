@@ -9,7 +9,7 @@ export default function ClosingCTA() {
   const reduced = useReducedMotion();
 
   return (
-    <section className="relative min-h-[45vh] md:min-h-[80vh] flex items-center justify-center overflow-hidden mt-24 md:mt-32">
+    <section className="relative min-h-[45vh] md:min-h-[80vh] flex items-center justify-center overflow-hidden mt-24 md:mt-32 mb-16 md:mb-0">
       <motion.div
         className="absolute inset-0"
         initial={reduced ? {} : { scale: 1.05 }}
