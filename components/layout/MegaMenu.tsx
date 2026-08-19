@@ -36,14 +36,14 @@ export default function MegaMenu({ menu }: MegaMenuProps) {
               <ArrowRight size={14} />
             </Link>
           </div>
-          <div className="flex flex-wrap gap-5">
+          <div className="flex flex-wrap justify-center gap-6">
             {menu.subcategories.map((sub) => {
               const src = getMegaMenuImage(menu.category, sub.name);
               return (
                 <Link
                   key={sub.name}
                   href={sub.path}
-                  className="group w-36"
+                  className="group w-40"
                 >
                   <div className="relative aspect-square w-full bg-zinc-800 rounded-xl border border-zinc-700/60 shadow-lg overflow-hidden flex items-center justify-center p-4">
                     {src ? (
