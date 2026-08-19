@@ -3,7 +3,7 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Menu, X, ShoppingBag, Heart, User } from "lucide-react";
+import { Menu, X, ShoppingBag, Heart, User, ChevronDown } from "lucide-react";
 import { AnimatePresence, motion, LayoutGroup } from "framer-motion";
 import { useSession, signIn, signOut } from "next-auth/react";
 import { useCart } from "@/lib/CartContext";
@@ -14,6 +14,7 @@ import MegaMenu from "@/components/layout/MegaMenu";
 import type { MegaMenuItem } from "@/lib/navigation";
 import { cn } from "@/lib/utils";
 import { materialEase } from "@/lib/motion";
+import { getMegaMenuImage } from "@/lib/megaMenuImages";
 
 const OVERLAY_DELAY = 50;
 const SYNTHETIC_EVENT_WINDOW = 500;
@@ -25,6 +26,7 @@ const Navbar = ({ navMenus }: { navMenus: MegaMenuItem[] }) => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [hoveredLink, setHoveredLink] = useState<number | null>(null);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const touchOpened = useRef(false);
   const navRoot = useRef<HTMLDivElement>(null);
@@ -336,21 +338,101 @@ const Navbar = ({ navMenus }: { navMenus: MegaMenuItem[] }) => {
           <div
             className={cn(
               "md:hidden overflow-hidden transition-all duration-300 ease-in-out bg-white border-t-2 border-yellow-400",
-              mobileOpen ? "max-h-96" : "max-h-0"
+              mobileOpen ? "max-h-[80vh] overflow-y-auto" : "max-h-0"
             )}
           >
-            <div className="flex flex-col px-4 py-4 gap-3">
-              {navMenus.map((menu) => (
-                <Link
-                  key={menu.name}
-                  href={menu.path}
-                  onClick={() => setMobileOpen(false)}
-                  className="text-[14px] font-medium text-black uppercase tracking-[0.12em]"
-                >
-                  {menu.name}
-                </Link>
-              ))}
+            <div className="flex flex-col px-4 py-4">
+              <Link
+                href="/"
+                onClick={() => setMobileOpen(false)}
+                className="flex items-center h-11 text-[14px] font-medium text-black uppercase tracking-[0.12em]"
+              >
+                Home
+              </Link>
+              <Link
+                href="/shop"
+                onClick={() => setMobileOpen(false)}
+                className="flex items-center h-11 text-[14px] font-medium text-black uppercase tracking-[0.12em]"
+              >
+                Shop
+              </Link>
+              <Link
+                href="/story"
+                onClick={() => setMobileOpen(false)}
+                className="flex items-center h-11 text-[14px] font-medium text-black uppercase tracking-[0.12em]"
+              >
+                News
+              </Link>
+              <Link
+                href="mailto:hello@happycamera.com.my"
+                onClick={() => setMobileOpen(false)}
+                className="flex items-center h-11 text-[14px] font-medium text-black uppercase tracking-[0.12em]"
+              >
+                Contact
+              </Link>
 
+              <div className="border-t border-zinc-200 my-3" />
+
+              <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-zinc-400 mb-1">
+                Categories
+              </span>
+
+              {navMenus.map((menu) => {
+                const isExpanded = expandedCategory === menu.name;
+                return (
+                  <div key={menu.name}>
+                    <button
+                      onClick={() =>
+                        setExpandedCategory(isExpanded ? null : menu.name)
+                      }
+                      className="flex items-center justify-between w-full h-11 text-[14px] font-medium text-black uppercase tracking-[0.12em]"
+                    >
+                      {menu.name}
+                      <ChevronDown
+                        size={16}
+                        className={cn(
+                          "text-zinc-400 transition-transform duration-200",
+                          isExpanded && "rotate-180"
+                        )}
+                      />
+                    </button>
+                    {isExpanded && (
+                      <div className="pl-3 pb-2">
+                        {menu.subcategories.map((sub) => {
+                          const img = getMegaMenuImage(
+                            menu.category,
+                            sub.name
+                          );
+                          return (
+                            <Link
+                              key={sub.name}
+                              href={sub.path}
+                              onClick={() => setMobileOpen(false)}
+                              className="flex items-center gap-3 h-11 text-[13px] text-zinc-600 hover:text-black transition-colors"
+                            >
+                              {img && (
+                                <img
+                                  src={img}
+                                  alt=""
+                                  className="w-8 h-8 rounded object-cover bg-zinc-100 shrink-0"
+                                />
+                              )}
+                              {sub.name}
+                            </Link>
+                          );
+                        })}
+                        <Link
+                          href={menu.shopAll.path}
+                          onClick={() => setMobileOpen(false)}
+                          className="flex items-center h-11 text-[12px] font-semibold uppercase tracking-[0.15em] text-yellow-600"
+                        >
+                          {menu.shopAll.title}
+                        </Link>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           </div>
         </motion.div>
