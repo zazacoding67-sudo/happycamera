@@ -38,12 +38,12 @@ test.describe("mega menu curated images", () => {
     await expect(menu.getByText("Film", { exact: true })).toHaveCount(0);
 
     await expectCuratedTiles(menu, [
-      ["Mirrorless", "/images/mega-menu/mega-mirrorless.png"],
-      ["Compact", "/images/mega-menu/mega-rx100.png"],
-      ["DSLR", "/images/mega-menu/mega-dslr.png"],
-      ["Cinema", "/images/mega-menu/mega-fx5.png"],
-      ["Instant", "/images/mega-menu/mega-instant.png"],
-      ["Medium Format", "/images/mega-menu/mega-mediumformat.png"],
+      ["Mirrorless", "/images/mega-menu/mega-mirrorless.webp"],
+      ["Compact", "/images/mega-menu/mega-rx100.webp"],
+      ["DSLR", "/images/mega-menu/mega-dslr.webp"],
+      ["Cinema", "/images/mega-menu/mega-fx5.webp"],
+      ["Instant", "/images/mega-menu/mega-instant.webp"],
+      ["Medium Format", "/images/mega-menu/mega-mediumformat.webp"],
     ]);
   });
 
@@ -52,21 +52,21 @@ test.describe("mega menu curated images", () => {
 
     const lensesMenu = await openMenu(page, "/shop?category=Lenses");
     await expectCuratedTiles(lensesMenu, [
-      ["Zoom", "/images/mega-menu/mega-zoom.png"],
-      ["Mount Adapters", "/images/mega-menu/mega-mount.png"],
-      ["Prime", "/images/mega-menu/mega-prime.png"],
-      ["Teleconverters", "/images/mega-menu/mega-teleconveter.png"],
+      ["Zoom", "/images/mega-menu/mega-zoom.webp"],
+      ["Mount Adapters", "/images/mega-menu/mega-mount.webp"],
+      ["Prime", "/images/mega-menu/mega-prime.webp"],
+      ["Teleconverters", "/images/mega-menu/mega-teleconveter.webp"],
     ]);
 
     const accMenu = await openMenu(page, "/shop?category=Accessories");
     await expectCuratedTiles(accMenu, [
-      ["Batteries Chargers and Grips", "/images/mega-menu/mega-battery.png"],
-      ["Flashes", "/images/mega-menu/mega-flash.png"],
-      ["Lens Filters", "/images/mega-menu/mega-filter.png"],
-      ["Memory Cards", "/images/mega-menu/mega-sdcard.png"],
-      ["Handles", "/images/mega-menu/mega-handle.png"],
-      ["Bags", "/images/mega-menu/mega-bag.png"],
-      ["Others", "/images/mega-menu/mega-other.png"],
+      ["Batteries Chargers and Grips", "/images/mega-menu/mega-battery.webp"],
+      ["Flashes", "/images/mega-menu/mega-flash.webp"],
+      ["Lens Filters", "/images/mega-menu/mega-filter.webp"],
+      ["Memory Cards", "/images/mega-menu/mega-sdcard.webp"],
+      ["Handles", "/images/mega-menu/mega-handle.webp"],
+      ["Bags", "/images/mega-menu/mega-bag.webp"],
+      ["Others", "/images/mega-menu/mega-other.webp"],
     ]);
 
     // The mega menu must never render a live product image (Unsplash/Supabase URLs)
