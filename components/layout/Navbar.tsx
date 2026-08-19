@@ -249,7 +249,7 @@ const Navbar = ({ navMenus }: { navMenus: MegaMenuItem[] }) => {
                   {userMenuOpen && session && (
                     <>
                       <div className="fixed inset-0 z-40" onClick={() => setUserMenuOpen(false)} />
-                      <div className="absolute right-0 top-full mt-2 w-56 bg-white border border-zinc-200 shadow-lg z-50 py-1">
+                      <div className="absolute right-0 top-full mt-2 w-56 max-w-[calc(100vw-2rem)] bg-white border border-zinc-200 shadow-lg z-50 py-1">
                         <div className="px-4 py-3 border-b border-zinc-100">
                           <p className="text-sm font-medium text-zinc-900 truncate">
                             {session.user?.name || session.user?.email}
