@@ -35,7 +35,7 @@ const Navbar = ({ navMenus }: { navMenus: MegaMenuItem[] }) => {
   const { openCart, isOpen: cartOpen, items, lastAddedId } = useCart();
   const { openWishlist, isOpen: wishlistOpen, items: wishlistItems } = useWishlist();
   const scrollVisible = useNavVisibility();
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
 
   const isVisible =
     scrollVisible ||
@@ -234,7 +234,9 @@ const Navbar = ({ navMenus }: { navMenus: MegaMenuItem[] }) => {
                     className="relative text-black group"
                     aria-label={session ? "Account" : "Sign in"}
                   >
-                    {session?.user?.image ? (
+                    {status === "loading" ? (
+                      <div className="w-[22px] h-[22px] rounded-full bg-zinc-200 animate-pulse" />
+                    ) : session?.user?.image ? (
                       <img
                         src={session.user.image}
                         alt=""
