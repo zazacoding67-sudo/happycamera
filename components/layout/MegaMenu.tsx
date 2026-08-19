@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ArrowRight, ImageOff } from "lucide-react";
 import { motion } from "framer-motion";
 import type { MegaMenuItem } from "@/lib/navigation";
+import { getMegaMenuImage } from "@/lib/megaMenuImages";
 
 interface MegaMenuProps {
   menu: MegaMenuItem;
@@ -36,30 +37,33 @@ export default function MegaMenu({ menu }: MegaMenuProps) {
             </Link>
           </div>
           <div className="flex flex-wrap gap-5">
-            {menu.subcategories.map((sub) => (
-              <Link
-                key={sub.name}
-                href={sub.path}
-                className="group w-36"
-              >
-                <div className="relative aspect-square w-full bg-zinc-900 overflow-hidden flex items-center justify-center">
-                  {sub.image ? (
-                    <img
-                      src={sub.image}
-                      alt={sub.name}
-                      loading="lazy"
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
-                  ) : (
-                    <ImageOff className="w-8 h-8 text-zinc-600" />
-                  )}
-                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300" />
-                </div>
-                <p className="mt-3 text-[13px] font-medium text-white group-hover:text-yellow-400 transition-colors duration-200">
-                  {sub.name}
-                </p>
-              </Link>
-            ))}
+            {menu.subcategories.map((sub) => {
+              const src = getMegaMenuImage(menu.category, sub.name);
+              return (
+                <Link
+                  key={sub.name}
+                  href={sub.path}
+                  className="group w-36"
+                >
+                  <div className="relative aspect-square w-full bg-zinc-800 rounded-xl border border-zinc-700/60 shadow-lg overflow-hidden flex items-center justify-center p-4">
+                    {src ? (
+                      <img
+                        src={src}
+                        alt={sub.name}
+                        loading="lazy"
+                        className="w-full h-full object-contain"
+                      />
+                    ) : (
+                      <ImageOff className="w-8 h-8 text-zinc-600" />
+                    )}
+                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300" />
+                  </div>
+                  <p className="mt-3 text-center text-[13px] font-medium text-white group-hover:text-yellow-400 transition-colors duration-200">
+                    {sub.name}
+                  </p>
+                </Link>
+              );
+            })}
           </div>
         </div>
       </div>
