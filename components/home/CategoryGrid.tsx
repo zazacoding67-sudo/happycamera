@@ -58,13 +58,13 @@ function CategoryCard({
         alt={cat.title}
         fill
         className="object-cover grayscale brightness-75 group-hover:grayscale-0 group-hover:brightness-100 transition-[filter] duration-700"
-        sizes="(max-width: 768px) 100vw, 33vw"
+        sizes="(max-width: 640px) 50vw, 33vw"
         placeholder="blur"
       />
       <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors duration-500" />
 
       <motion.div
-        className="absolute z-20 w-14 h-14 rounded-full bg-black flex items-center justify-center pointer-events-none opacity-0 group-hover:opacity-100"
+        className="absolute z-20 w-10 h-10 md:w-14 md:h-14 rounded-full bg-black flex items-center justify-center pointer-events-none opacity-0 group-hover:opacity-100"
         style={{ left: springX, top: springY, x: "-50%", y: "-50%" }}
       >
         <span className="text-white text-[9px] font-bold uppercase tracking-widest">
@@ -72,7 +72,7 @@ function CategoryCard({
         </span>
       </motion.div>
 
-      <div className="relative z-10 flex flex-col justify-end p-6 h-full">
+      <div className="relative z-10 flex flex-col justify-end p-3 md:p-6 h-full">
         <h3 className="text-xl font-bold text-white mb-1">{cat.title}</h3>
         <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 -translate-x-2 group-hover:translate-x-0">
           <span className="w-6 h-0.5 bg-yellow-400" />
@@ -102,7 +102,7 @@ export default function CategoryGrid({
             Explore Our Collection
           </h2>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-5">
           {categories.map((cat) => (
             <CategoryCard key={cat.title} cat={cat} condition={condition} />
           ))}
