@@ -45,18 +45,17 @@ export default function MegaMenu({ menu }: MegaMenuProps) {
                   href={sub.path}
                   className="group w-40"
                 >
-                  <div className="relative aspect-square w-full bg-zinc-800 rounded-xl border border-zinc-700/60 shadow-lg overflow-hidden flex items-center justify-center p-4">
+                  <div className="relative aspect-square w-full bg-zinc-800 rounded-xl border border-zinc-700/60 shadow-lg overflow-hidden flex items-center justify-center p-5 transition-all duration-200 ease-out group-hover:scale-[1.03] group-hover:border-zinc-500 group-hover:shadow-[0_0_24px_rgba(255,255,255,0.08)]">
                     {src ? (
                       <img
                         src={src}
                         alt={sub.name}
                         loading="lazy"
-                        className="w-full h-full object-contain"
+                        className="w-full h-full object-contain will-change-transform"
                       />
                     ) : (
                       <ImageOff className="w-8 h-8 text-zinc-600" />
                     )}
-                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300" />
                   </div>
                   <p className="mt-3 text-center text-[13px] font-medium text-white group-hover:text-yellow-400 transition-colors duration-200">
                     {sub.name}
