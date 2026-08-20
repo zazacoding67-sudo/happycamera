@@ -50,7 +50,7 @@ export default function HeroProduct({
   const reduced = useReducedMotion();
 
   return (
-    <section ref={ref} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-32">
+    <section ref={ref} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 md:py-32">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 items-center">
         <motion.div
           className="bg-zinc-50 overflow-hidden"

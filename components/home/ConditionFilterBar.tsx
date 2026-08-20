@@ -17,7 +17,7 @@ export default function ConditionFilterBar({
   onChange,
 }: ConditionFilterBarProps) {
   return (
-    <section className="py-16 md:py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="py-10 md:py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div className="text-center">
         <p className="text-[11px] tracking-[0.1em] uppercase text-zinc-500 mb-5">
           Shop by condition
