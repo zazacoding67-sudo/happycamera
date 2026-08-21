@@ -101,6 +101,7 @@ export default function HomepageProductGrid({
                       stockQuantity={product.stockQuantity}
                       categorySlug={product.category.slug}
                       categoryName={product.category.name}
+                      averageRating={product.averageRating}
                     />
                   </motion.div>
                 ))}

@@ -16,7 +16,7 @@ export const TEST_PRODUCT_NAMES = [
 ] as const;
 
 export async function getHomepageProducts() {
-  return prisma.product.findMany({
+  const products = await prisma.product.findMany({
     where: {
       name: { notIn: [...TEST_PRODUCT_NAMES] },
       stockQuantity: { gt: 0 },
@@ -32,8 +32,18 @@ export async function getHomepageProducts() {
       brand: true,
       stockQuantity: true,
       category: { select: { slug: true, name: true } },
+      reviews: { where: { approved: true }, select: { rating: true } },
     },
     orderBy: { createdAt: "desc" },
+  });
+
+  return products.map((p) => {
+    const avg =
+      p.reviews.length > 0
+        ? p.reviews.reduce((sum, r) => sum + r.rating, 0) / p.reviews.length
+        : null;
+    const { reviews: _reviews, ...rest } = p;
+    return { ...rest, averageRating: avg };
   });
 }
 

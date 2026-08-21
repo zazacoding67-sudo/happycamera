@@ -14,6 +14,9 @@ export interface ProductCardProps {
   stockQuantity?: number;
   categorySlug?: string;
   categoryName?: string;
+  averageRating?: number | null;
+  isOnSale?: boolean;
+  compareAtPrice?: number | null;
 }
 
 export interface CartItem {

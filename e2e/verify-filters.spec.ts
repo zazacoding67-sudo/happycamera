@@ -34,7 +34,8 @@ test.describe("shop filter fixes", () => {
     // grid shows 4 products (2 product links per card = 8 anchors)
     const cards = page.locator("a[href^='/product/']");
     await expect(cards).toHaveCount(8);
-    // only ONE brand entry for sony (no duplicate casing)
-    await expect(page.getByText("Sony", { exact: true })).toHaveCount(1);
+    // only ONE brand entry for sony in the sidebar (no duplicate casing)
+    const sidebar = page.locator("aside");
+    await expect(sidebar.getByText("Sony", { exact: true })).toHaveCount(1);
   });
 });
