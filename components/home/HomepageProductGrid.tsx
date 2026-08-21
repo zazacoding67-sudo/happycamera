@@ -37,7 +37,7 @@ export default function HomepageProductGrid({
   });
 
   return (
-    <section className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-12 py-14 md:py-24">
+    <section className="w-full px-6 lg:px-24 py-14 md:py-24">
       <div className="text-center mb-8 md:mb-12">
         <span className="text-[11px] tracking-[0.3em] uppercase text-yellow-500 font-medium">
           Shop by condition
@@ -77,7 +77,7 @@ export default function HomepageProductGrid({
               No products match these filters.
             </p>
           ) : (
-            <motion.div layout className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-4 lg:gap-x-6 gap-y-10">
+            <motion.div layout className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-5 gap-y-10">
               <AnimatePresence mode="popLayout">
                 {filtered.map((product) => (
                   <motion.div
