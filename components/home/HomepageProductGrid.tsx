@@ -37,7 +37,7 @@ export default function HomepageProductGrid({
   });
 
   return (
-    <section className="w-full px-4 lg:px-12 py-14 md:py-24">
+    <section className="w-full px-4 lg:px-6 py-14 md:py-24">
       <div className="text-center mb-8 md:mb-12">
         <span className="text-[11px] tracking-[0.3em] uppercase text-yellow-500 font-medium">
           Shop by condition
