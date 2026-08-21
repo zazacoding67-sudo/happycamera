@@ -25,9 +25,10 @@ export default function HomepageProductGrid({
   const [selectedCats, setSelectedCats] = useState<string[]>(["Cameras"]);
   const reduced = useReducedMotion();
 
-  const categories = [
-    ...new Set(products.map((p) => p.category.name)),
-  ].sort();
+  const catOrder = ["Cameras", "Lenses", "Accessories"];
+  const categories = catOrder.filter((c) =>
+    products.some((p) => p.category.name === c)
+  );
 
   const filtered = products.filter((p) => {
     const condMatch = active === "all" || p.condition === active;
