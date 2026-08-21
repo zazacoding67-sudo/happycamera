@@ -60,9 +60,9 @@ export default function ProductCard({
         : "bg-zinc-700";
 
   return (
-    <div className="group relative bg-white rounded-xl border border-gray-200/80 p-4 hover:shadow-xl hover:-translate-y-1 transition-all duration-200 flex flex-col">
+    <div className="group relative bg-white rounded-none border border-gray-200 p-4 hover:shadow-lg hover:-translate-y-1 transition-all duration-200 flex flex-col">
       <Link href={`/product/${slug}`} className="block">
-        <div className={cn("relative aspect-square w-full bg-gray-50 overflow-hidden rounded-lg p-2 flex items-center justify-center", soldOut && "opacity-60 grayscale")}>
+        <div className={cn("relative aspect-square w-full bg-gray-50 overflow-hidden rounded-none p-2 flex items-center justify-center", soldOut && "opacity-60 grayscale")}>
           {imageUrl ? (
             <img
               src={imageUrl}
@@ -77,7 +77,7 @@ export default function ProductCard({
       </Link>
 
       {/* Badge */}
-      <div className={cn("absolute top-3 left-3 z-10", badgeBg, "text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase")}>
+      <div className={cn("absolute top-3 left-3 z-10", badgeBg, "text-white text-[10px] font-bold px-2.5 py-1 rounded-[2px] uppercase")}>
         {badgeLabel}
       </div>
 
@@ -87,7 +87,7 @@ export default function ProductCard({
           e.stopPropagation();
           toggleWishlist(id, { name, price, imageUrl });
         }}
-        className="absolute top-3 right-3 p-1.5 bg-white/80 hover:bg-white rounded-full shadow-sm transition-colors z-10"
+        className="absolute top-3 right-3 p-1.5 bg-white/80 hover:bg-white rounded-none shadow-sm transition-colors z-10"
         aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
       >
         <Heart
@@ -104,25 +104,25 @@ export default function ProductCard({
         <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-widest mb-0.5">
           {brand}
         </p>
-        <p className="text-base md:text-lg font-bold text-gray-900 truncate mb-1.5">
+        <p className="text-base md:text-lg font-bold text-gray-900 truncate mb-1">
           {name}
         </p>
 
         {averageRating !== null && averageRating !== undefined && (
-          <div className="mb-2">
+          <div className="mb-1.5">
             <StarRating rating={averageRating} />
           </div>
         )}
 
         <div className="flex items-baseline gap-2">
           {compareAtPrice != null && compareAtPrice > price && (
-            <span className="text-sm text-gray-400 line-through">
+            <span className="text-sm font-medium text-gray-400 line-through">
               {formatPrice(compareAtPrice)}
             </span>
           )}
           <span
             className={cn(
-              "text-xl md:text-2xl font-extrabold",
+              "text-lg md:text-xl font-bold",
               compareAtPrice != null && compareAtPrice > price
                 ? "text-red-600"
                 : "text-gray-900"
