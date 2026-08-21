@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { getHomepageProducts } from "@/lib/homepageProducts";
-import TheWorld from "@/components/home/TheWorld";
+import HeroBanner from "@/components/home/HeroBanner";
 import BrandEthos from "@/components/home/BrandEthos";
 import HeroProduct from "@/components/home/HeroProduct";
 import TrustSignals from "@/components/home/TrustSignals";
@@ -18,7 +18,7 @@ export default async function HomePage() {
 
   return (
     <>
-      <TheWorld />
+      <HeroBanner image={x100vi?.images[0] || "https://images.unsplash.com/photo-1512790182412-b19e6d62bc39?w=800&q=80"} />
 
       <BrandEthos />
 
