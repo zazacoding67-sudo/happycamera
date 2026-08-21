@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Camera — Shop</title>
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#fff;color:#1a1a1a;padding:2rem;min-height:100vh}
+  .shop{max-width:1280px;margin:0 auto}
+
+  /* Filter chips */
+  .chips{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:2rem}
+  .chip{padding:.5rem 1.25rem;border-radius:999px;font-size:.75rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;border:1.5px solid #d4d4d4;background:#fff;color:#525252;cursor:pointer;transition:all .2s}
+  .chip:hover{border-color:#1a1a1a;color:#1a1a1a}
+  .chip.active{background:#1a1a1a;border-color:#1a1a1a;color:#fff}
+
+  /* Section title */
+  .section-title{font-size:1.75rem;font-weight:800;letter-spacing:-.02em;margin-bottom:1.5rem}
+
+  /* Grid */
+  .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem}
+  @media(max-width:1024px){.grid{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:640px){.grid{grid-template-columns:1fr}}
+
+  /* Card */
+  .card{background:#fff;border-radius:12px;border:1px solid #e5e5e5;overflow:hidden;transition:transform .25s,box-shadow .25s;position:relative;cursor:pointer}
+  .card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,.1)}
+  .card-img{aspect-ratio:1;background:#f5f5f5;display:flex;align-items:center;justify-content:center;padding:2rem;position:relative}
+  .card-img img{max-width:100%;max-height:100%;object-fit:contain}
+  .badge{position:absolute;top:.75rem;left:.75rem;background:rgba(26,26,26,.9);color:#fff;font-size:.6rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:.35rem .65rem;border-radius:4px;white-space:nowrap}
+  .card-body{padding:1rem 1.25rem 1.25rem}
+  .card-brand{font-size:.65rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#a3a3a3;margin-bottom:.25rem}
+  .card-name{font-size:.95rem;font-weight:700;color:#1a1a1a;margin-bottom:.5rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .stars{display:flex;gap:2px;margin-bottom:.625rem}
+  .star{width:14px;height:14px;color:#facc15}
+  .star.empty{color:#d4d4d4}
+  .prices{display:flex;align-items:baseline;gap:.5rem}
+  .price-original{font-size:.8rem;color:#a3a3a3;text-decoration:line-through}
+  .price-sale{font-size:1.05rem;font-weight:800;color:#dc2626}
+  .price-normal{font-size:1.05rem;font-weight:800;color:#1a1a1a}
+
+  .empty{grid-column:1/-1;text-align:center;padding:4rem 1rem;color:#a3a3a3;font-size:.9rem}
+</style>
+</head>
+<body>
+<div class="shop" id="app"></div>
+<script>
+const products = [
+  { id: 1, brand: "Panasonic", name: "Lumix TZ99 Digital Camera", rating: 5, originalPrice: 519.00, salePrice: 379.00, tags: ["BRAND NEW", "LUMIX"], badge: "BRAND NEW", image: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=400&q=80" },
+  { id: 2, brand: "Nikon", name: "D610 DSLR", rating: 4, originalPrice: null, salePrice: 2700.00, tags: ["PRELOVED", "NIKON"], badge: "PRELOVED · FAIR", image: "https://images.unsplash.com/photo-1515705576963-95cad62945b6?w=400&q=80" },
+  { id: 3, brand: "Leica", name: "M11 Rangefinder", rating: 5, originalPrice: 8500.00, salePrice: 7995.00, tags: ["LEICA", "ON SALE"], badge: "ON SALE", image: "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=400&q=80" },
+  { id: 4, brand: "Lumix", name: "GH6 Mirrorless", rating: 4.5, originalPrice: 2199.00, salePrice: 1899.00, tags: ["LUMIX", "ON SALE"], badge: "ON SALE", image: "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=400&q=80" }
+];
+
+const allChips = ["ALL", ...new Set(products.flatMap(p => p.tags))];
+let active = "ALL";
+
+function renderStars(rating) {
+  let html = "";
+  for (let i = 1; i <= 5; i++) {
+    html += `<svg class="star${i <= Math.round(rating) ? "" : " empty"}" viewBox="0 0 20 20" fill="currentColor"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>`;
+  }
+  return html;
+}
+
+function render() {
+  const filtered = active === "ALL" ? products : products.filter(p => p.tags.includes(active));
+
+  const app = document.getElementById("app");
+  app.innerHTML = `
+    <div class="chips">${allChips.map(c =>
+      `<button class="chip${active === c ? " active" : ""}" data-chip="${c}">${c}</button>`
+    ).join("")}</div>
+    <h2 class="section-title">CAMERAS</h2>
+    <div class="grid">
+      ${filtered.length === 0 ? `<p class="empty">No products match this filter.</p>` :
+      filtered.map(p => `
+        <div class="card">
+          <div class="card-img">
+            <img src="${p.image}" alt="${p.name}" loading="lazy">
+            <span class="badge">${p.badge}</span>
+          </div>
+          <div class="card-body">
+            <p class="card-brand">${p.brand}</p>
+            <p class="card-name">${p.name}</p>
+            <div class="stars">${renderStars(p.rating)}</div>
+            <div class="prices">
+              ${p.originalPrice ? `<span class="price-original">RM ${p.originalPrice.toLocaleString()}</span>` : ""}
+              <span class="${p.originalPrice ? "price-sale" : "price-normal"}">RM ${p.salePrice.toLocaleString()}</span>
+            </div>
+          </div>
+        </div>
+      `).join("")}
+    </div>
+  `;
+
+  app.querySelectorAll(".chip").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const val = btn.dataset.chip;
+      active = val === "ALL" ? "ALL" : (active === val ? "ALL" : val);
+      render();
+    });
+  });
+}
+
+render();
+</script>
+</body>
+</html>
