@@ -1,49 +1,27 @@
-import { prisma } from "@/lib/prisma";
 import { getHomepageProducts } from "@/lib/homepageProducts";
 import HeroBanner from "@/components/home/HeroBanner";
-import BrandEthos from "@/components/home/BrandEthos";
-import HeroProduct from "@/components/home/HeroProduct";
+import HomepageProductGrid from "@/components/home/HomepageProductGrid";
 import TrustSignals from "@/components/home/TrustSignals";
-import ConditionFilterSection from "@/components/home/ConditionFilterSection";
+import CategoryGrid from "@/components/home/CategoryGrid";
 import MarqueeStrip from "@/components/home/MarqueeStrip";
 import ClosingCTA from "@/components/home/ClosingCTA";
 
+const X100VI_IMAGE = "https://images.unsplash.com/photo-1512790182412-b19e6d62bc39?w=800&q=80";
+
 export default async function HomePage() {
-  const [x100vi, homepageProducts] = await Promise.all([
-    prisma.product.findFirst({ where: { slug: "fujifilm-x100vi" } }),
-    getHomepageProducts(),
-  ]);
+  const homepageProducts = await getHomepageProducts();
 
   console.log(`[homepage] ${homepageProducts.length} products for grid`);
 
   return (
     <>
-      <HeroBanner image={x100vi?.images[0] || "https://images.unsplash.com/photo-1512790182412-b19e6d62bc39?w=800&q=80"} />
+      <HeroBanner image={X100VI_IMAGE} />
 
-      <BrandEthos />
-
-      {x100vi && (
-        <HeroProduct
-          headline="The X100VI"
-          subtitle="Fujifilm's sixth-generation rangefinder"
-          body="Half a century of rangefinder heritage in a body you can carry in one hand. The X100VI doesn't chase spec sheets — it rewards patience, forces intention, and turns every walk into a possible frame. This is the camera you reach for when the moment matters more than the settings."
-          specs={[
-            { label: "Sensor", value: "40.2MP APS-C X-Trans 5" },
-            { label: "Lens", value: "23mm f/2 (35mm equiv.)" },
-            { label: "ISO Range", value: "125–12800" },
-            { label: "Weight", value: "521g" },
-            { label: "Viewfinder", value: "Hybrid optical/electronic" },
-          ]}
-          price={x100vi.price}
-          condition={x100vi.condition as "new" | "preloved"}
-          image={x100vi.images[0] || ""}
-          slug={x100vi.slug}
-        />
-      )}
+      <HomepageProductGrid products={homepageProducts} />
 
       <TrustSignals />
 
-      <ConditionFilterSection />
+      <CategoryGrid />
 
       <MarqueeStrip />
 
