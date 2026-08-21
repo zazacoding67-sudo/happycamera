@@ -28,6 +28,7 @@ export async function getHomepageProducts() {
       price: true,
       images: true,
       condition: true,
+      conditionGrade: true,
       brand: true,
       stockQuantity: true,
       category: { select: { slug: true, name: true } },

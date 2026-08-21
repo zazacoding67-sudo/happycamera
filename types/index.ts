@@ -8,6 +8,7 @@ export interface ProductCardProps {
   price: number;
   images: string[];
   condition: ProductCondition;
+  conditionGrade?: ConditionGrade;
   brand: string;
   slug: string;
   stockQuantity?: number;

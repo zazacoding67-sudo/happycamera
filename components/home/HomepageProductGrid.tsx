@@ -72,9 +72,11 @@ export default function HomepageProductGrid({
                 price={product.price}
                 images={product.images}
                 condition={product.condition as "new" | "preloved"}
+                conditionGrade={product.conditionGrade}
                 brand={product.brand}
                 stockQuantity={product.stockQuantity}
                 categorySlug={product.category.slug}
+                categoryName={product.category.name}
               />
             </motion.div>
           ))}

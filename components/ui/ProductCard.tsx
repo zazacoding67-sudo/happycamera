@@ -4,6 +4,7 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { formatPrice } from "@/lib/format";
 import { useWishlist } from "@/lib/WishlistContext";
+import { useReducedMotion } from "@/lib/motion";
 import { Heart } from "lucide-react";
 import type { ProductCardProps } from "@/types";
 
@@ -11,30 +12,40 @@ export default function ProductCard({
   id,
   slug,
   name,
-  brand,
   price,
   condition,
+  conditionGrade,
   images,
   stockQuantity,
-  categorySlug,
+  categoryName,
 }: ProductCardProps) {
   const imageUrl = images?.[0] || "";
   const { isWishlisted, toggleWishlist } = useWishlist();
   const wishlisted = isWishlisted(id);
   const soldOut = stockQuantity !== undefined && stockQuantity <= 0;
+  const reduced = useReducedMotion();
+
+  // TODO: slot for star ratings — aggregate from reviews when ready
 
   return (
-    <div className="group relative bg-white cursor-pointer">
+    <div
+      className={cn(
+        "group relative bg-white cursor-pointer transition-shadow duration-300",
+        !reduced && "hover:shadow-lg hover:-translate-y-0.5"
+      )}
+    >
       <Link href={`/product/${slug}`} className="block">
-        <div className={cn(
-          "relative aspect-[4/3] w-full bg-zinc-50 overflow-hidden p-8 flex items-center justify-center",
-          soldOut && "opacity-60 grayscale"
-        )}>
+        <div
+          className={cn(
+            "relative aspect-square w-full bg-[#f5f5f5] overflow-hidden p-6 flex items-center justify-center",
+            soldOut && "opacity-60 grayscale"
+          )}
+        >
           {imageUrl ? (
             <img
               src={imageUrl}
               alt={name}
-              className="max-w-full max-h-full object-contain transition-transform duration-700 ease-out group-hover:scale-105"
+              className="max-w-full max-h-full object-contain transition-transform duration-500 ease-out group-hover:scale-105"
               loading="lazy"
             />
           ) : (
@@ -42,6 +53,8 @@ export default function ProductCard({
           )}
         </div>
       </Link>
+
+      {/* Wishlist heart — top-right over image */}
       <button
         onClick={(e) => {
           e.stopPropagation();
@@ -58,23 +71,33 @@ export default function ProductCard({
           )}
         />
       </button>
-      <div className="absolute top-3 left-3 z-10 flex flex-col gap-1.5">
-        {soldOut && (
+
+      {/* Condition badge — top-left over image */}
+      <div className="absolute top-3 left-3 z-10">
+        {soldOut ? (
           <span className="bg-zinc-900 text-white text-[10px] font-bold uppercase tracking-[0.15em] px-2.5 py-1.5">
             SOLD OUT
           </span>
+        ) : (
+          <span className="bg-black/90 text-white text-[10px] font-bold uppercase tracking-[0.15em] px-2.5 py-1.5">
+            {condition === "new"
+              ? "BRAND NEW"
+              : `PRELOVED${conditionGrade ? ` \u00B7 ${conditionGrade}` : ""}`}
+          </span>
         )}
-        <span className="bg-yellow-400 text-black text-[10px] font-bold uppercase tracking-[0.15em] px-2.5 py-1.5">
-          {condition === "new" ? "NEW" : "PRELOVED"}
-        </span>
       </div>
-      <Link href={`/product/${slug}`} className="block">
-        <p className="text-sm text-zinc-500 font-medium mt-4 mb-0.5 line-clamp-2 md:line-clamp-1">
+
+      {/* Info block */}
+      <Link href={`/product/${slug}`} className="block px-1 pt-3 pb-1">
+        {categoryName && (
+          <p className="text-[11px] uppercase tracking-wide text-gray-500 mb-1">
+            {categoryName}
+          </p>
+        )}
+        <p className="text-sm font-medium text-zinc-900 line-clamp-2 md:line-clamp-1 mb-1">
           {name}
         </p>
-        <p className="text-base font-bold text-zinc-900">
-          {formatPrice(price)}
-        </p>
+        <p className="text-sm font-bold text-zinc-900">{formatPrice(price)}</p>
       </Link>
     </div>
   );
