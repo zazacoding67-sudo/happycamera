@@ -37,7 +37,7 @@ export default function ProductCard({
       <Link href={`/product/${slug}`} className="block">
         <div
           className={cn(
-            "relative aspect-square w-full bg-[#f5f5f5] overflow-hidden p-6 flex items-center justify-center",
+            "relative aspect-square w-full bg-[#f5f5f5] overflow-hidden p-2 flex items-center justify-center",
             soldOut && "opacity-60 grayscale"
           )}
         >
@@ -75,11 +75,11 @@ export default function ProductCard({
       {/* Condition badge — top-left over image */}
       <div className="absolute top-3 left-3 z-10">
         {soldOut ? (
-          <span className="bg-zinc-900 text-white text-[10px] font-bold uppercase tracking-[0.15em] px-2.5 py-1.5">
+            <span className="bg-zinc-900 text-white text-[10px] font-bold uppercase tracking-[0.15em] px-2.5 py-1.5 whitespace-nowrap">
             SOLD OUT
           </span>
         ) : (
-          <span className="bg-black/90 text-white text-[10px] font-bold uppercase tracking-[0.15em] px-2.5 py-1.5">
+          <span className="bg-black/90 text-white text-[10px] font-bold uppercase tracking-[0.15em] px-2.5 py-1.5 whitespace-nowrap">
             {condition === "new"
               ? "BRAND NEW"
               : `PRELOVED${conditionGrade ? ` \u00B7 ${conditionGrade}` : ""}`}

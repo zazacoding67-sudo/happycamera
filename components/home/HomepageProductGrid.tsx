@@ -64,12 +64,6 @@ export default function HomepageProductGrid({
         ))}
       </div>
 
-      <GridSidebar
-        categories={categories}
-        selected={selectedCats}
-        onChange={setSelectedCats}
-      />
-
       <div className="flex gap-8 mt-4 md:mt-0">
         <GridSidebar
           categories={categories}
