@@ -83,7 +83,7 @@ export default function HomepageProductGrid({
               No products match these filters.
             </p>
           ) : (
-            <motion.div layout className="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-10">
+            <motion.div layout className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-4 lg:gap-x-6 gap-y-10">
               <AnimatePresence mode="popLayout">
                 {filtered.map((product) => (
                   <motion.div
