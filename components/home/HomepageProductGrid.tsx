@@ -39,12 +39,9 @@ export default function HomepageProductGrid({
 
   return (
     <section className="w-full px-4 lg:px-8 pt-20 pb-14 md:pt-24 md:pb-24">
-      <div className="text-center mb-8 md:mb-12">
-        <span className="text-sm tracking-[0.3em] uppercase text-yellow-500 font-medium">
-          Shop by condition
-        </span>
-        <h2 className="text-4xl md:text-6xl font-light tracking-tight text-zinc-900 mt-3">
-          Browse Our Collection
+      <div className="mb-8 md:mb-12">
+        <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-gray-900">
+          CAMERAS
         </h2>
       </div>
 

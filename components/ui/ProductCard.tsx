@@ -103,22 +103,22 @@ export default function ProductCard({
 
       {/* Info */}
       <Link href={`/product/${slug}`} className="block mt-3 flex-1">
-        <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+        <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-0.5">
           {brand}
         </p>
-        <p className="text-base font-bold text-gray-900 truncate mt-0.5">
+        <p className="text-base font-bold text-gray-900 truncate mb-1.5">
           {name}
         </p>
 
         {/* Stars */}
         {averageRating !== null && averageRating !== undefined && (
-          <div className="mt-1.5">
+          <div className="mb-2">
             <StarRating rating={averageRating} />
           </div>
         )}
 
         {/* Price */}
-        <div className="flex items-baseline gap-2 mt-2">
+        <div className="flex items-baseline gap-2">
           {compareAtPrice != null && compareAtPrice > price && (
             <span className="text-sm text-gray-400 line-through">
               {formatPrice(compareAtPrice)}
