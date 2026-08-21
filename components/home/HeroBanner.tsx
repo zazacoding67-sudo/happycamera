@@ -16,7 +16,7 @@ export default function HeroBanner({ image }: HeroBannerProps) {
   const reduced = useReducedMotion();
 
   return (
-    <section ref={ref} className="relative z-10 min-h-[45vh] md:min-h-[80vh] flex items-center justify-center overflow-hidden">
+    <section ref={ref} className="relative z-10 h-screen w-full -mt-20 flex items-center justify-center overflow-hidden">
       <div className="absolute inset-0">
         <Image
           src={image}
