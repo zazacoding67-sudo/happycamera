@@ -22,7 +22,7 @@ export default function HomepageProductGrid({
   products: HomepageProduct[];
 }) {
   const [active, setActive] = useState<Tab>("all");
-  const [selectedCats, setSelectedCats] = useState<string[]>([]);
+  const [selectedCats, setSelectedCats] = useState<string[]>(["Cameras"]);
   const reduced = useReducedMotion();
 
   const categories = [

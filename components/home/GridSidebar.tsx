@@ -17,11 +17,11 @@ function CustomCheckbox({ checked }: { checked: boolean }) {
     <div
       className={cn(
         "w-4 h-4 border-[1.5px] border-gray-400 flex items-center justify-center shrink-0 transition-colors",
-        checked && "border-red-500"
+        checked &&         "border-yellow-500"
       )}
     >
       {checked && (
-        <div className="w-2.5 h-2.5 bg-red-500" />
+        <div className="w-2.5 h-2.5 bg-yellow-500" />
       )}
     </div>
   );
