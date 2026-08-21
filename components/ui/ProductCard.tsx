@@ -4,7 +4,6 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { formatPrice } from "@/lib/format";
 import { useWishlist } from "@/lib/WishlistContext";
-import { useReducedMotion } from "@/lib/motion";
 import { Heart } from "lucide-react";
 import type { ProductCardProps } from "@/types";
 
@@ -61,10 +60,9 @@ export default function ProductCard({
         : "bg-zinc-700";
 
   return (
-    <div className="group relative bg-white rounded-xl border border-gray-100 p-4 hover:shadow-xl hover:-translate-y-1 transition-all duration-200 flex flex-col">
+    <div className="group relative bg-white rounded-xl border border-gray-200/80 p-4 hover:shadow-xl hover:-translate-y-1 transition-all duration-200 flex flex-col">
       <Link href={`/product/${slug}`} className="block">
-        {/* Image */}
-        <div className={cn("relative aspect-square w-full bg-gray-50 overflow-hidden rounded-lg flex items-center justify-center", soldOut && "opacity-60 grayscale")}>
+        <div className={cn("relative aspect-square w-full bg-gray-50 overflow-hidden rounded-lg p-2 flex items-center justify-center", soldOut && "opacity-60 grayscale")}>
           {imageUrl ? (
             <img
               src={imageUrl}
@@ -78,17 +76,22 @@ export default function ProductCard({
         </div>
       </Link>
 
+      {/* Badge */}
+      <div className={cn("absolute top-3 left-3 z-10", badgeBg, "text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase")}>
+        {badgeLabel}
+      </div>
+
       {/* Wishlist heart */}
       <button
         onClick={(e) => {
           e.stopPropagation();
           toggleWishlist(id, { name, price, imageUrl });
         }}
-        className="absolute top-6 right-6 p-1.5 bg-white/80 hover:bg-white rounded-full shadow-sm transition-colors z-10"
+        className="absolute top-3 right-3 p-1.5 bg-white/80 hover:bg-white rounded-full shadow-sm transition-colors z-10"
         aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
       >
         <Heart
-          size={14}
+          size={16}
           className={cn(
             "transition-colors",
             wishlisted ? "fill-red-500 stroke-red-500" : "stroke-gray-400"
@@ -96,28 +99,21 @@ export default function ProductCard({
         />
       </button>
 
-      {/* Badge */}
-      <div className={cn("absolute top-6 left-6 z-10", badgeBg, "text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase")}>
-        {badgeLabel}
-      </div>
-
       {/* Info */}
-      <Link href={`/product/${slug}`} className="block mt-3 flex-1">
-        <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-0.5">
+      <Link href={`/product/${slug}`} className="block mt-2 flex-1">
+        <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-widest mb-0.5">
           {brand}
         </p>
-        <p className="text-base font-bold text-gray-900 truncate mb-1.5">
+        <p className="text-base md:text-lg font-bold text-gray-900 truncate mb-1.5">
           {name}
         </p>
 
-        {/* Stars */}
         {averageRating !== null && averageRating !== undefined && (
           <div className="mb-2">
             <StarRating rating={averageRating} />
           </div>
         )}
 
-        {/* Price */}
         <div className="flex items-baseline gap-2">
           {compareAtPrice != null && compareAtPrice > price && (
             <span className="text-sm text-gray-400 line-through">
@@ -126,7 +122,7 @@ export default function ProductCard({
           )}
           <span
             className={cn(
-              "text-xl font-extrabold",
+              "text-xl md:text-2xl font-extrabold",
               compareAtPrice != null && compareAtPrice > price
                 ? "text-red-600"
                 : "text-gray-900"
