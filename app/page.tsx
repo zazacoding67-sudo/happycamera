@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { getHomepageProducts } from "@/lib/homepageProducts";
 import TheWorld from "@/components/home/TheWorld";
 import BrandEthos from "@/components/home/BrandEthos";
 import HeroProduct from "@/components/home/HeroProduct";
@@ -8,9 +9,12 @@ import MarqueeStrip from "@/components/home/MarqueeStrip";
 import ClosingCTA from "@/components/home/ClosingCTA";
 
 export default async function HomePage() {
-  const x100vi = await prisma.product.findFirst({
-    where: { slug: "fujifilm-x100vi" },
-  });
+  const [x100vi, homepageProducts] = await Promise.all([
+    prisma.product.findFirst({ where: { slug: "fujifilm-x100vi" } }),
+    getHomepageProducts(),
+  ]);
+
+  console.log(`[homepage] ${homepageProducts.length} products for grid`);
 
   return (
     <>
