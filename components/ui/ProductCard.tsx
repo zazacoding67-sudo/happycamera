@@ -55,9 +55,18 @@ export default function ProductCard({
     ? "bg-red-600"
     : soldOut
       ? "bg-zinc-900"
-      : condition === "new"
-        ? "bg-black"
-        : "bg-zinc-700";
+      : "bg-black";
+
+  const dotColor =
+    condition === "new"
+      ? "bg-black"
+      : conditionGrade === "EXCELLENT"
+        ? "bg-[#2D7D46]"
+        : conditionGrade === "GOOD"
+          ? "bg-[#D89B3C]"
+          : conditionGrade === "FAIR"
+            ? "bg-[#C4622D]"
+            : "bg-zinc-500";
 
   return (
     <div className="flex flex-col group">
@@ -102,9 +111,12 @@ export default function ProductCard({
 
       {/* Info — no border, no background */}
       <Link href={`/product/${slug}`} className="block mt-2.5">
-        <p className="text-[13px] font-medium text-gray-400 uppercase tracking-[0.1em] leading-none mb-2">
-          {brand}
-        </p>
+        <div className="flex items-center gap-1.5 mb-2">
+          <span className={cn("w-[6px] h-[6px] rounded-full shrink-0", dotColor)} />
+          <p className="text-[13px] font-medium text-gray-400 uppercase tracking-[0.1em] leading-none">
+            {brand}
+          </p>
+        </div>
         <p className="text-[18px] font-semibold text-neutral-800 truncate leading-[1.3] mb-2 transition-colors duration-200 group-hover:text-black">
           {name}
         </p>
@@ -116,17 +128,22 @@ export default function ProductCard({
         )}
 
         <div className="flex items-baseline gap-2">
-          <span
-            className={cn(
-              "text-[21px] font-bold leading-none font-heading",
-              isOnSale ? "text-red-600" : "text-[#B8860B]"
-            )}
-          >
-            {formatPrice(price)}
+          <span className="flex items-baseline">
+            <span className="text-[14px] font-medium text-gray-400 leading-none">
+              RM&nbsp;
+            </span>
+            <span
+              className={cn(
+                "text-[22px] font-normal leading-none font-serif",
+                isOnSale ? "text-red-600" : "text-gray-900"
+              )}
+            >
+              {price.toLocaleString("en-MY")}
+            </span>
           </span>
           {isOnSale && (
             <span className="text-[14px] font-medium text-gray-400 line-through">
-              {formatPrice(originalPrice!)}
+              RM {originalPrice!.toLocaleString("en-MY")}
             </span>
           )}
         </div>
