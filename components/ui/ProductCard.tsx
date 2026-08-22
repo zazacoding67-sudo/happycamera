@@ -60,14 +60,14 @@ export default function ProductCard({
         : "bg-zinc-700";
 
   return (
-    <div className="group relative bg-white rounded-none border border-gray-200 p-4 hover:shadow-lg hover:-translate-y-1 transition-all duration-200 flex flex-col">
+    <div className="relative bg-white rounded-none border border-gray-200 p-4 flex flex-col">
       <Link href={`/product/${slug}`} className="block">
         <div className={cn("relative aspect-square w-full bg-white overflow-hidden rounded-none p-2 flex items-center justify-center", soldOut && "opacity-60 grayscale")}>
           {imageUrl ? (
             <img
               src={imageUrl}
               alt={name}
-              className="max-w-full max-h-full object-contain transition-transform duration-500 ease-out group-hover:scale-105"
+              className="max-w-full max-h-full object-contain"
               loading="lazy"
             />
           ) : (
