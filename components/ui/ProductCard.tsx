@@ -102,10 +102,10 @@ export default function ProductCard({
 
       {/* Info — no border, no background */}
       <Link href={`/product/${slug}`} className="block mt-2.5">
-        <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-widest leading-none mb-1">
+        <p className="text-[13px] font-semibold text-gray-400 uppercase tracking-widest leading-none mb-1">
           {brand}
         </p>
-        <p className="text-[15px] font-semibold text-neutral-800 truncate leading-[1.2] mb-1.5">
+        <p className="text-[17px] font-semibold text-neutral-800 truncate leading-[1.2] mb-1.5">
           {name}
         </p>
 
@@ -118,7 +118,7 @@ export default function ProductCard({
         <div className="flex items-baseline gap-2">
           <span
             className={cn(
-              "text-[17px] font-bold leading-none",
+              "text-[19px] font-bold leading-none",
               isOnSale ? "text-red-600" : "text-gray-900"
             )}
           >
