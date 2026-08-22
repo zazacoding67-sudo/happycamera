@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Space_Grotesk, Instrument_Serif } from "next/font/google";
 import NavbarWrapper from "@/components/layout/NavbarWrapper";
 import SmoothScrolling from "@/components/layout/SmoothScrolling";
 import Footer from "@/components/layout/Footer";
@@ -14,7 +14,22 @@ import "@/styles/globals.css";
 
 const inter = Inter({
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
   variable: "--font-inter",
+  display: "swap",
+});
+
+const spaceGrotesk = Space_Grotesk({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-heading",
+  display: "swap",
+});
+
+const instrumentSerif = Instrument_Serif({
+  subsets: ["latin"],
+  weight: "400",
+  variable: "--font-serif",
   display: "swap",
 });
 
@@ -32,7 +47,7 @@ export default async function RootLayout({
   const navMenus = buildNavMenus();
 
   return (
-    <html lang="en" className={inter.variable}>
+    <html lang="en" className={`${inter.variable} ${spaceGrotesk.variable} ${instrumentSerif.variable}`}>
       <body className={inter.className}>
         <AuthSessionProvider>
           <CartProvider>

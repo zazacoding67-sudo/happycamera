@@ -36,7 +36,7 @@ export default function ShopHero({ productCount }: ShopHeroProps) {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.1 }}
           transition={{ duration: 0.5, delay: 0.1 }}
-          className="text-5xl md:text-7xl font-bold text-white tracking-tight leading-[0.95]"
+          className="text-5xl md:text-7xl font-bold text-white tracking-tight leading-[0.95] font-heading"
         >
           All Gear
         </motion.h1>

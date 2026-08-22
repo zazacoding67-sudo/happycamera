@@ -19,7 +19,7 @@ export default function FeaturedProducts({ products }: Props) {
   return (
     <section ref={ref} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
       <div className="flex items-center justify-between mb-10">
-        <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-[var(--color-text-primary)]">
+          <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-[var(--color-text-primary)] font-heading">
           Featured Products
         </h2>
         <Link

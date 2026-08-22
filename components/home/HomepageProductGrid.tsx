@@ -40,7 +40,7 @@ export default function HomepageProductGrid({
   return (
     <section className="w-full px-4 lg:px-8 pt-20 pb-14 md:pt-24 md:pb-24">
       <div className="mb-8 md:mb-12">
-        <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-gray-900">
+        <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-gray-900 font-heading">
           CAMERAS
         </h2>
       </div>

@@ -43,7 +43,7 @@ export default function HeroBanner({ image }: HeroBannerProps) {
           initial={reduced ? {} : { opacity: 0, y: 32 }}
           animate={inView || reduced ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: 0.15 }}
-          className="text-[clamp(2rem,6vw,5rem)] font-bold tracking-tight text-white leading-[1.1]"
+          className="text-[clamp(2rem,6vw,5rem)] font-bold tracking-tight text-white leading-[1.1] font-serif"
         >
           The X100VI
         </motion.h2>

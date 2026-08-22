@@ -98,7 +98,7 @@ export default function CategoryGrid({
           <span className="text-[11px] tracking-[0.3em] uppercase text-yellow-400 font-medium">
             Browse by Category
           </span>
-          <h2 className="text-3xl md:text-4xl font-light tracking-tight text-white mt-3">
+          <h2 className="text-3xl md:text-4xl font-light tracking-tight text-white mt-3 font-heading">
             Explore Our Collection
           </h2>
         </div>

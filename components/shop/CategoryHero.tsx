@@ -100,7 +100,7 @@ export default function CategoryHero({
       <div className="absolute inset-0 bg-black/40 z-10" />
       <div className="relative z-20 flex flex-col justify-end items-start h-full pb-12 px-6 md:px-16 max-w-7xl mx-auto">
         <div className="w-12 h-1 bg-white mb-6" />
-        <h1 className="opacity-0 animate-fade-in-up text-5xl md:text-6xl font-extrabold text-white tracking-tighter">
+        <h1 className="opacity-0 animate-fade-in-up text-5xl md:text-6xl font-extrabold text-white tracking-tighter font-heading">
           {displayTitle}
         </h1>
         <p className="opacity-0 animate-fade-in-up [animation-delay:200ms] text-lg md:text-xl text-gray-200 max-w-2xl mt-4 font-medium">
