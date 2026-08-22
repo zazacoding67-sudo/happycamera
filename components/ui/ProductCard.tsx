@@ -104,7 +104,7 @@ export default function ProductCard({
         <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-widest leading-none mb-1">
           {brand}
         </p>
-        <p className="text-[15px] font-bold text-gray-900 truncate leading-[1.2] mb-1.5">
+        <p className="text-[15px] font-semibold text-neutral-800 truncate leading-[1.2] mb-1.5">
           {name}
         </p>
 
