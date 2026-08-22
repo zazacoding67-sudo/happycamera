@@ -75,7 +75,7 @@ export default function HomepageProductGrid({
               No products match these filters.
             </p>
           ) : (
-            <motion.div layout className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-8 gap-y-16">
+            <motion.div layout className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-12 gap-y-20">
               <AnimatePresence mode="popLayout">
                 {filtered.map((product) => (
                   <motion.div
@@ -85,7 +85,7 @@ export default function HomepageProductGrid({
                     animate={reduced ? {} : { opacity: 1, y: 0 }}
                     exit={reduced ? {} : { opacity: 0, y: -12 }}
                     transition={{ duration: 0.2 }}
-                    className="scale-[1.15] origin-top-left"
+                    className="scale-[1.3] origin-top-left"
                   >
                     <ProductCard
                       id={product.id}
