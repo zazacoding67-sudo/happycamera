@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Inter } from "next/font/google";
 import NavbarWrapper from "@/components/layout/NavbarWrapper";
 import SmoothScrolling from "@/components/layout/SmoothScrolling";
 import Footer from "@/components/layout/Footer";
@@ -10,6 +11,12 @@ import { WishlistProvider } from "@/lib/WishlistContext";
 import PageTransition from "@/components/layout/PageTransition";
 import { buildNavMenus } from "@/lib/nav";
 import "@/styles/globals.css";
+
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "Happy Camera",
@@ -25,8 +32,8 @@ export default async function RootLayout({
   const navMenus = buildNavMenus();
 
   return (
-    <html lang="en">
-      <body>
+    <html lang="en" className={inter.variable}>
+      <body className={inter.className}>
         <AuthSessionProvider>
           <CartProvider>
             <WishlistProvider>

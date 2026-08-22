@@ -102,15 +102,15 @@ export default function ProductCard({
 
       {/* Info — no border, no background */}
       <Link href={`/product/${slug}`} className="block mt-2.5">
-        <p className="text-[13px] font-semibold text-gray-400 uppercase tracking-widest leading-none mb-1">
+        <p className="text-[13px] font-semibold text-gray-400 uppercase tracking-wide leading-none mb-1.5">
           {brand}
         </p>
-        <p className="text-[17px] font-semibold text-neutral-800 truncate leading-[1.2] mb-1.5">
+        <p className="text-[18px] font-semibold text-neutral-800 truncate leading-[1.3] mb-2">
           {name}
         </p>
 
         {averageRating !== null && averageRating !== undefined && (
-          <div className="mb-1">
+          <div className="mb-1.5">
             <StarRating rating={averageRating} />
           </div>
         )}
@@ -118,14 +118,14 @@ export default function ProductCard({
         <div className="flex items-baseline gap-2">
           <span
             className={cn(
-              "text-[19px] font-bold leading-none",
+              "text-[20px] font-bold leading-none",
               isOnSale ? "text-red-600" : "text-gray-900"
             )}
           >
             {formatPrice(price)}
           </span>
           {isOnSale && (
-            <span className="text-[13px] font-medium text-gray-400 line-through">
+            <span className="text-[14px] font-medium text-gray-400 line-through">
               {formatPrice(originalPrice!)}
             </span>
           )}
