@@ -200,6 +200,7 @@ export default async function ShopPage({
                   name={product.name}
                   brand={product.brand}
                   price={product.price}
+                  originalPrice={product.originalPrice}
                   condition={product.condition as "new" | "preloved"}
                   images={product.images}
                   stockQuantity={product.stockQuantity}

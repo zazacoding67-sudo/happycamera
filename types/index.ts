@@ -6,6 +6,7 @@ export interface ProductCardProps {
   id: string;
   name: string;
   price: number;
+  originalPrice?: number | null;
   images: string[];
   condition: ProductCondition;
   conditionGrade?: ConditionGrade;
@@ -15,8 +16,6 @@ export interface ProductCardProps {
   categorySlug?: string;
   categoryName?: string;
   averageRating?: number | null;
-  isOnSale?: boolean;
-  compareAtPrice?: number | null;
 }
 
 export interface CartItem {

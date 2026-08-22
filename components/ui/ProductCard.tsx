@@ -29,19 +29,19 @@ export default function ProductCard({
   slug,
   name,
   price,
+  originalPrice,
   condition,
   conditionGrade,
   images,
   stockQuantity,
   brand,
   averageRating,
-  isOnSale,
-  compareAtPrice,
 }: ProductCardProps) {
   const imageUrl = images?.[0] || "";
   const { isWishlisted, toggleWishlist } = useWishlist();
   const wishlisted = isWishlisted(id);
   const soldOut = stockQuantity !== undefined && stockQuantity <= 0;
+  const isOnSale = originalPrice != null && originalPrice > price;
 
   const badgeLabel = isOnSale
     ? "ON SALE"
@@ -115,21 +115,19 @@ export default function ProductCard({
         )}
 
         <div className="flex items-baseline gap-2">
-          {compareAtPrice != null && compareAtPrice > price && (
-            <span className="text-sm font-medium text-gray-400 line-through">
-              {formatPrice(compareAtPrice)}
-            </span>
-          )}
           <span
             className={cn(
               "text-lg md:text-xl font-bold",
-              compareAtPrice != null && compareAtPrice > price
-                ? "text-red-600"
-                : "text-gray-900"
+              isOnSale ? "text-red-600" : "text-gray-900"
             )}
           >
             {formatPrice(price)}
           </span>
+          {isOnSale && (
+            <span className="text-sm font-medium text-gray-400 line-through">
+              {formatPrice(originalPrice!)}
+            </span>
+          )}
         </div>
       </Link>
     </div>

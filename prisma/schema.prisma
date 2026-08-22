@@ -53,6 +53,7 @@ model Product {
   slug                String          @unique
   description         String
   price               Float
+  originalPrice       Float?
   condition           String
   conditionGrade      ConditionGrade?
   conditionNotes      String?

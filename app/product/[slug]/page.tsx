@@ -164,6 +164,7 @@ export default async function ProductPage({
                   name={p.name}
                   brand={p.brand}
                   price={p.price}
+                  originalPrice={p.originalPrice}
                   condition={p.condition as "new" | "preloved"}
                   images={p.images}
                   stockQuantity={p.stockQuantity}

@@ -26,6 +26,7 @@ export async function getHomepageProducts() {
       slug: true,
       name: true,
       price: true,
+      originalPrice: true,
       images: true,
       condition: true,
       conditionGrade: true,

@@ -91,6 +91,7 @@ export default function HomepageProductGrid({
                       slug={product.slug}
                       name={product.name}
                       price={product.price}
+                      originalPrice={product.originalPrice}
                       images={product.images}
                       condition={product.condition as "new" | "preloved"}
                       conditionGrade={product.conditionGrade}
