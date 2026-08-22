@@ -57,7 +57,7 @@ export default function ProductCard({
       ? "bg-zinc-900"
       : condition === "new"
         ? "bg-black"
-        : "border border-zinc-900 bg-transparent text-zinc-900";
+        : "bg-zinc-700";
 
   return (
     <div className="flex flex-col group">
@@ -77,13 +77,7 @@ export default function ProductCard({
         </Link>
 
         {/* Badge */}
-        <div className={cn(
-          "absolute top-3 left-3 z-10 text-[10px] font-bold px-2.5 py-1 rounded-[2px] uppercase",
-          isOnSale ? "bg-red-600 text-white"
-            : soldOut ? "bg-zinc-900 text-white"
-            : condition === "new" ? "bg-black text-white"
-            : "border border-zinc-900 bg-transparent text-zinc-900"
-        )}>
+        <div className={cn("absolute top-3 left-3 z-10", badgeBg, "text-white text-[10px] font-bold px-2.5 py-1 rounded-[2px] uppercase")}>
           {badgeLabel}
         </div>
 
