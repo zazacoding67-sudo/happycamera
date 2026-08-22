@@ -60,9 +60,10 @@ export default function ProductCard({
         : "bg-zinc-700";
 
   return (
-    <div className="relative bg-white rounded-none border border-gray-200 p-4 flex flex-col">
-      <Link href={`/product/${slug}`} className="block">
-        <div className={cn("relative aspect-square w-full bg-white overflow-hidden rounded-none p-2 flex items-center justify-center", soldOut && "opacity-60 grayscale")}>
+    <div className="flex flex-col">
+      {/* Image box */}
+      <div className={cn("relative aspect-square w-full bg-white border border-gray-200 overflow-hidden p-2 flex items-center justify-center", soldOut && "opacity-60 grayscale")}>
+        <Link href={`/product/${slug}`} className="block w-full h-full">
           {imageUrl ? (
             <img
               src={imageUrl}
@@ -73,34 +74,34 @@ export default function ProductCard({
           ) : (
             <span className="text-xs text-gray-400">No image</span>
           )}
-        </div>
-      </Link>
+        </Link>
 
-      {/* Badge */}
-      <div className={cn("absolute top-3 left-3 z-10", badgeBg, "text-white text-[10px] font-bold px-2.5 py-1 rounded-[2px] uppercase")}>
-        {badgeLabel}
+        {/* Badge */}
+        <div className={cn("absolute top-3 left-3 z-10", badgeBg, "text-white text-[10px] font-bold px-2.5 py-1 rounded-[2px] uppercase")}>
+          {badgeLabel}
+        </div>
+
+        {/* Wishlist heart */}
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            toggleWishlist(id, { name, price, imageUrl });
+          }}
+          className="absolute top-3 right-3 p-1.5 bg-white/80 hover:bg-white rounded-none shadow-sm transition-colors z-10"
+          aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
+        >
+          <Heart
+            size={16}
+            className={cn(
+              "transition-colors",
+              wishlisted ? "fill-red-500 stroke-red-500" : "stroke-gray-400"
+            )}
+          />
+        </button>
       </div>
 
-      {/* Wishlist heart */}
-      <button
-        onClick={(e) => {
-          e.stopPropagation();
-          toggleWishlist(id, { name, price, imageUrl });
-        }}
-        className="absolute top-3 right-3 p-1.5 bg-white/80 hover:bg-white rounded-none shadow-sm transition-colors z-10"
-        aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
-      >
-        <Heart
-          size={16}
-          className={cn(
-            "transition-colors",
-            wishlisted ? "fill-red-500 stroke-red-500" : "stroke-gray-400"
-          )}
-        />
-      </button>
-
-      {/* Info */}
-      <Link href={`/product/${slug}`} className="block mt-2.5 flex-1">
+      {/* Info — no border, no background */}
+      <Link href={`/product/${slug}`} className="block mt-2.5">
         <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-widest leading-none mb-1">
           {brand}
         </p>
