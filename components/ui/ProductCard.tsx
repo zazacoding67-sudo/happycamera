@@ -100,16 +100,16 @@ export default function ProductCard({
       </button>
 
       {/* Info */}
-      <Link href={`/product/${slug}`} className="block mt-2 flex-1">
-        <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-widest mb-0.5">
+      <Link href={`/product/${slug}`} className="block mt-2.5 flex-1">
+        <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-widest leading-none mb-1">
           {brand}
         </p>
-        <p className="text-base md:text-lg font-bold text-gray-900 truncate mb-1">
+        <p className="text-[15px] font-bold text-gray-900 truncate leading-[1.2] mb-1.5">
           {name}
         </p>
 
         {averageRating !== null && averageRating !== undefined && (
-          <div className="mb-1.5">
+          <div className="mb-1">
             <StarRating rating={averageRating} />
           </div>
         )}
@@ -117,14 +117,14 @@ export default function ProductCard({
         <div className="flex items-baseline gap-2">
           <span
             className={cn(
-              "text-lg md:text-xl font-bold",
+              "text-[17px] font-bold leading-none",
               isOnSale ? "text-red-600" : "text-gray-900"
             )}
           >
             {formatPrice(price)}
           </span>
           {isOnSale && (
-            <span className="text-sm font-medium text-gray-400 line-through">
+            <span className="text-[13px] font-medium text-gray-400 line-through">
               {formatPrice(originalPrice!)}
             </span>
           )}
