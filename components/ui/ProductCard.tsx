@@ -57,10 +57,10 @@ export default function ProductCard({
       ? "bg-zinc-900"
       : condition === "new"
         ? "bg-black"
-        : "bg-zinc-700";
+        : "border border-zinc-900 bg-transparent text-zinc-900";
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col group">
       {/* Image box */}
       <div className={cn("relative aspect-square w-full bg-white border border-gray-200 overflow-hidden p-2 flex items-center justify-center", soldOut && "opacity-60 grayscale")}>
         <Link href={`/product/${slug}`} className="block w-full h-full">
@@ -68,7 +68,7 @@ export default function ProductCard({
             <img
               src={imageUrl}
               alt={name}
-              className="max-w-full max-h-full object-contain"
+              className="max-w-full max-h-full object-contain transition-transform duration-300 ease-out group-hover:scale-105"
               loading="lazy"
             />
           ) : (
@@ -77,7 +77,13 @@ export default function ProductCard({
         </Link>
 
         {/* Badge */}
-        <div className={cn("absolute top-3 left-3 z-10", badgeBg, "text-white text-[10px] font-bold px-2.5 py-1 rounded-[2px] uppercase")}>
+        <div className={cn(
+          "absolute top-3 left-3 z-10 text-[10px] font-bold px-2.5 py-1 rounded-[2px] uppercase",
+          isOnSale ? "bg-red-600 text-white"
+            : soldOut ? "bg-zinc-900 text-white"
+            : condition === "new" ? "bg-black text-white"
+            : "border border-zinc-900 bg-transparent text-zinc-900"
+        )}>
           {badgeLabel}
         </div>
 
@@ -102,10 +108,10 @@ export default function ProductCard({
 
       {/* Info — no border, no background */}
       <Link href={`/product/${slug}`} className="block mt-2.5">
-        <p className="text-[13px] font-semibold text-gray-400 uppercase tracking-wide leading-none mb-1.5">
+        <p className="text-[13px] font-medium text-gray-400 uppercase tracking-[0.1em] leading-none mb-2">
           {brand}
         </p>
-        <p className="text-[18px] font-semibold text-neutral-800 truncate leading-[1.3] mb-2">
+        <p className="text-[18px] font-semibold text-neutral-800 truncate leading-[1.3] mb-2 transition-colors duration-200 group-hover:text-black">
           {name}
         </p>
 
@@ -118,8 +124,8 @@ export default function ProductCard({
         <div className="flex items-baseline gap-2">
           <span
             className={cn(
-              "text-[20px] font-bold leading-none",
-              isOnSale ? "text-red-600" : "text-gray-900"
+              "text-[21px] font-bold leading-none font-heading",
+              isOnSale ? "text-red-600" : "text-[#B8860B]"
             )}
           >
             {formatPrice(price)}
