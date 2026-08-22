@@ -71,7 +71,7 @@ export default function GridSidebar({
       <div className="md:hidden mb-4">
         <button
           onClick={() => setMobileOpen(!mobileOpen)}
-          className="flex items-center justify-between w-full px-4 py-3 bg-gray-100"
+          className="flex items-center justify-between w-full px-4 py-3"
         >
           <span className="text-[13px] font-semibold uppercase tracking-wider text-gray-600">
             Sort by
@@ -85,14 +85,14 @@ export default function GridSidebar({
           />
         </button>
         {mobileOpen && (
-          <div className="bg-gray-100 px-2 py-2 border-t border-gray-200">
+          <div className="px-2 py-2 border-t border-gray-200">
             {content}
           </div>
         )}
       </div>
 
       {/* Desktop: fixed-width sidebar column */}
-      <div className={cn("bg-gray-100 py-4", className)}>
+      <div className={cn("py-4", className)}>
         <p className="text-[13px] font-semibold uppercase tracking-wider text-gray-600 mb-3 px-3">
           Sort by
         </p>
