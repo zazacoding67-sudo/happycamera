@@ -1,0 +1,11 @@
+import { PrismaPg } from "@prisma/adapter-pg";
+import { PrismaClient } from "@prisma/client";
+import dotenv from "dotenv";
+dotenv.config({ path: ".env.local" });
+const adapter = new PrismaPg(process.env.DATABASE_URL);
+const prisma = new PrismaClient({ adapter });
+const products = await prisma.product.findMany({ take: 5, select: { id: true, name: true, slug: true, price: true, stockQuantity: true } });
+console.log(JSON.stringify(products, null, 2));
+const cats = await prisma.category.findMany({ select: { id: true, name: true, slug: true } });
+console.log("Categories:", JSON.stringify(cats, null, 2));
+await prisma.$disconnect();

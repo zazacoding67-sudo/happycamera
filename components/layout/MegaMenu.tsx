@@ -1,0 +1,71 @@
+"use client";
+
+import Link from "next/link";
+import { ArrowRight, ImageOff } from "lucide-react";
+import { motion } from "framer-motion";
+import type { MegaMenuItem } from "@/lib/navigation";
+import { getMegaMenuImage } from "@/lib/megaMenuImages";
+
+interface MegaMenuProps {
+  menu: MegaMenuItem;
+}
+
+const materialEase = [0.4, 0, 0.2, 1] as const;
+
+export default function MegaMenu({ menu }: MegaMenuProps) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: -8 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -8 }}
+      transition={{ duration: 0.15, ease: materialEase }}
+      className="absolute left-0 top-full w-full z-50"
+      data-mega-menu="true"
+    >
+      <div className="bg-[#111] rounded-none shadow-xl border-t border-black">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+          <div className="flex items-center justify-between mb-8">
+            <p className="text-[11px] font-bold uppercase tracking-[0.3em] text-zinc-500">
+              {menu.name}
+            </p>
+            <Link
+              href={menu.shopAll.path}
+              className="flex items-center gap-1.5 text-[12px] font-bold uppercase tracking-[0.15em] text-white hover:text-yellow-400 transition-colors duration-200"
+            >
+              {menu.shopAll.title}
+              <ArrowRight size={14} />
+            </Link>
+          </div>
+          <div className="flex flex-wrap justify-center gap-6">
+            {menu.subcategories.map((sub) => {
+              const src = getMegaMenuImage(menu.category, sub.name);
+              return (
+                <Link
+                  key={sub.name}
+                  href={sub.path}
+                  className="group w-40"
+                >
+                  <div className="relative aspect-square w-full bg-zinc-800 rounded-xl border border-zinc-700/60 shadow-lg overflow-hidden flex items-center justify-center p-5 transition-all duration-200 ease-out group-hover:scale-[1.03] group-hover:border-zinc-500 group-hover:shadow-[0_0_24px_rgba(255,255,255,0.08)]">
+                    {src ? (
+                      <img
+                        src={src}
+                        alt={sub.name}
+                        loading="lazy"
+                        className="w-full h-full object-contain will-change-transform"
+                      />
+                    ) : (
+                      <ImageOff className="w-8 h-8 text-zinc-600" />
+                    )}
+                  </div>
+                  <p className="mt-3 text-center text-[13px] font-medium text-white group-hover:text-yellow-400 transition-colors duration-200">
+                    {sub.name}
+                  </p>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  );
+}

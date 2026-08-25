@@ -1,0 +1,124 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum ConditionGrade {
+  MINT
+  EXCELLENT
+  GOOD
+  FAIR
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+enum OrderSource {
+  WEBSITE
+  MANUAL
+}
+
+model User {
+  id                String               @id @default(cuid())
+  name              String?
+  email             String               @unique
+  password          String?
+  role              String               @default("customer")
+  provider          String               @default("credentials")
+  image             String?
+  createdAt         DateTime             @default(now())
+  passwordResetTokens PasswordResetToken[]
+}
+
+model Category {
+  id          String    @id @default(cuid())
+  name        String
+  slug        String    @unique
+  description String?
+  products    Product[]
+}
+
+model Product {
+  id                  String          @id @default(cuid())
+  name                String
+  slug                String          @unique
+  description         String
+  price               Float
+  originalPrice       Float?
+  condition           String
+  conditionGrade      ConditionGrade?
+  conditionNotes      String?
+  includedAccessories String[]
+  shutterCount        Int?
+  images              String[]
+  stockQuantity       Int             @default(1)
+  brand               String
+  subcategory         String?
+  mount               String?
+  format              String?
+  warranty            String?
+  categoryId          String
+  category            Category        @relation(fields: [categoryId], references: [id])
+  createdAt           DateTime        @default(now())
+  updatedAt           DateTime        @updatedAt
+  OrderItem           OrderItem[]
+  reviews             Review[]
+}
+
+model Review {
+  id           String   @id @default(cuid())
+  productId    String
+  product      Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  customerName String
+  rating       Int
+  comment      String
+  approved     Boolean  @default(false)
+  createdAt    DateTime @default(now())
+}
+
+model Order {
+  id             String          @id @default(cuid())
+  orderNumber    String?         @unique
+  customerName   String
+  customerEmail  String
+  customerPhone  String
+  totalAmount    Float
+  status         OrderStatus     @default(PENDING)
+  source         OrderSource     @default(WEBSITE)
+  paymentReference String?
+  paymentGateway   String                 @default("CHIP")
+  courierName    String?
+  trackingNumber String?
+  createdAt      DateTime        @default(now())
+  items          OrderItem[]
+}
+
+model PasswordResetToken {
+  id        String    @id @default(cuid())
+  token     String    @unique
+  userId    String
+  user      User      @relation(fields: [userId], references: [id])
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+}
+
+model OrderItem {
+  id          String   @id @default(cuid())
+  orderId     String
+  productId   String?
+  description String?
+  quantity    Int
+  price       Float
+  order       Order    @relation(fields: [orderId], references: [id])
+  product     Product? @relation(fields: [productId], references: [id])
+}
