@@ -37,6 +37,9 @@ export const metadata: Metadata = {
   title: "Happy Camera",
   description: "Premium camera gear — new and preloved.",
   icons: { icon: "/favicon.jpg?v=2" },
+  verification: {
+    google: "HREYyQtXdFsPIJdlXEPp4rj-6LJYx1CmibLfWK7yeko",
+  },
 };
 
 export default async function RootLayout({
