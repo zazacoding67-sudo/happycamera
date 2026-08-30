@@ -5,7 +5,7 @@ import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import ProductCard from "@/components/ui/ProductCard";
 import GridSidebar from "@/components/home/GridSidebar";
-import { useReducedMotion } from "@/lib/motion";
+import { useReducedMotion, materialEase } from "@/lib/motion";
 import type { HomepageProduct } from "@/lib/homepageProducts";
 
 type Tab = "all" | "new" | "preloved";
@@ -15,6 +15,20 @@ const tabs: { value: Tab; label: string }[] = [
   { value: "new", label: "Brand New" },
   { value: "preloved", label: "Preloved" },
 ];
+
+const staggerVariants = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.06 } },
+};
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 16 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.35, ease: materialEase },
+  },
+};
 
 export default function HomepageProductGrid({
   products,
@@ -38,7 +52,7 @@ export default function HomepageProductGrid({
   });
 
   return (
-    <section className="w-full px-4 lg:px-8 pt-8 pb-14 md:pt-12 md:pb-24">
+    <section className="w-full px-4 lg:px-8 pt-8 pb-12 md:pt-12 md:pb-24">
       <div className="flex items-center justify-center gap-2 mb-8 md:mb-12">
         {tabs.map((tab) => (
           <button
@@ -56,11 +70,21 @@ export default function HomepageProductGrid({
         ))}
       </div>
 
+      <div className="md:hidden">
+        <GridSidebar
+          categories={categories}
+          selected={selectedCats}
+          onChange={setSelectedCats}
+          className="hidden"
+        />
+      </div>
+
       <div className="flex gap-8 mt-4 md:mt-0">
         <GridSidebar
           categories={categories}
           selected={selectedCats}
           onChange={setSelectedCats}
+          showMobile={false}
           className="hidden md:block w-[220px] shrink-0"
         />
         <div className="flex-1 min-w-0">
@@ -69,16 +93,21 @@ export default function HomepageProductGrid({
               No products match these filters.
             </p>
           ) : (
-            <motion.div layout className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
-              <AnimatePresence mode="popLayout">
+            <motion.div
+              key={`${active}-${selectedCats.join(",")}`}
+              layout
+              variants={reduced ? undefined : staggerVariants}
+              initial={reduced ? false : "hidden"}
+              animate={reduced ? undefined : "visible"}
+              className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6"
+            >
+              <AnimatePresence>
                 {filtered.map((product) => (
                   <motion.div
                     key={product.id}
                     layout
-                    initial={reduced ? false : { opacity: 0, y: 12 }}
-                    animate={reduced ? {} : { opacity: 1, y: 0 }}
-                    exit={reduced ? {} : { opacity: 0, y: -12 }}
-                    transition={{ duration: 0.2 }}
+                    variants={reduced ? undefined : cardVariants}
+                    exit={reduced ? undefined : { opacity: 0, y: -12 }}
                   >
                     <ProductCard
                       id={product.id}

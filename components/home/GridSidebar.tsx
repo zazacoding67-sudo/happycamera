@@ -10,6 +10,7 @@ interface GridSidebarProps {
   selected: string[];
   onChange: (selected: string[]) => void;
   className?: string;
+  showMobile?: boolean;
 }
 
 function CustomCheckbox({ checked }: { checked: boolean }) {
@@ -32,6 +33,7 @@ export default function GridSidebar({
   selected,
   onChange,
   className = "",
+  showMobile = true,
 }: GridSidebarProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const reduced = useReducedMotion();
@@ -68,28 +70,30 @@ export default function GridSidebar({
   return (
     <>
       {/* Mobile: collapsible toggle above grid */}
-      <div className="md:hidden mb-4">
-        <button
-          onClick={() => setMobileOpen(!mobileOpen)}
-          className="flex items-center justify-between w-full px-4 py-3"
-        >
-          <span className="text-[13px] font-semibold uppercase tracking-wider text-gray-600">
-            Sort by
-          </span>
-          <ChevronDown
-            size={16}
-            className={cn(
-              "text-gray-500 transition-transform",
-              mobileOpen && "rotate-180"
-            )}
-          />
-        </button>
-        {mobileOpen && (
-          <div className="px-2 py-2 border-t border-gray-200">
-            {content}
-          </div>
-        )}
-      </div>
+      {showMobile && (
+        <div className="md:hidden mb-4">
+          <button
+            onClick={() => setMobileOpen(!mobileOpen)}
+            className="flex items-center justify-between w-full px-4 py-3"
+          >
+            <span className="text-[13px] font-semibold uppercase tracking-wider text-gray-600">
+              Sort by
+            </span>
+            <ChevronDown
+              size={16}
+              className={cn(
+                "text-gray-500 transition-transform",
+                mobileOpen && "rotate-180"
+              )}
+            />
+          </button>
+          {mobileOpen && (
+            <div className="px-2 py-2 border-t border-gray-200">
+              {content}
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Desktop: fixed-width sidebar column */}
       <div className={cn("py-4", className)}>

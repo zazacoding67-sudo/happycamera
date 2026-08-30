@@ -1,7 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import { normalizeBrand } from "@/lib/brand";
-import ProductCard from "@/components/ui/ProductCard";
 import FilterSidebar from "@/components/shop/FilterSidebar";
+import MobileFilter from "@/components/shop/MobileFilter";
+import ProductsGrid from "@/components/shop/ProductsGrid";
 import SortSelect from "@/components/shop/SortSelect";
 import CategoryHero from "@/components/shop/CategoryHero";
 import ShopHero from "@/components/shop/ShopHero";
@@ -113,6 +114,7 @@ export default async function ShopPage({
   const brands = [...brandMap.values()].sort();
   const searchQuery = q || "";
   const resultCount = products.length;
+  const gridKey = [q ?? "", category ?? "", brand ?? "", condition ?? "", minPrice ?? "", maxPrice ?? "", subcategory ?? "", sort ?? ""].join("|");
 
   const categoryVideoMap: Record<string, string | string[]> = {
     "cameras": ["digital.mp4", "film.mp4"],
@@ -152,7 +154,7 @@ export default async function ShopPage({
           />
         )}
       </div>
-    <div className="w-full px-8">
+    <div className="w-full px-8 pb-24 md:pb-32">
 
       <div className="flex gap-2 flex-wrap mb-8">
         {categoryPills.map((pill) => (
@@ -172,7 +174,9 @@ export default async function ShopPage({
         </aside>
 
         <div className="flex-1 min-w-0">
-          <div className="flex items-center justify-end mb-6 gap-4">
+          <div className="mb-6 flex flex-col items-stretch gap-3 md:flex-row md:items-center md:justify-end md:gap-4">
+            <MobileFilter brands={brands} resultCount={resultCount} className="self-start md:self-auto" />
+            <div className="flex items-center justify-between gap-4 md:justify-end">
             <span className="text-[11px] text-[#999] uppercase tracking-[0.1em] font-medium">
               {resultCount} product(s)
             </span>
@@ -186,40 +190,39 @@ export default async function ShopPage({
               {maxPrice && <input type="hidden" name="maxPrice" value={maxPrice} />}
               <SortSelect defaultValue={sort} />
             </form>
+            </div>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-10">
-            {products.length === 0 ? (
-              <div className="col-span-full flex flex-col items-center justify-center py-32 text-center">
-                <p className="text-[10px] tracking-[0.25em] uppercase text-[#999] mb-3">No results</p>
-                <p className="text-[15px] font-medium text-[#1A1A1A] mb-1">
-                  {searchQuery ? `Nothing found for "${searchQuery}"` : "No products match your filters."}
-                </p>
-                <p className="text-[12px] text-[#999]">Try a different keyword or browse by category</p>
-              </div>
-            ) : (
-              products.map((product) => (
-                <ProductCard
-                  key={product.id}
-                  id={product.id}
-                  slug={product.slug}
-                  name={product.name}
-                  brand={product.brand}
-                  price={product.price}
-                  originalPrice={product.originalPrice}
-                  condition={product.condition as "new" | "preloved"}
-                  images={product.images}
-                  stockQuantity={product.stockQuantity}
-                  categorySlug={product.category?.slug}
-                  categoryName={product.category?.name}
-                  reviews={product.reviews.map((r) => ({
-                    ...r,
-                    createdAt: r.createdAt.toISOString(),
-                  }))}
-                />
-              ))
-            )}
-          </div>
+          {products.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-32 text-center">
+              <p className="text-[10px] tracking-[0.25em] uppercase text-[#999] mb-3">No results</p>
+              <p className="text-[15px] font-medium text-[#1A1A1A] mb-1">
+                {searchQuery ? `Nothing found for "${searchQuery}"` : "No products match your filters."}
+              </p>
+              <p className="text-[12px] text-[#999]">Try a different keyword or browse by category</p>
+            </div>
+          ) : (
+            <ProductsGrid
+              key={gridKey}
+              products={products.map((product) => ({
+                id: product.id,
+                slug: product.slug,
+                name: product.name,
+                brand: product.brand,
+                price: product.price,
+                originalPrice: product.originalPrice,
+                condition: product.condition as "new" | "preloved",
+                images: product.images,
+                stockQuantity: product.stockQuantity,
+                categorySlug: product.category?.slug,
+                categoryName: product.category?.name,
+                reviews: product.reviews.map((r) => ({
+                  ...r,
+                  createdAt: r.createdAt.toISOString(),
+                })),
+              }))}
+            />
+          )}
         </div>
       </div>
     </div>

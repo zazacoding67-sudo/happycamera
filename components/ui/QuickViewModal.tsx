@@ -135,7 +135,7 @@ export default function QuickViewModal({ product, onClose }: Props) {
 
         <motion.div
           ref={modalRef}
-          className="relative bg-white w-full max-w-5xl min-h-[650px] max-h-[88vh] overflow-y-auto z-10 flex flex-col md:flex-row"
+          className="relative bg-white w-full max-w-5xl max-h-[85vh] overflow-y-auto z-10 flex flex-col md:flex-row md:min-h-[650px] md:max-h-[88vh]"
           initial={{ opacity: 0, scale: 0.95, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 20 }}
@@ -152,14 +152,14 @@ export default function QuickViewModal({ product, onClose }: Props) {
           </button>
 
           {/* Image Gallery */}
-          <div className="w-full md:w-1/2 p-9 flex flex-col h-full">
-            <div className="relative w-full aspect-square bg-gray-100 flex items-center justify-center overflow-hidden">
+          <div className="w-full md:w-1/2 px-4 pt-2 pb-1 md:p-9 flex flex-col h-full">
+            <div className="relative mx-auto max-w-[200px] max-h-[150px] flex items-center justify-center overflow-hidden bg-gray-100 md:max-w-none md:aspect-square md:overflow-hidden">
               {validImages.length > 0 ? (
                 <>
                   <img
                     src={validImages[activeImageIndex]}
                     alt={product.name}
-                    className="w-full h-full object-contain"
+                    className="max-w-full max-h-full w-auto h-auto object-contain md:w-full md:h-full"
                   />
                   {validImages.length > 1 && (
                     <>
@@ -191,7 +191,7 @@ export default function QuickViewModal({ product, onClose }: Props) {
               )}
             </div>
             {validImages.length > 1 && (
-              <div className="flex gap-2 mt-3 overflow-x-auto pb-1">
+              <div className="flex gap-2 mt-1.5 md:mt-3 overflow-x-auto pb-1">
                 {validImages.map((img, i) => (
                   <button
                     key={i}
@@ -219,53 +219,54 @@ export default function QuickViewModal({ product, onClose }: Props) {
           </div>
 
           {/* Product Details */}
-          <div className="w-full md:w-1/2 p-9 md:pl-12 flex flex-col justify-center border-t md:border-t-0 md:border-l border-gray-100 overflow-y-auto shrink-0">
+          <div className="w-full md:w-1/2 px-4 pt-1 pb-4 md:p-9 md:pl-12 flex flex-col justify-center border-t md:border-t-0 md:border-l border-gray-100 overflow-y-auto shrink-0">
             {/* Brand */}
             <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-gray-400">
               {product.brand}
             </p>
 
             {/* Title */}
-            <h2 className="text-xl font-semibold text-black mt-3">
+            <h2 className="text-lg md:text-xl font-semibold text-black mt-1.5 md:mt-3">
               {product.name}
             </h2>
 
             {/* Star Rating + Review Count */}
-            <div className="flex items-center gap-1.5 mt-3">
+            <div className="flex items-center gap-1.5 mt-2 md:mt-3">
               {[1, 2, 3, 4, 5].map((s) => (
                 <Star
                   key={s}
                   size={14}
+                  className="w-3.5 h-3.5 md:w-auto md:h-auto"
                   fill={s <= Math.round(averageRating) ? "#1A1A1A" : "none"}
                   stroke={s <= Math.round(averageRating) ? "#1A1A1A" : "#ccc"}
                 />
               ))}
-              <span className="text-xs text-gray-500">
+              <span className="text-[10px] md:text-xs text-gray-500">
                 ({product.reviews?.length || 0} {product.reviews?.length === 1 ? "review" : "reviews"})
               </span>
             </div>
 
             {/* Price */}
-            <div className="mt-5">
-              <span className="text-lg font-bold text-black">
+            <div className="mt-2.5 md:mt-5">
+              <span className="text-[15px] md:text-lg font-bold text-black">
                 {formatPrice(product.price)}
               </span>
               {product.originalPrice && product.originalPrice > product.price && (
-                <span className="text-sm text-gray-400 line-through ml-2">
+                <span className="text-xs md:text-sm text-gray-400 line-through ml-2">
                   {formatPrice(product.originalPrice)}
                 </span>
               )}
             </div>
 
             {/* Condition */}
-            <div className="mt-4">
+            <div className="mt-2.5 md:mt-4">
               <span className="text-xs font-medium uppercase tracking-widest text-gray-500">
                 {product.condition === "new" ? "Brand New" : "Preloved"}
               </span>
             </div>
 
             {/* Stock Status */}
-            <div className="mt-4">
+            <div className="mt-2.5 md:mt-4">
               {!inStock && (
                 <span className="text-xs font-semibold uppercase tracking-widest text-red-500">
                   Out of Stock
@@ -285,23 +286,23 @@ export default function QuickViewModal({ product, onClose }: Props) {
 
             {/* Quantity + Add to Cart */}
             {inStock && (
-              <div className="mt-8 flex items-center gap-2">
+              <div className="mt-4 md:mt-8 flex items-center gap-2">
                 {/* Quantity Stepper */}
-                <div className="flex items-center border border-gray-300 h-14">
+                <div className="flex items-center border border-gray-300 h-11 md:h-14">
                   <button
                     onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                    className="w-10 h-full flex items-center justify-center text-gray-500 hover:text-black transition-colors"
+                    className="w-9 md:w-10 h-full flex items-center justify-center text-gray-500 hover:text-black transition-colors"
                     aria-label="Decrease quantity"
                   >
-                    <Minus size={14} />
+                    <Minus size={14} className="w-3.5 h-3.5 md:w-auto md:h-auto" />
                   </button>
-                  <span className="w-10 text-center text-sm font-medium tabular-nums">{quantity}</span>
+                  <span className="w-9 md:w-10 text-center text-[13px] md:text-sm font-medium tabular-nums">{quantity}</span>
                   <button
                     onClick={() => setQuantity((q) => Math.min(stockQuantity, q + 1))}
-                    className="w-10 h-full flex items-center justify-center text-gray-500 hover:text-black transition-colors"
+                    className="w-9 md:w-10 h-full flex items-center justify-center text-gray-500 hover:text-black transition-colors"
                     aria-label="Increase quantity"
                   >
-                    <Plus size={14} />
+                    <Plus size={14} className="w-3.5 h-3.5 md:w-auto md:h-auto" />
                   </button>
                 </div>
 
@@ -309,7 +310,7 @@ export default function QuickViewModal({ product, onClose }: Props) {
                 <button
                   onClick={handleAddToCart}
                   disabled={cartStatus !== "idle"}
-                  className="flex-1 h-14 bg-[#1A1A1A] text-white text-[13px] font-semibold uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-[#333] transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+                  className="flex-1 h-11 md:h-14 bg-[#1A1A1A] text-white text-[12px] md:text-[13px] font-semibold uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-[#333] transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
                 >
                   {cartStatus === "loading" ? (
                     "Adding..."
@@ -317,7 +318,7 @@ export default function QuickViewModal({ product, onClose }: Props) {
                     "Added!"
                   ) : (
                     <>
-                      <ShoppingCart size={15} />
+                      <ShoppingCart size={15} className="w-3.5 h-3.5 md:w-auto md:h-auto" />
                       Add to Cart
                     </>
                   )}
@@ -326,7 +327,7 @@ export default function QuickViewModal({ product, onClose }: Props) {
             )}
 
             {/* Social + Wishlist Row */}
-            <div className="mt-6 flex items-center gap-3">
+            <div className="mt-3.5 md:mt-6 flex items-center gap-3">
               <button
                 onClick={handleWishlistClick}
                 className="flex items-center gap-1.5 text-gray-500 hover:text-black transition-colors"
@@ -336,34 +337,34 @@ export default function QuickViewModal({ product, onClose }: Props) {
                   size={15}
                   className={isWishlisted(product.id) ? "fill-red-500 stroke-red-500" : "stroke-gray-400"}
                 />
-                <span className="text-[11px] font-medium uppercase tracking-wider">
+                <span className="text-[10px] md:text-[11px] font-medium uppercase tracking-wider">
                   {isWishlisted(product.id) ? "Wishlisted" : "Wishlist"}
                 </span>
               </button>
 
               <span className="w-px h-4 bg-gray-200" />
 
-              <a href="https://www.instagram.com/happycamera_malaysia" target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full border border-gray-200 flex items-center justify-center text-gray-500 hover:text-black hover:border-gray-400 transition-colors" aria-label="Instagram">
-                <InstagramIcon size={14} />
+              <a href="https://www.instagram.com/happycamera_malaysia" target="_blank" rel="noopener noreferrer" className="w-7 h-7 md:w-8 md:h-8 rounded-full border border-gray-200 flex items-center justify-center text-gray-500 hover:text-black hover:border-gray-400 transition-colors" aria-label="Instagram">
+                <InstagramIcon size={12} />
               </a>
-              <a href="https://www.carousell.com.my/u/happycamera/" target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full border border-gray-200 flex items-center justify-center text-gray-500 hover:text-black hover:border-gray-400 transition-colors" aria-label="Carousell">
-                <CarousellIcon size={14} />
+              <a href="https://www.carousell.com.my/u/happycamera/" target="_blank" rel="noopener noreferrer" className="w-7 h-7 md:w-8 md:h-8 rounded-full border border-gray-200 flex items-center justify-center text-gray-500 hover:text-black hover:border-gray-400 transition-colors" aria-label="Carousell">
+                <CarousellIcon size={12} />
               </a>
-              <a href="https://www.facebook.com/p/Happy-Camera-100092200102218/" target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full border border-gray-200 flex items-center justify-center text-gray-500 hover:text-black hover:border-gray-400 transition-colors" aria-label="Facebook">
-                <FacebookIcon size={14} />
+              <a href="https://www.facebook.com/p/Happy-Camera-100092200102218/" target="_blank" rel="noopener noreferrer" className="w-7 h-7 md:w-8 md:h-8 rounded-full border border-gray-200 flex items-center justify-center text-gray-500 hover:text-black hover:border-gray-400 transition-colors" aria-label="Facebook">
+                <FacebookIcon size={12} />
               </a>
-              <a href="https://wa.me/60163208864" target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full border border-gray-200 flex items-center justify-center text-gray-500 hover:text-black hover:border-gray-400 transition-colors" aria-label="WhatsApp">
-                <WhatsAppIcon size={14} />
+              <a href="https://wa.me/60163208864" target="_blank" rel="noopener noreferrer" className="w-7 h-7 md:w-8 md:h-8 rounded-full border border-gray-200 flex items-center justify-center text-gray-500 hover:text-black hover:border-gray-400 transition-colors" aria-label="WhatsApp">
+                <WhatsAppIcon size={12} />
               </a>
-              <a href="mailto:happycamerabusiness@gmail.com" className="w-8 h-8 rounded-full border border-gray-200 flex items-center justify-center text-gray-500 hover:text-black hover:border-gray-400 transition-colors" aria-label="Email">
-                <GmailIcon size={14} />
+              <a href="mailto:happycamerabusiness@gmail.com" className="w-7 h-7 md:w-8 md:h-8 rounded-full border border-gray-200 flex items-center justify-center text-gray-500 hover:text-black hover:border-gray-400 transition-colors" aria-label="Email">
+                <GmailIcon size={12} />
               </a>
             </div>
 
             {/* Product Link */}
             <a
               href={`/product/${product.slug}`}
-              className="mt-5 text-xs text-gray-400 hover:text-black transition-colors underline"
+              className="mt-3.5 md:mt-5 text-xs text-gray-400 hover:text-black transition-colors underline"
               onClick={onClose}
             >
               View full product details →

@@ -20,13 +20,13 @@ export default function ShopHero({ productCount }: ShopHeroProps) {
 
   return (
     <div className="relative w-full bg-zinc-900 overflow-hidden">
-      <div className="max-w-7xl mx-auto px-6 md:px-16 py-16 md:py-24">
+      <div className="max-w-7xl mx-auto px-6 md:px-16 py-12 md:py-24">
         <motion.p
           initial={prefersReduced ? { opacity: 1 } : { opacity: 0, y: 10 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.1 }}
           transition={{ duration: 0.4 }}
-          className="text-[11px] tracking-[0.25em] uppercase text-zinc-500 font-medium mb-4"
+          className="text-[10px] md:text-[11px] tracking-[0.25em] uppercase text-zinc-500 font-medium mb-3 md:mb-4"
         >
           Browse Everything
         </motion.p>
@@ -36,7 +36,7 @@ export default function ShopHero({ productCount }: ShopHeroProps) {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.1 }}
           transition={{ duration: 0.5, delay: 0.1 }}
-          className="text-5xl md:text-7xl font-bold text-white tracking-tight leading-[0.95] font-heading"
+          className="text-4xl md:text-7xl font-bold text-white tracking-tight leading-[0.95] font-heading"
         >
           All Gear
         </motion.h1>
@@ -46,7 +46,7 @@ export default function ShopHero({ productCount }: ShopHeroProps) {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.1 }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="text-base md:text-lg text-zinc-400 max-w-xl mt-5 leading-relaxed"
+          className="text-sm md:text-lg text-zinc-400 max-w-xl mt-4 md:mt-5 leading-relaxed"
         >
           Explore our curated selection of new and pre-loved camera equipment, from classic film bodies to modern digital systems.
         </motion.p>
@@ -56,14 +56,17 @@ export default function ShopHero({ productCount }: ShopHeroProps) {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.1 }}
           transition={{ duration: 0.5, delay: 0.35 }}
-          className="mt-10 pt-8 border-t border-zinc-800 grid grid-cols-3 gap-6 max-w-lg"
+          className="mt-8 pt-8 md:mt-10 border-t border-zinc-800 grid grid-cols-3 gap-4 md:gap-6 max-w-lg"
         >
           {items.map(({ icon: Icon, label, sub }) => (
-            <div key={label} className="flex items-start gap-3">
-              <Icon size={18} className="text-zinc-500 mt-0.5 shrink-0" />
+            <div key={label} className="flex items-start gap-2 md:gap-3">
+              <Icon
+                size={18}
+                className="w-4 h-4 md:w-[18px] md:h-[18px] text-zinc-500 mt-0.5 shrink-0"
+              />
               <div>
-                <p className="text-sm font-semibold text-white leading-tight">{label}</p>
-                <p className="text-[11px] text-zinc-500 mt-0.5">{sub}</p>
+                <p className="text-[13px] md:text-sm font-semibold text-white leading-tight">{label}</p>
+                <p className="text-[10px] md:text-[11px] text-zinc-500 mt-0.5">{sub}</p>
               </div>
             </div>
           ))}

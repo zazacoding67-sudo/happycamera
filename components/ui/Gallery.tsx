@@ -14,7 +14,7 @@ export default function Gallery({ images, name }: Props) {
 
   if (validImages.length === 0) {
     return (
-      <div className="w-full h-[480px] bg-[#f5f5f5] flex items-center justify-center rounded-[2px]">
+      <div className="w-full aspect-square md:h-[480px] bg-[#f5f5f5] flex items-center justify-center rounded-[2px]">
         <span className="text-xs text-gray-400 uppercase tracking-widest">No image</span>
       </div>
     );
@@ -22,7 +22,7 @@ export default function Gallery({ images, name }: Props) {
 
   return (
     <div className="flex flex-col gap-3 min-w-0">
-      <div className="w-full h-[480px] bg-[#f5f5f5] relative flex items-center justify-center overflow-hidden rounded-[2px]">
+      <div className="w-full aspect-square md:h-[480px] bg-[#f5f5f5] relative flex items-center justify-center overflow-hidden rounded-[2px]">
         <Image
           src={validImages[activeIndex] || validImages[0]}
           alt={name}

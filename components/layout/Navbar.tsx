@@ -160,13 +160,16 @@ const Navbar = ({ navMenus }: { navMenus: MegaMenuItem[] }) => {
           <nav className="bg-yellow-400 border-b border-black/10">
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 h-20 grid grid-cols-3 items-center">
               <div className="flex items-center justify-start gap-6">
-                <button
-                  className="md:hidden p-2 text-black -ml-2"
-                  onClick={() => setMobileOpen(!mobileOpen)}
-                  aria-label="Toggle menu"
-                >
-                  {mobileOpen ? <X size={22} /> : <Menu size={22} />}
-                </button>
+                <div className="flex items-center md:hidden">
+                  <button
+                    className="p-2 text-black -ml-2"
+                    onClick={() => setMobileOpen(!mobileOpen)}
+                    aria-label="Toggle menu"
+                  >
+                    {mobileOpen ? <X size={22} /> : <Menu size={22} />}
+                  </button>
+                  <SearchModal mobileOnly />
+                </div>
                 <div
                   className="hidden md:flex items-center gap-6"
                   onMouseEnter={cancelClose}
@@ -223,7 +226,7 @@ const Navbar = ({ navMenus }: { navMenus: MegaMenuItem[] }) => {
               </div>
 
               <div className="flex items-center justify-end gap-5">
-                <SearchModal />
+                <SearchModal desktopOnly />
                 <div className="relative flex items-center" ref={userMenuRef}>
                   <button
                     onClick={() => {

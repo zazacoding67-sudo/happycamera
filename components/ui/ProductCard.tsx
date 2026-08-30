@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { useWishlist } from "@/lib/WishlistContext";
-import { Heart } from "lucide-react";
+import { Heart, Eye } from "lucide-react";
 import QuickViewModal from "@/components/ui/QuickViewModal";
 import type { ProductCardProps } from "@/types";
 
@@ -38,6 +38,7 @@ export default function ProductCard({
   brand,
   averageRating,
   reviews,
+  createdAt,
 }: ProductCardProps) {
   const [quickViewOpen, setQuickViewOpen] = useState(false);
   const imageUrl = images?.[0] || "";
@@ -46,13 +47,22 @@ export default function ProductCard({
   const soldOut = stockQuantity !== undefined && stockQuantity <= 0;
   const isOnSale = originalPrice != null && originalPrice > price;
 
+  const isNewArrival =
+    createdAt != null &&
+    (() => {
+      const ageMs = Date.now() - new Date(createdAt).getTime();
+      return ageMs >= 0 && ageMs <= 7 * 86400000;
+    })();
+
   const badgeLabel = isOnSale
     ? "ON SALE"
     : soldOut
       ? "SOLD OUT"
-      : condition === "new"
-        ? "BRAND NEW"
-        : `PRELOVED${conditionGrade ? ` · ${conditionGrade}` : ""}`;
+      : isNewArrival
+        ? "NEW"
+        : condition === "new"
+          ? "BRAND NEW"
+          : `PRELOVED${conditionGrade ? ` · ${conditionGrade}` : ""}`;
 
   const badgeBg = isOnSale
     ? "bg-red-600"
@@ -89,13 +99,13 @@ export default function ProductCard({
   return (
     <div className="flex flex-col group">
       {/* Image box */}
-      <div className={cn("relative aspect-square w-full bg-white border border-gray-200 overflow-hidden p-2 flex items-center justify-center", soldOut && "opacity-60 grayscale")}>
-        <Link href={`/product/${slug}`} className="block w-full h-full">
+      <div className={cn("relative aspect-[4/5] md:aspect-square w-full bg-white border border-gray-200 overflow-hidden p-2", soldOut && "opacity-60 grayscale")}>
+        <Link href={`/product/${slug}`} className="block w-full h-full flex items-center justify-center">
           {imageUrl ? (
             <img
               src={imageUrl}
               alt={name}
-              className="max-w-full max-h-full object-contain"
+              className="max-w-full max-h-full object-contain object-center block"
               loading="lazy"
             />
           ) : (
@@ -103,11 +113,11 @@ export default function ProductCard({
           )}
         </Link>
 
-        {/* QUICK VIEW bar — bottom of image, full width, visible on hover (desktop) or always (mobile) */}
+        {/* QUICK VIEW bar — desktop only (hover-reveal); hidden entirely below md */}
         <button
           onClick={() => setQuickViewOpen(true)}
           className={cn(
-            "absolute bottom-0 left-0 right-0 z-30 flex items-center justify-center",
+            "absolute bottom-0 left-0 right-0 z-30 hidden md:flex items-center justify-center",
             "bg-neutral-700/90 text-white text-[11px] font-semibold uppercase tracking-[0.15em] py-4",
             "transition-colors hover:bg-neutral-800",
             "md:opacity-0 md:group-hover:opacity-100 md:translate-y-full md:group-hover:translate-y-0 md:transition-all md:duration-300"
@@ -116,19 +126,29 @@ export default function ProductCard({
           Quick View
         </button>
 
+        {/* QUICK VIEW trigger — small icon button, mobile only, bottom-right (away from heart) */}
+        <button
+          onClick={() => setQuickViewOpen(true)}
+          aria-label={`Quick view ${name}`}
+          className="absolute bottom-2 right-2 z-30 p-1 bg-white/80 hover:bg-white rounded-none shadow-sm transition-colors md:hidden"
+        >
+          <Eye size={16} className="h-3.5 w-3.5 stroke-neutral-700" />
+        </button>
+
         {/* Badge */}
-        <div className={cn("absolute top-3 left-3 z-30", badgeBg, "text-white text-[10px] font-bold px-2.5 py-1 rounded-[2px] uppercase")}>
+        <div className={cn("absolute top-3 left-3 z-30", badgeBg, "text-white text-[10px] font-bold px-2 md:px-2.5 py-1 rounded-[2px] uppercase leading-none whitespace-nowrap")}>
           {badgeLabel}
         </div>
 
-        {/* Wishlist heart — top right, visible on hover (desktop) or always (mobile) */}
+        {/* Wishlist heart — stacked under badge on mobile, top-right on hover (desktop) */}
         <button
           onClick={(e) => {
             e.stopPropagation();
             toggleWishlist(id, { name, price, imageUrl });
           }}
           className={cn(
-            "absolute top-3 right-3 z-30 p-1.5 bg-white/80 hover:bg-white rounded-none shadow-sm transition-all duration-200",
+            "absolute z-30 p-1 md:p-1.5 bg-white/80 hover:bg-white rounded-none shadow-sm transition-all duration-200",
+            "top-10 left-3 md:top-3 md:left-auto md:right-3",
             "md:opacity-0 md:group-hover:opacity-100"
           )}
           aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
@@ -136,7 +156,7 @@ export default function ProductCard({
           <Heart
             size={16}
             className={cn(
-              "transition-colors duration-200",
+              "h-3.5 w-3.5 md:h-4 md:w-4 transition-colors duration-200",
               wishlisted ? "fill-red-500 stroke-red-500" : "stroke-neutral-700 group-hover:stroke-neutral-900"
             )}
           />
@@ -151,7 +171,7 @@ export default function ProductCard({
             {brand}
           </p>
         </div>
-        <p className="text-[18px] font-semibold text-neutral-800 truncate leading-[1.3] mb-2 transition-colors duration-200 group-hover:text-black">
+        <p className="text-[15px] md:text-[18px] font-semibold text-neutral-800 line-clamp-2 md:line-clamp-1 leading-[1.3] mb-2 transition-colors duration-200 group-hover:text-black">
           {name}
         </p>
 
@@ -163,12 +183,12 @@ export default function ProductCard({
 
         <div className="flex items-baseline gap-2">
           <span className="flex items-baseline">
-            <span className="text-[14px] font-medium text-gray-400 leading-none">
+            <span className="text-[13px] md:text-[14px] font-medium text-gray-400 leading-none">
               RM&nbsp;
             </span>
             <span
               className={cn(
-                "text-[22px] font-normal leading-none font-serif",
+                "text-[17px] md:text-[22px] font-normal leading-none font-serif",
                 isOnSale ? "text-red-600" : "text-gray-900"
               )}
             >
@@ -176,7 +196,7 @@ export default function ProductCard({
             </span>
           </span>
           {isOnSale && (
-            <span className="text-[14px] font-medium text-gray-400 line-through">
+            <span className="text-[13px] md:text-[14px] font-medium text-gray-400 line-through">
               RM {originalPrice!.toLocaleString("en-MY")}
             </span>
           )}

@@ -25,6 +25,7 @@ export interface ProductCardProps {
   categoryName?: string;
   averageRating?: number | null;
   reviews?: Review[];
+  createdAt?: string;
 }
 
 export interface CartItem {

@@ -1,25 +1,13 @@
 import { prisma } from "@/lib/prisma";
+import { TEST_PRODUCT_NAMES } from "@/lib/homepageProducts";
 
-export const TEST_PRODUCT_NAMES = [
-  "SmallRig Camera Cage",
-  "UV Lens Filter 67mm",
-  "Camera Battery Charger",
-  "SD Memory Card 128GB",
-  "Generic Teleconverter 1.4x",
-  "Canon EF-RF Mount Adapter",
-  "Tamron 18-300mm Zoom Lens",
-  "Sigma 17-70mm Zoom Lens",
-  "Fujifilm GFX Medium Format Camera",
-  "Kodak Instant Camera",
-  "Nikon ZR Cinema Camera",
-  "Sony FX30 Cinema Camera",
-] as const;
-
-export async function getHomepageProducts() {
+export async function getNewArrivals(count = 6) {
+  const cutoff = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
   const products = await prisma.product.findMany({
     where: {
       name: { notIn: [...TEST_PRODUCT_NAMES] },
       stockQuantity: { gt: 0 },
+      createdAt: { gte: cutoff },
     },
     select: {
       id: true,
@@ -40,6 +28,7 @@ export async function getHomepageProducts() {
       },
     },
     orderBy: { createdAt: "desc" },
+    take: count,
   });
 
   return products.map((p) => {
@@ -56,4 +45,4 @@ export async function getHomepageProducts() {
   });
 }
 
-export type HomepageProduct = Awaited<ReturnType<typeof getHomepageProducts>>[number];
+export type NewArrival = Awaited<ReturnType<typeof getNewArrivals>>[number];

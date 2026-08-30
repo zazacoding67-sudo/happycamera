@@ -510,6 +510,53 @@ async function main() {
     });
   }
 
+  // Curated createdAt assignment so the homepage "New Arrivals" section surfaces
+  // an intentional product row (camera-forward, one lens breaking it up) rather
+  // than seed-insertion order. Older catalogue items get staggered base dates;
+  // the six "New Arrivals" get genuinely recent timestamps (within 7 days) so the
+  // recency "NEW" badge displays honestly.
+  const BASE = new Date("2026-08-01T00:00:00Z").getTime();
+  const SPACING_MIN = 1200; // 20 hours between consecutive products
+  const createdAtOrder = [
+    "digi-cabi-dhc-n150",
+    "peli-1510-case",
+    "forspark-dry-box-67l",
+    "hiniso-electronic-dry-cabinet-60l",
+    "hiniso-electronic-dry-cabinet-30l",
+    "ruggard-thunderhead-49l",
+    "manfrotto-manhattan-mover-50",
+    "lowepro-protactic-450-aw",
+    "peak-design-travel-backpack-45l",
+    "shimoda-explore-v2-35l",
+    "f-stop-tilopa-50l",
+    "hasselblad-500-cm",
+    "leica-m6-ttl",
+    "nikon-z30",
+  ];
+  for (const [i, slug] of createdAtOrder.entries()) {
+    await prisma.product.updateMany({
+      where: { slug },
+      data: { createdAt: new Date(BASE + i * SPACING_MIN * 60_000) },
+    });
+  }
+
+  // New Arrivals: genuinely recent (1-6 days ago), newest first.
+  const DAY = 86400000;
+  const newArrivalDaysAgo = [
+    "sony-alpha-a7c-ii", // 1d
+    "zeiss-35mm-f1-4", // 2d
+    "canon-eos-r50", // 3d
+    "sony-alpha-a6700", // 4d
+    "fujifilm-x-t5", // 5d
+    "fujifilm-x100vi", // 6d
+  ];
+  for (const [i, slug] of newArrivalDaysAgo.entries()) {
+    await prisma.product.updateMany({
+      where: { slug },
+      data: { createdAt: new Date(Date.now() - (i + 1) * DAY) },
+    });
+  }
+
   console.log("Database seeded successfully!");
 }
 

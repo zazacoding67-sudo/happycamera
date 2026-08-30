@@ -11,6 +11,8 @@ import catDigital from "@/public/images/cat-digital.jpg";
 import catAcc from "@/public/images/cat-acc.jpg";
 import catDrybox from "@/public/images/cat-drybox.jpg";
 import catBag from "@/public/images/cat-bag.jpg";
+import { useReducedMotion, materialEase } from "@/lib/motion";
+
 import StripeFrame from "@/components/home/StripeFrame";
 
 const categories = [
@@ -21,6 +23,20 @@ const categories = [
   { title: "Dry Cabinet", slug: "accessories", subcategory: "Others", image: catDrybox },
   { title: "Bags", slug: "accessories", subcategory: "Bags", image: catBag },
 ];
+
+const staggerVariants = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.08 } },
+};
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.4, ease: materialEase },
+  },
+};
 
 function CategoryCard({
   cat,
@@ -49,7 +65,7 @@ function CategoryCard({
   return (
     <Link
       href={`/shop?category=${cat.slug}${cat.subcategory ? `&subcategory=${cat.subcategory}` : ""}&condition=${condition}`}
-      className="group relative aspect-square overflow-hidden bg-zinc-900 border border-zinc-800 hover:border-yellow-400 transition-colors duration-300"
+      className="group block h-full w-full"
       onMouseMove={handleMouseMove}
       onTouchStart={handleTouchStart}
     >
@@ -90,6 +106,8 @@ export default function CategoryGrid({
 }: {
   condition?: "new" | "preloved";
 }) {
+  const reduced = useReducedMotion();
+
   return (
     <section id="shop" className="bg-black scroll-mt-20">
       <StripeFrame />
@@ -102,11 +120,23 @@ export default function CategoryGrid({
             Explore Our Collection
           </h2>
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-5">
+        <motion.div
+          variants={reduced ? undefined : staggerVariants}
+          initial={reduced ? false : "hidden"}
+          whileInView={reduced ? undefined : "visible"}
+          viewport={{ once: true, amount: 0.05 }}
+          className="grid grid-cols-2 sm:grid-cols-3 gap-5"
+        >
           {categories.map((cat) => (
-            <CategoryCard key={cat.title} cat={cat} condition={condition} />
+            <motion.div
+              key={cat.title}
+              variants={reduced ? undefined : cardVariants}
+              className="h-full relative aspect-square overflow-hidden bg-zinc-900 border border-zinc-800 hover:border-yellow-400 transition-colors duration-300"
+            >
+              <CategoryCard cat={cat} condition={condition} />
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
         <div className="mt-8 md:mt-14 text-center">
           <Link
             href="/shop"
