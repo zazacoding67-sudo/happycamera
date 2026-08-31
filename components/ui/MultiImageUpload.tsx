@@ -326,23 +326,23 @@ export default function MultiImageUpload({
               <img
                 src={url}
                 alt={`Image ${i + 1}`}
-                className="w-20 h-20 object-cover border border-[#E5E5E5]"
+                className="w-24 h-24 md:w-20 md:h-20 object-cover border border-[#E5E5E5]"
               />
-              <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-1">
+              <div className="absolute inset-0 bg-black/40 md:opacity-0 md:group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 md:gap-1">
                 <button
                   type="button"
                   onClick={() => moveImage(i, Math.max(0, i - 1))}
                   disabled={i === 0}
-                  className="p-1 text-white disabled:opacity-30"
+                  className="p-2.5 md:p-1 text-white disabled:opacity-30"
                 >
-                  <GripVertical size={14} />
+                  <GripVertical className="size-5 md:size-3.5" />
                 </button>
                 <button
                   type="button"
                   onClick={() => removeImage(i)}
-                  className="p-1 text-white hover:text-red-300 transition-colors"
+                  className="p-2.5 md:p-1 text-white hover:text-red-300 transition-colors"
                 >
-                  <X size={14} />
+                  <X className="size-5 md:size-3.5" />
                 </button>
               </div>
               {i === 0 && (

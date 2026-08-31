@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { ShieldCheck, Lock, BadgeCheck } from "lucide-react";
 import { motion } from "framer-motion";
-import { useReducedMotion } from "@/lib/motion";
+import { useReducedMotion, useIsDesktop } from "@/lib/motion";
 
 const trustBadges = [
   { icon: ShieldCheck, label: "Secure Payments" },
@@ -13,13 +13,15 @@ const trustBadges = [
 
 export default function TrustSignals() {
   const reduced = useReducedMotion();
+  const isDesktop = useIsDesktop();
+  const enter = reduced || !isDesktop ? 0 : 24;
 
   return (
     <section className="w-full">
       <div className="flex flex-col md:flex-row items-stretch">
         {/* Left side — We Accept banner image (contained card) */}
         <motion.div
-          initial={reduced ? false : { opacity: 0, x: -24 }}
+          initial={reduced ? false : { opacity: 0, x: -enter }}
           whileInView={reduced ? {} : { opacity: 1, x: 0 }}
           viewport={{ once: true, amount: 0.1 }}
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
@@ -37,7 +39,7 @@ export default function TrustSignals() {
 
         {/* Right side — Text, badges & Info */}
         <motion.div
-          initial={reduced ? false : { opacity: 0, x: 24 }}
+          initial={reduced ? false : { opacity: 0, x: enter }}
           whileInView={reduced ? {} : { opacity: 1, x: 0 }}
           viewport={{ once: true, amount: 0.1 }}
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}

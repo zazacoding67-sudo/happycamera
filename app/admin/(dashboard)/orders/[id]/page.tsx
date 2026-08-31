@@ -38,7 +38,7 @@ export default async function OrderDetailPage({
   );
 
   return (
-    <div className="p-8">
+    <div className="p-4 sm:p-6 lg:p-8">
       <div className="max-w-5xl mx-auto">
         <Link
           href="/admin/orders"
@@ -48,10 +48,10 @@ export default async function OrderDetailPage({
           Back to Orders
         </Link>
 
-        <div className="flex items-start justify-between mb-8">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
           <div>
-            <div className="flex items-center gap-3">
-              <h1 className="text-2xl font-bold tracking-tight text-[var(--color-text-primary)]">
+            <div className="flex flex-wrap items-center gap-3">
+              <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-[var(--color-text-primary)]">
                 Order {order.orderNumber ?? `#${order.id.slice(0, 8)}`}
               </h1>
               <span
@@ -64,7 +64,7 @@ export default async function OrderDetailPage({
                 {order.source === "MANUAL" ? "Manual / external order" : "Website order"}
               </span>
             </div>
-            <p className="text-sm text-[var(--color-text-secondary)] mt-1">
+            <p className="text-sm text-[var(--color-text-secondary)] mt-1 break-all">
               {order.orderNumber && (
                 <span className="font-mono mr-3">Internal ID: {order.id}</span>
               )}
@@ -72,7 +72,7 @@ export default async function OrderDetailPage({
             </p>
           </div>
           <span
-            className={`text-[10px] font-semibold uppercase tracking-widest px-2.5 py-1 border ${
+            className={`shrink-0 text-[10px] font-semibold uppercase tracking-widest px-2.5 py-1 border ${
               statusColors[order.status] || "bg-gray-50 text-gray-700 border-gray-200"
             }`}
           >

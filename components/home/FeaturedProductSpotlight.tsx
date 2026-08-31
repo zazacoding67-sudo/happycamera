@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { useReducedMotion } from "@/lib/motion";
+import { useReducedMotion, useIsDesktop } from "@/lib/motion";
 
 interface FeaturedProductSpotlightProps {
   title: string;
@@ -22,6 +22,8 @@ export default function FeaturedProductSpotlight({
 }: FeaturedProductSpotlightProps) {
   const hasThumbnails = !!thumbnails && thumbnails.length > 0;
   const reduced = useReducedMotion();
+  const isDesktop = useIsDesktop();
+  const enter = reduced || !isDesktop ? 0 : 24;
 
   return (
     <section className="w-full bg-black">
@@ -29,7 +31,7 @@ export default function FeaturedProductSpotlight({
         <div className="flex flex-col md:flex-row md:items-center md:gap-16">
           {/* Left — Large product image with reflection/fade-out beneath */}
           <motion.div
-            initial={reduced ? false : { opacity: 0, x: -24 }}
+            initial={reduced ? false : { opacity: 0, x: -enter }}
             whileInView={reduced ? {} : { opacity: 1, x: 0 }}
             viewport={{ once: true, amount: 0.1 }}
             transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
@@ -52,7 +54,7 @@ export default function FeaturedProductSpotlight({
 
           {/* Right — Stacked, vertically centered text block */}
           <motion.div
-            initial={reduced ? false : { opacity: 0, x: 24 }}
+            initial={reduced ? false : { opacity: 0, x: enter }}
             whileInView={reduced ? {} : { opacity: 1, x: 0 }}
             viewport={{ once: true, amount: 0.1 }}
             transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}

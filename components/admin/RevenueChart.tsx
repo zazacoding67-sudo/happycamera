@@ -30,15 +30,15 @@ export default function RevenueChart({
   topProducts: TopProduct[];
 }) {
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 mt-10">
-      <div className="lg:col-span-3 bg-[var(--color-surface)] border border-[var(--color-border)] p-6">
+    <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 sm:gap-6 mt-8 sm:mt-10">
+      <div className="lg:col-span-3 bg-[var(--color-surface)] border border-[var(--color-border)] p-4 sm:p-6">
         <h2 className="text-base font-bold tracking-tight text-[var(--color-text-primary)] mb-1">
           Revenue (30 days)
         </h2>
         <p className="text-xs text-[var(--color-text-secondary)] mb-6">
           Daily sales from non-cancelled orders
         </p>
-        <div className="h-[280px]">
+        <div className="h-[240px] sm:h-[280px]">
           {dailyRevenue.length === 0 ? (
             <div className="flex items-center justify-center h-full text-sm text-[var(--color-text-secondary)]">
               No revenue data yet.
@@ -106,19 +106,19 @@ export default function RevenueChart({
       </div>
 
       <div className="lg:col-span-2 bg-[var(--color-surface)] border border-[var(--color-border)]">
-        <div className="p-6 border-b border-[var(--color-border)]">
+        <div className="p-4 sm:p-6 border-b border-[var(--color-border)]">
           <h2 className="text-base font-bold tracking-tight text-[var(--color-text-primary)]">
             Top Products
           </h2>
         </div>
         {topProducts.length === 0 ? (
-          <div className="p-6 text-sm text-[var(--color-text-secondary)]">
+          <div className="p-4 sm:p-6 text-sm text-[var(--color-text-secondary)]">
             No sales yet.
           </div>
         ) : (
           <div className="divide-y divide-[var(--color-border)]">
             {topProducts.map((product, i) => (
-              <div key={product.name} className="flex items-center justify-between px-6 py-3.5">
+              <div key={product.name} className="flex items-center justify-between px-4 sm:px-6 py-3.5">
                 <div className="flex items-center gap-3 min-w-0">
                   <span className="text-xs font-semibold text-[var(--color-text-secondary)] w-5 shrink-0">
                     {String(i + 1).padStart(2, "0")}

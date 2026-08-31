@@ -56,7 +56,7 @@ export default function ProductsClient({ products }: { products: Product[] }) {
   };
 
   return (
-    <div className="p-8">
+    <div className="p-4 sm:p-6 lg:p-8">
       <Toast
         message={toast.message}
         type={toast.type}
@@ -66,15 +66,15 @@ export default function ProductsClient({ products }: { products: Product[] }) {
 
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-[var(--color-text-primary)]">
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-[var(--color-text-primary)]">
             Manage Products
           </h1>
           <p className="mt-1 text-sm text-[var(--color-text-secondary)]">
             {products.length} product(s) total
           </p>
         </div>
-        <div className="flex items-center gap-3 w-full sm:w-auto">
-          <div className="relative flex-1 sm:w-56">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto">
+          <div className="relative w-full sm:w-56">
             <input
               type="text"
               placeholder="Search products..."
@@ -83,19 +83,21 @@ export default function ProductsClient({ products }: { products: Product[] }) {
               className="w-full border border-[var(--color-border)] px-3 py-2.5 text-sm outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400 transition-colors bg-[var(--color-surface)] rounded-none"
             />
           </div>
-          <Link
-            href="/admin/products/upload"
-            className="inline-flex items-center justify-center px-4 py-2.5 text-sm font-medium tracking-wide transition-colors border border-[var(--color-border)] text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg)] shrink-0"
-          >
-            Bulk Upload
-          </Link>
-          <Link
-            href="/admin/products/new"
-            className="inline-flex items-center justify-center gap-1.5 px-5 py-2.5 text-sm font-medium tracking-wide transition-colors bg-yellow-400 text-black hover:bg-yellow-300 shrink-0"
-          >
-            <Plus size={15} />
-            Add New Product
-          </Link>
+          <div className="flex gap-3">
+            <Link
+              href="/admin/products/upload"
+              className="flex-1 sm:flex-none inline-flex items-center justify-center px-4 py-2.5 text-sm font-medium tracking-wide transition-colors border border-[var(--color-border)] text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg)]"
+            >
+              Bulk Upload
+            </Link>
+            <Link
+              href="/admin/products/new"
+              className="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 px-5 py-2.5 text-sm font-medium tracking-wide transition-colors bg-yellow-400 text-black hover:bg-yellow-300"
+            >
+              <Plus size={15} />
+              Add New Product
+            </Link>
+          </div>
         </div>
       </div>
 

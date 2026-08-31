@@ -1,14 +1,10 @@
 import type { Metadata } from "next";
 import { Inter, Space_Grotesk, Instrument_Serif } from "next/font/google";
 import NavbarWrapper from "@/components/layout/NavbarWrapper";
-import SmoothScrolling from "@/components/layout/SmoothScrolling";
-import Footer from "@/components/layout/Footer";
-import CartDrawer from "@/components/ui/CartDrawer";
-import WishlistDrawer from "@/components/ui/WishlistDrawer";
+import AppChrome from "@/components/layout/AppChrome";
 import AuthSessionProvider from "@/components/layout/AuthSessionProvider";
 import { CartProvider } from "@/lib/CartContext";
 import { WishlistProvider } from "@/lib/WishlistContext";
-import PageTransition from "@/components/layout/PageTransition";
 import { buildNavMenus } from "@/lib/nav";
 import "@/styles/globals.css";
 
@@ -56,14 +52,7 @@ export default async function RootLayout({
           <CartProvider>
             <WishlistProvider>
               <NavbarWrapper navMenus={navMenus} />
-              <main className="min-h-screen pt-20">
-                <SmoothScrolling>
-                  <PageTransition>{children}</PageTransition>
-                </SmoothScrolling>
-              </main>
-              <CartDrawer />
-              <WishlistDrawer />
-              <Footer />
+              <AppChrome>{children}</AppChrome>
             </WishlistProvider>
           </CartProvider>
         </AuthSessionProvider>

@@ -58,3 +58,21 @@ export function useReducedMotion(): boolean {
 
   return prefersReduced;
 }
+
+export function useIsDesktop(): boolean {
+  const [isDesktop, setIsDesktop] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 768px)");
+    setDesktop(mq);
+    const handler = (e: MediaQueryListEvent) => setDesktop(e);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
+
+  function setDesktop(mq: MediaQueryListEvent | MediaQueryList) {
+    setIsDesktop(mq.matches);
+  }
+
+  return isDesktop;
+}

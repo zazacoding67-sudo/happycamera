@@ -2,7 +2,7 @@
 
 import { useCallback, useState } from "react";
 import Link from "next/link";
-import { formatPrice } from "@/lib/format";
+import { formatPrice, formatCompactPrice } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { usePolling } from "@/lib/usePolling";
 import RevenueChart from "@/components/admin/RevenueChart";
@@ -37,9 +37,9 @@ export default function DashboardClient({
   usePolling(load, 60_000);
 
   return (
-    <div className="p-8">
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold tracking-tight text-[var(--color-text-primary)]">
+    <div className="p-4 sm:p-6 lg:p-8">
+      <div className="mb-6 sm:mb-8">
+        <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-[var(--color-text-primary)]">
           Dashboard
         </h1>
         <p className="mt-1 text-sm text-[var(--color-text-secondary)]">
@@ -60,7 +60,7 @@ export default function DashboardClient({
         />
         <MetricCard
           label="Revenue"
-          value={formatPrice(metrics.totalRevenue)}
+          value={formatCompactPrice(metrics.totalRevenue)}
           accent="border-l-green-500"
         />
         <MetricCard
@@ -75,7 +75,7 @@ export default function DashboardClient({
         topProducts={metrics.topProducts}
       />
 
-      <div className="mt-10 grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="mt-8 sm:mt-10 grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
         <div>
           <h2 className="text-base font-bold tracking-tight text-[var(--color-text-primary)] mb-4">
             Recent Orders
@@ -83,61 +83,108 @@ export default function DashboardClient({
           {metrics.recentOrders.length === 0 ? (
             <p className="text-sm text-[var(--color-text-secondary)]">No orders yet.</p>
           ) : (
-            <div className="bg-[var(--color-surface)] border border-[var(--color-border)]">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-[var(--color-border)]">
-                    <Th>Order</Th>
-                    <Th>Customer</Th>
-                    <Th>Total</Th>
-                    <Th>Status</Th>
-                    <Th>Date</Th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {metrics.recentOrders.map((order) => (
-                    <tr
-                      key={order.id}
-                      className="border-b border-[var(--color-border)] hover:bg-[var(--color-bg)] transition-colors"
-                    >
-                      <td className="py-3 px-4">
-                        <Link
-                          href={`/admin/orders/${order.id}`}
-                          className="font-mono text-xs text-[var(--color-accent)] underline underline-offset-2 hover:no-underline"
-                        >
-                          #{order.id.slice(0, 8)}
-                        </Link>
-                      </td>
-                      <td className="py-3 px-4">
-                        <p className="text-[var(--color-text-primary)]">{order.customerName}</p>
-                        <p className="text-xs text-[var(--color-text-secondary)]">{order.customerEmail}</p>
-                      </td>
-                      <td className="py-3 px-4 font-medium text-[var(--color-text-primary)]">
-                        {formatPrice(order.totalAmount)}
-                      </td>
-                      <td className="py-3 px-4">
-                        <span
-                          className={cn(
-                            "text-[10px] font-semibold uppercase tracking-widest px-2.5 py-1 border",
-                            statusColors[order.status] || "bg-gray-50 text-gray-700 border-gray-200"
-                          )}
-                        >
-                          {order.status}
-                        </span>
-                      </td>
-                      <td className="py-3 px-4 text-xs text-[var(--color-text-secondary)]">
+            <>
+              {/* Desktop table */}
+              <div className="hidden md:block bg-[var(--color-surface)] border border-[var(--color-border)]">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-[var(--color-border)]">
+                      <Th>Order</Th>
+                      <Th>Customer</Th>
+                      <Th>Total</Th>
+                      <Th>Status</Th>
+                      <Th>Date</Th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {metrics.recentOrders.map((order) => (
+                      <tr
+                        key={order.id}
+                        className="border-b border-[var(--color-border)] hover:bg-[var(--color-bg)] transition-colors"
+                      >
+                        <td className="py-3 px-4">
+                          <Link
+                            href={`/admin/orders/${order.id}`}
+                            className="font-mono text-xs text-[var(--color-accent)] underline underline-offset-2 hover:no-underline"
+                          >
+                            #{order.id.slice(0, 8)}
+                          </Link>
+                        </td>
+                        <td className="py-3 px-4">
+                          <p className="text-[var(--color-text-primary)]">{order.customerName}</p>
+                          <p className="text-xs text-[var(--color-text-secondary)]">{order.customerEmail}</p>
+                        </td>
+                        <td className="py-3 px-4 font-medium text-[var(--color-text-primary)]">
+                          {formatPrice(order.totalAmount)}
+                        </td>
+                        <td className="py-3 px-4">
+                          <span
+                            className={cn(
+                              "text-[10px] font-semibold uppercase tracking-widest px-2.5 py-1 border",
+                              statusColors[order.status] || "bg-gray-50 text-gray-700 border-gray-200"
+                            )}
+                          >
+                            {order.status}
+                          </span>
+                        </td>
+                        <td className="py-3 px-4 text-xs text-[var(--color-text-secondary)]">
+                          {new Date(order.createdAt).toLocaleDateString("en-MY", {
+                            timeZone: "Asia/Kuala_Lumpur",
+                            year: "numeric",
+                            month: "2-digit",
+                            day: "2-digit",
+                          })}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Mobile cards */}
+              <div className="md:hidden space-y-3">
+                {metrics.recentOrders.map((order) => (
+                  <Link
+                    key={order.id}
+                    href={`/admin/orders/${order.id}`}
+                    className="block bg-[var(--color-surface)] border border-[var(--color-border)] p-4 hover:bg-[var(--color-bg)] transition-colors"
+                  >
+                    <div className="flex items-start justify-between mb-2">
+                      <span className="font-mono text-xs text-[var(--color-accent)] underline underline-offset-2">
+                        #{order.id.slice(0, 8)}
+                      </span>
+                      <span
+                        className={cn(
+                          "text-[10px] font-semibold uppercase tracking-widest px-2.5 py-1 border",
+                          statusColors[order.status] || "bg-gray-50 text-gray-700 border-gray-200"
+                        )}
+                      >
+                        {order.status}
+                      </span>
+                    </div>
+                    <p className="text-sm font-medium text-[var(--color-text-primary)]">
+                      {order.customerName}
+                    </p>
+                    <p className="text-xs text-[var(--color-text-secondary)]">
+                      {order.customerEmail}
+                    </p>
+                    <div className="flex items-center justify-between mt-3 pt-3 border-t border-[var(--color-border)] text-sm">
+                      <span className="text-[var(--color-text-secondary)]">
                         {new Date(order.createdAt).toLocaleDateString("en-MY", {
                           timeZone: "Asia/Kuala_Lumpur",
                           year: "numeric",
                           month: "2-digit",
                           day: "2-digit",
                         })}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                      </span>
+                      <span className="font-medium text-[var(--color-text-primary)]">
+                        {formatPrice(order.totalAmount)}
+                      </span>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </>
           )}
         </div>
 
@@ -187,14 +234,14 @@ function MetricCard({
   return (
     <div
       className={cn(
-        "bg-[var(--color-surface)] border border-[var(--color-border)] border-l-4 pl-5 pr-6 py-5",
+        "bg-[var(--color-surface)] border border-[var(--color-border)] border-l-4 px-4 py-4 sm:pl-5 sm:pr-6 sm:py-5",
         accent
       )}
     >
       <p className="text-[11px] font-semibold uppercase tracking-widest text-[var(--color-text-secondary)]">
         {label}
       </p>
-      <p className="mt-1.5 text-3xl font-bold text-[var(--color-text-primary)]">
+      <p className="mt-1.5 text-2xl sm:text-3xl font-bold leading-tight break-words text-[var(--color-text-primary)]">
         {value}
       </p>
     </div>

@@ -153,7 +153,7 @@ export default function DashboardLayout({
       {/* Main content */}
       <main
         className={cn(
-          "flex-1 bg-[var(--color-bg)]",
+          "flex-1 min-w-0 bg-[var(--color-bg)]",
           "pt-14 md:pt-0" // offset for mobile top bar
         )}
       >
