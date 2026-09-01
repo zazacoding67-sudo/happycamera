@@ -89,6 +89,7 @@ export default function CategoryHero({
           ))
         ) : (
           <video
+            key={String(videoFilenames)}
             ref={(el) => setVideoRef(el, 0)}
             autoPlay
             loop
