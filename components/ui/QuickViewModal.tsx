@@ -153,7 +153,7 @@ export default function QuickViewModal({ product, onClose }: Props) {
 
           {/* Image Gallery */}
           <div className="w-full md:w-1/2 px-4 pt-2 pb-1 md:p-9 flex flex-col h-full">
-            <div className="relative mx-auto max-w-[200px] max-h-[150px] flex items-center justify-center overflow-hidden bg-gray-100 md:max-w-none md:aspect-square md:overflow-hidden">
+            <div className="relative mx-auto max-w-[320px] max-h-[300px] flex items-center justify-center overflow-hidden bg-gray-100 md:max-w-none md:max-h-none md:aspect-square md:overflow-hidden">
               {validImages.length > 0 ? (
                 <>
                   <img
@@ -226,7 +226,7 @@ export default function QuickViewModal({ product, onClose }: Props) {
             </p>
 
             {/* Title */}
-            <h2 className="text-lg md:text-xl font-semibold text-black mt-1.5 md:mt-3">
+            <h2 className="text-[15px] md:text-[17px] font-semibold text-black mt-1.5 md:mt-3">
               {product.name}
             </h2>
 
@@ -248,7 +248,7 @@ export default function QuickViewModal({ product, onClose }: Props) {
 
             {/* Price */}
             <div className="mt-2.5 md:mt-5">
-              <span className="text-[15px] md:text-lg font-bold text-black">
+              <span className="text-[15px] md:text-[16px] font-bold text-black">
                 {formatPrice(product.price)}
               </span>
               {product.originalPrice && product.originalPrice > product.price && (
