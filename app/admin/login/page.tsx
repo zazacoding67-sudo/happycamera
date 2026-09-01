@@ -112,6 +112,16 @@ export default function AdminLoginPage() {
       {/* Right panel — form */}
       <div className="flex-1 flex items-center justify-center px-6 py-12 bg-[#F8F7F4]">
         <div className="w-full max-w-sm">
+          {/* Mobile header hidden inside form panel */}
+          <div className="md:hidden flex items-center gap-2.5 mb-3">
+            <Camera size={20} className="text-black" />
+            <span className="text-sm font-bold tracking-tight text-[#1A1A1A]">
+              Happy Camera
+            </span>
+          </div>
+          <p className="md:hidden text-[11px] font-semibold uppercase tracking-[0.15em] text-[#6B6B6B] mb-6">
+            Admin Access
+          </p>
           {/* Desktop header hidden inside form panel */}
           <div className="hidden md:flex items-center gap-2.5 mb-1">
             <Camera size={20} className="text-black" />
