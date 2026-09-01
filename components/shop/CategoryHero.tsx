@@ -31,21 +31,31 @@ export default function CategoryHero({
   const videoList: string[] = isArray ? videoFilenames : [];
 
   const [activeIndex, setActiveIndex] = useState(0);
+  const [mountedCount, setMountedCount] = useState(1);
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const setPlaybackAndPlay = useCallback((el: HTMLVideoElement) => {
     el.playbackRate = playbackRate;
     el.play().catch(() => {});
   }, [playbackRate]);
 
+  const SWAP_MS = 5000;
+  const PRELOAD_LEAD_MS = 1500;
+
   useEffect(() => {
-    if (!isArray || videoList.length <= 1) return;
-    intervalRef.current = setInterval(() => {
+    if (!isArray || videoList.length <= 1) {
+      setMountedCount(videoList.length || 1);
+      return;
+    }
+    const swapTimer = window.setInterval(() => {
       setActiveIndex((prev) => (prev + 1) % videoList.length);
-    }, 5000);
+    }, SWAP_MS);
+    const leadTimer = window.setTimeout(() => {
+      setMountedCount(Math.min(videoList.length, 2));
+    }, SWAP_MS - PRELOAD_LEAD_MS);
     return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current);
+      window.clearInterval(swapTimer);
+      window.clearTimeout(leadTimer);
     };
   }, [isArray, videoList.length]);
 
@@ -71,7 +81,7 @@ export default function CategoryHero({
     <div className="relative w-full overflow-hidden h-[250px] md:h-[400px]">
       {videoFilenames ? (
         isArray ? (
-          videoList.map((filename, i) => (
+          videoList.slice(0, mountedCount).map((filename, i) => (
             <video
               key={filename}
               ref={(el) => setVideoRef(el, i)}
