@@ -16,8 +16,10 @@ function formatTitle(s: string): string {
     .replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
+const VIDEO_CACHE_VERSION = "1";
+
 function posterFor(filename: string): string {
-  return `/videos/${filename.replace(/\.mp4$/i, "-poster.jpg")}`;
+  return `/videos/${filename.replace(/\.mp4$/i, "-poster.jpg")}?v=${VIDEO_CACHE_VERSION}`;
 }
 
 export default function CategoryHero({
@@ -94,7 +96,7 @@ export default function CategoryHero({
                 i === activeIndex ? "opacity-100" : "opacity-0"
               }`}
             >
-              <source src={`/videos/${filename}`} type="video/mp4" />
+              <source src={`/videos/${filename}?v=${VIDEO_CACHE_VERSION}`} type="video/mp4" />
             </video>
           ))
         ) : (
@@ -108,7 +110,7 @@ export default function CategoryHero({
             poster={posterFor(videoFilenames)}
             className="absolute inset-0 w-full h-full object-cover z-0"
           >
-            <source src={`/videos/${videoFilenames}`} type="video/mp4" />
+            <source src={`/videos/${videoFilenames}?v=${VIDEO_CACHE_VERSION}`} type="video/mp4" />
           </video>
         )
       ) : (
