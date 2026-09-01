@@ -9,7 +9,7 @@ You are picking up work on the Happy Camera e-commerce project. The following su
 - Next.js 16 (Turbopack, App Router), TypeScript 6, Tailwind CSS v3.4.19
 - Prisma 7.8.0 with PrismaPg adapter (no `datasource.url` in schema)
 - Supabase PostgreSQL + Storage
-- NextAuth v4, Toyyibpay, lucide-react, framer-motion, clsx + tailwind-merge, bcryptjs, resend, react-easy-crop v6
+- NextAuth v4, CHIP, lucide-react, framer-motion, clsx + tailwind-merge, bcryptjs, resend, react-easy-crop v6
 
 ## Currency
 All prices in RM (Malaysian Ringgit). Use `formatPrice()` from `lib/format.ts`. No `$` anywhere.

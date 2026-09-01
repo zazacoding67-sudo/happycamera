@@ -54,7 +54,7 @@ export default function ClosingCTA() {
                 alt=""
                 fill
                 className="object-cover object-center md:hidden scale-[1.15]"
-                sizes="100vw"
+                sizes="115vw"
                 priority
                 quality={75}
               />
@@ -63,7 +63,7 @@ export default function ClosingCTA() {
                 alt=""
                 fill
                 className="hidden md:block object-cover object-[50%_0%]"
-                sizes="100vw"
+                sizes="115vw"
                 priority
                 quality={75}
               />
@@ -78,7 +78,7 @@ export default function ClosingCTA() {
               alt=""
               fill
               className="object-cover object-center md:hidden scale-[1.15]"
-              sizes="100vw"
+              sizes="115vw"
               priority
               quality={75}
             />
@@ -87,7 +87,7 @@ export default function ClosingCTA() {
               alt=""
               fill
               className="hidden md:block object-cover object-[50%_0%]"
-              sizes="100vw"
+              sizes="115vw"
               priority
               quality={75}
             />

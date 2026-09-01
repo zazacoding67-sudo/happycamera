@@ -101,7 +101,7 @@ test("add to cart and verify cart drawer", async ({ page }) => {
 });
 
 // ---------------------------------------------------------------------------
-// 6. Checkout → Tracking (bypasses Toyyibpay via manual order)
+// 6. Checkout → Tracking (bypasses CHIP via manual order)
 // ---------------------------------------------------------------------------
 test("manual order creation, success page order number, and tracking API work", async ({ page, request }) => {
   // Cold `.next` builds recompile routes on demand; give this admin flow extra room.
