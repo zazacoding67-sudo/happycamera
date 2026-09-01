@@ -33,7 +33,7 @@ export default function ClosingCTA() {
   return (
     <section
       ref={sectionRef}
-      className="relative w-full h-[190px] md:h-auto md:min-h-[80vh] md:aspect-auto flex items-end md:items-center justify-center overflow-hidden mt-24 md:mt-32 mb-0"
+      className="relative w-full h-[340px] md:h-auto md:min-h-[85vh] md:aspect-auto flex items-center justify-center overflow-hidden mt-24 md:mt-32 mb-0"
     >
       {mounted ? (
         <>
@@ -50,10 +50,19 @@ export default function ClosingCTA() {
               style={{ transformOrigin: "top" }}
             >
               <Image
+                src="/images/home-storefront-mobile.webp"
+                alt=""
+                fill
+                className="object-cover object-center md:hidden scale-[1.15]"
+                sizes="100vw"
+                priority
+                quality={75}
+              />
+              <Image
                 src="/images/home-storefront.webp"
                 alt=""
                 fill
-                className="object-cover object-[40%_0%] md:object-[50%_0%]"
+                className="hidden md:block object-cover object-[50%_0%]"
                 sizes="100vw"
                 priority
                 quality={75}
@@ -65,10 +74,19 @@ export default function ClosingCTA() {
         <div className="absolute top-0 -bottom-[12%] inset-x-0 md:inset-0 overflow-hidden">
           <div className="absolute inset-0">
             <Image
+              src="/images/home-storefront-mobile.webp"
+              alt=""
+              fill
+              className="object-cover object-center md:hidden scale-[1.15]"
+              sizes="100vw"
+              priority
+              quality={75}
+            />
+            <Image
               src="/images/home-storefront.webp"
               alt=""
               fill
-              className="object-cover object-[40%_0%] md:object-[50%_0%]"
+              className="hidden md:block object-cover object-[50%_0%]"
               sizes="100vw"
               priority
               quality={75}
@@ -78,7 +96,7 @@ export default function ClosingCTA() {
       )}
       <div className="absolute inset-0 bg-amber-900/5 pointer-events-none" />
       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent pointer-events-none" />
-      <div className="relative z-10 text-center px-4 max-w-3xl pb-6 md:pb-0">
+      <div className="relative z-10 text-center px-6 max-w-3xl py-12 md:py-16 md:pb-0">
         {mounted ? (
           <>
             <motion.p
