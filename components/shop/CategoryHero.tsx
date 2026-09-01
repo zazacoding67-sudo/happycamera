@@ -16,6 +16,10 @@ function formatTitle(s: string): string {
     .replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
+function posterFor(filename: string): string {
+  return `/videos/${filename.replace(/\.mp4$/i, "-poster.jpg")}`;
+}
+
 export default function CategoryHero({
   title,
   description,
@@ -75,6 +79,7 @@ export default function CategoryHero({
               loop={i === activeIndex}
               muted
               playsInline
+              poster={posterFor(filename)}
               className={`absolute inset-0 w-full h-full object-cover z-0 transition-opacity duration-1000 ${
                 i === activeIndex ? "opacity-100" : "opacity-0"
               }`}
@@ -89,6 +94,7 @@ export default function CategoryHero({
             loop
             muted
             playsInline
+            poster={posterFor(videoFilenames)}
             className="absolute inset-0 w-full h-full object-cover z-0"
           >
             <source src={`/videos/${videoFilenames}`} type="video/mp4" />
