@@ -128,6 +128,7 @@ export default async function OrderDetailPage({
               currentStatus={order.status}
               currentCourier={order.courierName || ""}
               currentTracking={order.trackingNumber || ""}
+              currentShippingAddress={order.shippingAddress}
             />
           </div>
 

@@ -13,6 +13,7 @@ export default function CartDrawer() {
   const [customerName, setCustomerName] = useState("");
   const [customerEmail, setCustomerEmail] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
+  const [shippingAddress, setShippingAddress] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [checkoutError, setCheckoutError] = useState("");
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -27,7 +28,7 @@ export default function CartDrawer() {
   );
 
   const handleCheckout = async () => {
-    if (!customerName || !customerEmail || !customerPhone) return;
+    if (!customerName || !customerEmail || !customerPhone || !shippingAddress) return;
 
     setIsLoading(true);
     setCheckoutError("");
@@ -41,6 +42,7 @@ export default function CartDrawer() {
           customerName,
           customerEmail,
           customerPhone,
+          shippingAddress,
         }),
       });
 
@@ -207,6 +209,14 @@ export default function CartDrawer() {
                   required
                   className="w-full border border-[var(--color-border)] px-3 py-2 text-sm outline-none focus:border-[var(--color-text-primary)] transition-colors"
                 />
+                <textarea
+                  rows={3}
+                  placeholder="Shipping Address"
+                  value={shippingAddress}
+                  onChange={(e) => setShippingAddress(e.target.value)}
+                  required
+                  className="w-full border border-[var(--color-border)] px-3 py-2 text-sm outline-none focus:border-[var(--color-text-primary)] transition-colors resize-none"
+                />
                 <div className="flex items-center justify-between mt-2">
                   <span className="text-sm font-medium text-[var(--color-text-primary)]">
                     Subtotal
@@ -236,7 +246,7 @@ export default function CartDrawer() {
                   variant="primary"
                   className="w-full"
                   onClick={handleCheckout}
-                  disabled={isLoading || !customerName || !customerEmail || !customerPhone}
+                  disabled={isLoading || !customerName || !customerEmail || !customerPhone || !shippingAddress}
                   status={isLoading ? "loading" : "idle"}
                 >
                   Checkout

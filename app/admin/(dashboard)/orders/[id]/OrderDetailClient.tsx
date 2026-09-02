@@ -19,6 +19,7 @@ interface Props {
   currentStatus: string;
   currentCourier: string;
   currentTracking: string;
+  currentShippingAddress: string | null;
 }
 
 const inputBase =
@@ -31,6 +32,7 @@ export default function OrderDetailClient({
   currentStatus,
   currentCourier,
   currentTracking,
+  currentShippingAddress,
 }: Props) {
   const router = useRouter();
   const [status, setStatus] = useState(currentStatus);
@@ -156,6 +158,12 @@ export default function OrderDetailClient({
           <h3 className={labelBase}>Shipping</h3>
         </div>
         <div className="flex flex-col gap-4">
+          <div>
+            <label className={labelBase}>Shipping Address</label>
+            <p className="mt-1.5 whitespace-pre-wrap text-sm leading-relaxed text-[var(--color-text-primary)]">
+              {currentShippingAddress?.trim() || "No address provided"}
+            </p>
+          </div>
           <div>
             <label className={labelBase}>Courier Name</label>
             <input

@@ -5,9 +5,9 @@ import { createOrderWithOrderNumber } from "@/lib/orderFactory";
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { items, customerName, customerEmail, customerPhone } = body;
+    const { items, customerName, customerEmail, customerPhone, shippingAddress } = body;
 
-    if (!items?.length || !customerName || !customerEmail || !customerPhone) {
+    if (!items?.length || !customerName || !customerEmail || !customerPhone || !shippingAddress) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
@@ -36,6 +36,7 @@ export async function POST(request: Request) {
       customerName,
       customerEmail,
       customerPhone,
+      shippingAddress,
       totalAmount,
       status: "PENDING",
       items: {

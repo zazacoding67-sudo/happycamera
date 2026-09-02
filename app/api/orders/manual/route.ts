@@ -37,7 +37,7 @@ export async function POST(request: Request) {
 
   try {
     const body = await request.json();
-    const { customerName, customerEmail, customerPhone, itemsDescription, totalAmount, courierName, trackingNumber } = body;
+    const { customerName, customerEmail, customerPhone, shippingAddress, itemsDescription, totalAmount, courierName, trackingNumber } = body;
 
     const errors: Record<string, string> = {};
     validate(errors, { customerName, customerEmail, itemsDescription, totalAmount, courierName, trackingNumber });
@@ -50,6 +50,7 @@ export async function POST(request: Request) {
       customerName: customerName.trim(),
       customerEmail: customerEmail.trim(),
       customerPhone: customerPhone || "",
+      shippingAddress: shippingAddress || null,
       totalAmount,
       status: "SHIPPED",
       source: "MANUAL",

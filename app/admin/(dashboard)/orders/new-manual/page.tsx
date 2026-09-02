@@ -44,6 +44,7 @@ export default function NewManualOrderPage() {
   const [customerName, setCustomerName] = useState("");
   const [customerEmail, setCustomerEmail] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
+  const [shippingAddress, setShippingAddress] = useState("");
   const [itemsDescription, setItemsDescription] = useState("");
   const [totalAmount, setTotalAmount] = useState("");
   const [courierName, setCourierName] = useState("");
@@ -104,6 +105,7 @@ export default function NewManualOrderPage() {
           customerName: customerName.trim(),
           customerEmail: customerEmail.trim(),
           customerPhone: customerPhone.trim() || null,
+          shippingAddress: shippingAddress.trim() || null,
           itemsDescription: itemsDescription.trim(),
           totalAmount: parseFloat(totalAmount),
           courierName: courierName.trim(),
@@ -249,6 +251,16 @@ export default function NewManualOrderPage() {
             <div className={cardBase}>
               <p className={sectionHeader}>Shipping</p>
               <div className="mt-4 flex flex-col gap-4">
+                <div>
+                  <label className={labelBase}>Shipping Address</label>
+                  <textarea
+                    rows={3}
+                    value={shippingAddress}
+                    onChange={(e) => setShippingAddress(e.target.value)}
+                    placeholder="Full shipping address (optional)"
+                    className={`mt-1.5 resize-none ${inputBase}`}
+                  />
+                </div>
                 <div>
                   <label className={labelBase}>Courier Name *</label>
                   <input
