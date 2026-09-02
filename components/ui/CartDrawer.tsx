@@ -22,6 +22,17 @@ export default function CartDrawer() {
     if (isOpen) scrollRef.current?.scrollTo({ top: 0 });
   }, [isOpen]);
 
+  useEffect(() => {
+    const onPageShow = (event: PageTransitionEvent) => {
+      if (event.persisted) {
+        setIsLoading(false);
+        setCheckoutError("");
+      }
+    };
+    window.addEventListener("pageshow", onPageShow);
+    return () => window.removeEventListener("pageshow", onPageShow);
+  }, []);
+
   const subtotal = items.reduce(
     (sum, item) => sum + item.price * item.quantity,
     0
