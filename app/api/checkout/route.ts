@@ -5,16 +5,35 @@ import { createOrderWithOrderNumber } from "@/lib/orderFactory";
 export async function POST(request: Request) {
   try {
     const body = await request.json();
+    if (typeof body !== "object" || body === null) {
+      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+    }
+
     const { items, customerName, customerEmail, customerPhone, shippingAddress } = body;
 
     if (!items?.length || !customerName || !customerEmail || !customerPhone || !shippingAddress) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
+    if (!Array.isArray(items)) {
+      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+    }
+
+    const lineItems: { productId: string; quantity: number; name: string; price: number }[] = [];
+
     for (const item of items) {
+      if (
+        !item ||
+        typeof item.productId !== "string" ||
+        !Number.isInteger(item.quantity) ||
+        item.quantity < 1
+      ) {
+        return NextResponse.json({ error: "Invalid item in cart." }, { status: 400 });
+      }
+
       const product = await prisma.product.findUnique({
         where: { id: item.productId },
-        select: { stockQuantity: true, name: true },
+        select: { id: true, stockQuantity: true, name: true, price: true },
       });
       if (!product) {
         return NextResponse.json({ error: `Product not found.` }, { status: 400 });
@@ -24,9 +43,16 @@ export async function POST(request: Request) {
           error: `"${product.name}" only has ${product.stockQuantity} in stock. Please reduce the quantity.`,
         }, { status: 400 });
       }
+
+      lineItems.push({
+        productId: product.id,
+        quantity: item.quantity,
+        name: product.name,
+        price: product.price,
+      });
     }
 
-    const totalAmount = items.reduce(
+    const totalAmount = lineItems.reduce(
       (sum: number, item: { price: number; quantity: number }) =>
         sum + item.price * item.quantity,
       0
@@ -40,13 +66,11 @@ export async function POST(request: Request) {
       totalAmount,
       status: "PENDING",
       items: {
-        create: items.map(
-          (item: { productId: string; quantity: number; price: number }) => ({
-            productId: item.productId,
-            quantity: item.quantity,
-            price: item.price,
-          })
-        ),
+        create: lineItems.map((item) => ({
+          productId: item.productId,
+          quantity: item.quantity,
+          price: item.price,
+        })),
       },
     });
 
@@ -60,13 +84,11 @@ export async function POST(request: Request) {
       },
       purchase: {
         currency: "MYR",
-        products: items.map(
-          (item: { name?: string; productId: string; price: number; quantity: number }) => ({
-            name: item.name || `Product ${item.productId}`,
-            price: Math.round(item.price * 100),
-            quantity: item.quantity,
-          })
-        ),
+        products: lineItems.map((item) => ({
+          name: item.name,
+          price: Math.round(item.price * 100),
+          quantity: item.quantity,
+        })),
       },
       brand_id: process.env.CHIP_BRAND_ID,
       success_redirect: `${baseUrl}/shop/success?ref=${order.id}`,
@@ -120,7 +142,17 @@ export async function POST(request: Request) {
           providerErr.message.includes("fetch"));
 
       if (isProviderError) {
-        await prisma.order.delete({ where: { id: order.id } }).catch(() => {});
+        try {
+          await prisma.$transaction([
+            prisma.orderItem.deleteMany({ where: { orderId: order.id } }),
+            prisma.order.delete({ where: { id: order.id } }),
+          ]);
+        } catch (cleanupErr) {
+          console.error("Checkout: failed to clean up order after provider error.", {
+            orderId: order.id,
+            error: cleanupErr,
+          });
+        }
         return NextResponse.json(
           { error: "Payment provider is temporarily unavailable. Please try again shortly." },
           { status: 503 }
