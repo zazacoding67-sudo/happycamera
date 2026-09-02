@@ -24,10 +24,10 @@ export default async function HomePage() {
       <TrustSignals />
 
       <FeaturedProductSpotlight
-        title="SONY ALPHA 7 V MIRRORLESS DIGITAL CAMERA"
+        title="SONY ALPHA A6700 MIRRORLESS CAMERA"
         mainImage="/images/hero-main-camera.png"
         ctaLabel="Shop Now"
-        ctaLink="/product/sony-alpha-a7c-ii"
+        ctaLink="/product/sony-alpha-a6700"
       />
 
       <NewArrivals products={newArrivals} />

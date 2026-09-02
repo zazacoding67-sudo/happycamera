@@ -101,7 +101,7 @@ export default function ProductCard({
     <div className="flex flex-col group">
       {/* Image box */}
       <div className={cn("relative aspect-[4/5] md:aspect-square w-full bg-white border border-gray-200 overflow-hidden p-2", soldOut && "opacity-60 grayscale")}>
-        <Link href={`/product/${slug}`} className="block w-full h-full flex items-center justify-center">
+        <Link href={`/product/${slug}`} className="relative block w-full h-full flex items-center justify-center">
           {imageUrl ? (
             <Image
               src={imageUrl}

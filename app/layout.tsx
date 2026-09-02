@@ -31,10 +31,33 @@ const instrumentSerif = Instrument_Serif({
 
 export const metadata: Metadata = {
   title: "Happy Camera",
-  description: "Premium camera gear — new and preloved.",
+  description: "Premium camera gear — new and preloved. Film cameras, digital bodies, lenses, bags and dry boxes in Malaysia.",
+  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || "https://happycamera.com.my"),
   icons: { icon: "/favicon.jpg?v=2" },
   verification: {
     google: "HREYyQtXdFsPIJdlXEPp4rj-6LJYx1CmibLfWK7yeko",
+  },
+  openGraph: {
+    type: "website",
+    siteName: "Happy Camera",
+    title: "Happy Camera",
+    description: "Premium camera gear — new and preloved. Film cameras, digital bodies, lenses, bags and dry boxes in Malaysia.",
+    url: "/",
+    locale: "en_MY",
+    images: [
+      {
+        url: "/images/hero-main-camera.png",
+        width: 1695,
+        height: 928,
+        alt: "Happy Camera",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Happy Camera",
+    description: "Premium camera gear — new and preloved.",
+    images: ["/images/hero-main-camera.png"],
   },
 };
 

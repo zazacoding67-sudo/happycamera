@@ -32,8 +32,11 @@ export async function generateMetadata({
     title: `${product.name} — Happy Camera`,
     description: product.description.slice(0, 160),
     openGraph: {
+      type: "website",
+      siteName: "Happy Camera",
       title: product.name,
       description: product.description.slice(0, 160),
+      url: `/product/${slug}`,
       images: product.images[0] ? [{ url: product.images[0] }] : [],
     },
   };

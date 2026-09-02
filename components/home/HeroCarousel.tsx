@@ -20,11 +20,11 @@ interface HeroSlide {
 const slides: HeroSlide[] = [
   {
     brand: "Sony",
-    headline: "The Sony Alpha 7",
+    headline: "The Sony A6700",
     description:
-      "Full-frame precision, class-leading autofocus. The mirrorless that elevates every shot.",
+      "Compact APS-C power with class-leading autofocus. The mirrorless that elevates every shot.",
     ctaLabel: "Shop Now",
-    ctaLink: "/product/sony-alpha-a7c-ii",
+    ctaLink: "/product/sony-alpha-a6700",
     image: "/images/hero-section.webp",
     objectClass: "object-[85%_center] md:object-[62%_center]",
   },
