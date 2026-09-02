@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { X, Trash2, ShoppingBag } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { X, Trash2, ShoppingBag, Minus, Plus } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useCart } from "@/lib/CartContext";
 import { formatPrice } from "@/lib/format";
@@ -9,12 +9,17 @@ import Button from "@/components/ui/Button";
 import { materialEase } from "@/lib/motion";
 
 export default function CartDrawer() {
-  const { items, isOpen, closeCart, removeFromCart } = useCart();
+  const { items, isOpen, closeCart, removeFromCart, updateQuantity } = useCart();
   const [customerName, setCustomerName] = useState("");
   const [customerEmail, setCustomerEmail] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [checkoutError, setCheckoutError] = useState("");
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (isOpen) scrollRef.current?.scrollTo({ top: 0 });
+  }, [isOpen]);
 
   const subtotal = items.reduce(
     (sum, item) => sum + item.price * item.quantity,
@@ -71,6 +76,7 @@ export default function CartDrawer() {
             exit={{ x: "100%" }}
             transition={{ type: "spring", damping: 28, stiffness: 300 }}
             className="fixed top-0 right-0 h-full w-full max-w-md bg-[var(--color-surface)] shadow-2xl z-50 md:flex md:flex-col md:overflow-hidden overflow-y-auto"
+            ref={scrollRef}
           >
             <div className="flex items-center justify-between px-6 h-16 border-b border-[var(--color-border)]">
               <h2 className="text-lg font-bold tracking-tight text-[var(--color-text-primary)]">
@@ -129,10 +135,35 @@ export default function CartDrawer() {
                           <p className="text-sm font-medium text-[var(--color-text-primary)] truncate">
                             {item.name}
                           </p>
-                          <p className="text-xs text-[var(--color-text-secondary)] mt-0.5">
-                            {formatPrice(item.price)} × {item.quantity}
-                          </p>
-                          <p className="text-sm font-semibold text-[var(--color-text-primary)] mt-0.5">
+                          <div className="flex items-center gap-2 mt-2">
+                            <div className="flex items-center border border-[var(--color-border)] shrink-0">
+                              <button
+                                onClick={() => updateQuantity(item.productId, item.quantity - 1)}
+                                className="h-8 w-8 flex items-center justify-center text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors"
+                                aria-label={`Decrease quantity of ${item.name}`}
+                              >
+                                <Minus size={14} />
+                              </button>
+                              <span className="w-8 text-center text-[13px] font-medium tabular-nums text-[var(--color-text-primary)]">
+                                {item.quantity}
+                              </span>
+                              <button
+                                onClick={() => updateQuantity(item.productId, item.quantity + 1)}
+                                disabled={
+                                  item.stockQuantity !== undefined &&
+                                  item.quantity >= item.stockQuantity
+                                }
+                                className="h-8 w-8 flex items-center justify-center text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] disabled:text-[var(--color-text-secondary)]/40 disabled:cursor-not-allowed transition-colors"
+                                aria-label={`Increase quantity of ${item.name}`}
+                              >
+                                <Plus size={14} />
+                              </button>
+                            </div>
+                            <span className="text-xs text-[var(--color-text-secondary)] truncate">
+                              {formatPrice(item.price)}
+                            </span>
+                          </div>
+                          <p className="text-sm font-semibold text-[var(--color-text-primary)] mt-1.5">
                             {formatPrice(item.price * item.quantity)}
                           </p>
                         </div>

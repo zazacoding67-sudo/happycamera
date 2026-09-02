@@ -18,6 +18,7 @@ export default function StickyAddToCart({ product }: StickyAddToCartProps) {
       price: product.price,
       imageUrl: product.images?.[0] || "",
       quantity: 1,
+      stockQuantity: product.stockQuantity,
     });
     openCart();
   };

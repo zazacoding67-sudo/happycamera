@@ -110,6 +110,7 @@ export default function QuickViewModal({ product, onClose }: Props) {
       price: product.price,
       imageUrl,
       quantity,
+      stockQuantity: product.stockQuantity,
     });
     setTimeout(() => {
       setCartStatus("success");

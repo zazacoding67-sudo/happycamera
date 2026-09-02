@@ -21,6 +21,7 @@ interface CartContextValue {
   closeCart: () => void;
   addToCart: (item: CartItem) => void;
   removeFromCart: (productId: string) => void;
+  updateQuantity: (productId: string, quantity: number) => void;
   clearCart: () => void;
 }
 
@@ -81,6 +82,21 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setItems((prev) => prev.filter((i) => i.productId !== productId));
   }, []);
 
+  const updateQuantity = useCallback((productId: string, quantity: number) => {
+    if (quantity < 1) {
+      setItems((prev) => prev.filter((i) => i.productId !== productId));
+      return;
+    }
+    setItems((prev) =>
+      prev.map((i) => {
+        if (i.productId !== productId) return i;
+        const clamped =
+          i.stockQuantity !== undefined ? Math.min(i.stockQuantity, quantity) : quantity;
+        return { ...i, quantity: clamped };
+      })
+    );
+  }, []);
+
   const clearCart = useCallback(() => {
     setItems([]);
   }, []);
@@ -94,9 +110,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
       closeCart,
       addToCart,
       removeFromCart,
+      updateQuantity,
       clearCart,
     }),
-    [items, isOpen, lastAddedId, openCart, closeCart, addToCart, removeFromCart, clearCart]
+    [items, isOpen, lastAddedId, openCart, closeCart, addToCart, removeFromCart, updateQuantity, clearCart]
   );
 
   return (

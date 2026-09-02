@@ -23,6 +23,7 @@ export default function AddToCartButton({ product }: AddToCartButtonProps) {
       price: product.price,
       imageUrl: product.images?.[0] || "",
       quantity: 1,
+      stockQuantity: product.stockQuantity,
     });
 
     setTimeout(() => {
