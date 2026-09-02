@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { useWishlist } from "@/lib/WishlistContext";
 import { Heart, Eye } from "lucide-react";
@@ -102,11 +103,13 @@ export default function ProductCard({
       <div className={cn("relative aspect-[4/5] md:aspect-square w-full bg-white border border-gray-200 overflow-hidden p-2", soldOut && "opacity-60 grayscale")}>
         <Link href={`/product/${slug}`} className="block w-full h-full flex items-center justify-center">
           {imageUrl ? (
-            <img
+            <Image
               src={imageUrl}
               alt={name}
-              className="max-w-full max-h-full object-contain object-center block"
-              loading="lazy"
+              fill
+              sizes="(max-width: 768px) 50vw, 25vw"
+              className="object-contain object-center p-2"
+              priority={false}
             />
           ) : (
             <span className="text-xs text-gray-400">No image</span>

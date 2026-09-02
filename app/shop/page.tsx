@@ -8,6 +8,8 @@ import CategoryHero from "@/components/shop/CategoryHero";
 import ShopHero from "@/components/shop/ShopHero";
 import type { Metadata } from "next";
 
+export const revalidate = 60;
+
 export const metadata: Metadata = {
   title: "Shop All Gear — Happy Camera",
   description: "Browse our curated collection of new and preloved film cameras, lenses, and accessories.",

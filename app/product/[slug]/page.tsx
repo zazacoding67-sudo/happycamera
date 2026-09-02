@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import BuyArea from "@/components/ui/BuyArea";
@@ -8,13 +9,24 @@ import ProductCard from "@/components/ui/ProductCard";
 import { formatPrice } from "@/lib/format";
 import type { Metadata } from "next";
 
+export const revalidate = 300;
+
+const getProduct = cache(async (slug: string) => {
+  return prisma.product.findUnique({
+    where: { slug },
+    include: {
+      reviews: { where: { approved: true }, orderBy: { createdAt: "desc" } },
+    },
+  });
+});
+
 export async function generateMetadata({
   params,
 }: {
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const product = await prisma.product.findUnique({ where: { slug } });
+  const product = await getProduct(slug);
   if (!product) return { title: "Product Not Found" };
   return {
     title: `${product.name} — Happy Camera`,
@@ -33,24 +45,26 @@ export default async function ProductPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const product = await prisma.product.findUnique({
-    where: { slug },
-    include: {
-      reviews: { where: { approved: true }, orderBy: { createdAt: "desc" } },
-    },
-  });
+  const productPromise = getProduct(slug);
+
+  const relatedPromise = productPromise.then((product) =>
+    product?.categoryId
+      ? prisma.product.findMany({
+          where: {
+            categoryId: product.categoryId,
+            id: { not: product.id },
+          },
+          take: 4,
+        })
+      : []
+  );
+
+  const [product, relatedProducts] = await Promise.all([
+    productPromise,
+    relatedPromise,
+  ]);
 
   if (!product) notFound();
-
-  const relatedProducts = product.categoryId
-    ? await prisma.product.findMany({
-        where: {
-          categoryId: product.categoryId,
-          id: { not: product.id },
-        },
-        take: 4,
-      })
-    : [];
 
   const cartProduct = {
     id: product.id,
