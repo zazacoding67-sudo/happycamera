@@ -17,6 +17,7 @@ interface CartContextValue {
   items: CartItem[];
   isOpen: boolean;
   lastAddedId: number;
+  hydrated: boolean;
   openCart: () => void;
   closeCart: () => void;
   addToCart: (item: CartItem) => void;
@@ -106,6 +107,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       items,
       isOpen,
       lastAddedId,
+      hydrated,
       openCart,
       closeCart,
       addToCart,
@@ -113,7 +115,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       updateQuantity,
       clearCart,
     }),
-    [items, isOpen, lastAddedId, openCart, closeCart, addToCart, removeFromCart, updateQuantity, clearCart]
+    [items, isOpen, lastAddedId, hydrated, openCart, closeCart, addToCart, removeFromCart, updateQuantity, clearCart]
   );
 
   return (

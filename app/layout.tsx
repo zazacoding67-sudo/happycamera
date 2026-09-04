@@ -5,6 +5,7 @@ import AppChrome from "@/components/layout/AppChrome";
 import AuthSessionProvider from "@/components/layout/AuthSessionProvider";
 import { CartProvider } from "@/lib/CartContext";
 import { WishlistProvider } from "@/lib/WishlistContext";
+import { CheckoutProvider } from "@/lib/CheckoutContext";
 import { buildNavMenus } from "@/lib/nav";
 import "@/styles/globals.css";
 
@@ -74,8 +75,10 @@ export default async function RootLayout({
         <AuthSessionProvider>
           <CartProvider>
             <WishlistProvider>
-              <NavbarWrapper navMenus={navMenus} />
-              <AppChrome>{children}</AppChrome>
+              <CheckoutProvider>
+                <NavbarWrapper navMenus={navMenus} />
+                <AppChrome>{children}</AppChrome>
+              </CheckoutProvider>
             </WishlistProvider>
           </CartProvider>
         </AuthSessionProvider>

@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Truck } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { formatPrice } from "@/lib/format";
 
 const ORDER_STATUSES = [
   "PENDING",
@@ -20,6 +21,9 @@ interface Props {
   currentCourier: string;
   currentTracking: string;
   currentShippingAddress: string | null;
+  deliveryMethod: string | null;
+  deliveryRegion: string | null;
+  deliveryCharge: number | null;
 }
 
 const inputBase =
@@ -33,6 +37,9 @@ export default function OrderDetailClient({
   currentCourier,
   currentTracking,
   currentShippingAddress,
+  deliveryMethod,
+  deliveryRegion,
+  deliveryCharge,
 }: Props) {
   const router = useRouter();
   const [status, setStatus] = useState(currentStatus);
@@ -158,6 +165,40 @@ export default function OrderDetailClient({
           <h3 className={labelBase}>Shipping</h3>
         </div>
         <div className="flex flex-col gap-4">
+          <div className="grid grid-cols-2 gap-x-4 gap-y-3">
+            <div>
+              <label className={labelBase}>Delivery Method</label>
+              <p className="mt-1.5 text-sm text-[var(--color-text-primary)] capitalize">
+                {deliveryMethod === "standard"
+                  ? "Standard Shipping"
+                  : deliveryMethod === "self_collect"
+                    ? "Self Collect"
+                    : "—"}
+              </p>
+            </div>
+            <div>
+              <label className={labelBase}>Region</label>
+              <p className="mt-1.5 text-sm text-[var(--color-text-primary)]">
+                {deliveryMethod === "self_collect"
+                  ? "Store pickup"
+                  : deliveryRegion === "west_malaysia"
+                    ? "West Malaysia"
+                    : deliveryRegion === "sabah_sarawak"
+                      ? "Sabah & Sarawak"
+                      : "—"}
+              </p>
+            </div>
+            <div>
+              <label className={labelBase}>Delivery Charge</label>
+              <p className="mt-1.5 text-sm text-[var(--color-text-primary)]">
+                {deliveryCharge === null || deliveryCharge === undefined
+                  ? "—"
+                  : deliveryCharge === 0
+                    ? "Free"
+                    : formatPrice(deliveryCharge)}
+              </p>
+            </div>
+          </div>
           <div>
             <label className={labelBase}>Shipping Address</label>
             <p className="mt-1.5 whitespace-pre-wrap text-sm leading-relaxed text-[var(--color-text-primary)]">

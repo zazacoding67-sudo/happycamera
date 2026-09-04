@@ -3,6 +3,7 @@ import { CheckCircle2, Mail, Package, Truck } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { formatPrice } from "@/lib/format";
 import CartClearer from "@/components/ui/CartClearer";
+import StepIndicator from "@/components/checkout/StepIndicator";
 
 interface Props {
   searchParams: Promise<{ ref?: string }>;
@@ -26,9 +27,10 @@ export default async function SuccessPage({ searchParams }: Props) {
       <CartClearer />
       <div className="flex flex-col items-center justify-center min-h-[60vh] px-4 py-16">
         <div className="max-w-lg w-full text-center">
+          <StepIndicator currentStep={4} />
           <CheckCircle2
             size={48}
-            className="text-emerald-600 mx-auto mb-6"
+            className="text-emerald-600 mx-auto mb-6 mt-10"
             strokeWidth={1.5}
           />
 
@@ -71,6 +73,14 @@ export default async function SuccessPage({ searchParams }: Props) {
                       </p>
                     </div>
                   ))}
+                </div>
+                <div className="flex items-center justify-between px-5 py-4 border-t border-[var(--color-border)]">
+                  <p className="text-sm text-[var(--color-text-secondary)]">
+                    Delivery
+                  </p>
+                  <p className="text-sm font-medium text-[var(--color-text-primary)]">
+                    {order.deliveryCharge ? formatPrice(order.deliveryCharge) : "Free"}
+                  </p>
                 </div>
                 <div className="flex items-center justify-between px-5 py-4 border-t border-[var(--color-border)] bg-gray-50">
                   <p className="text-sm font-semibold text-[var(--color-text-primary)]">

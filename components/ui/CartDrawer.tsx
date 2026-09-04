@@ -1,74 +1,30 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { X, Trash2, ShoppingBag, Minus, Plus } from "lucide-react";
+import { useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
+import { X, Trash2, ShoppingBag, Minus, Plus, ArrowRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useCart } from "@/lib/CartContext";
 import { formatPrice } from "@/lib/format";
-import Button from "@/components/ui/Button";
 import { materialEase } from "@/lib/motion";
 
 export default function CartDrawer() {
+  const router = useRouter();
   const { items, isOpen, closeCart, removeFromCart, updateQuantity } = useCart();
-  const [customerName, setCustomerName] = useState("");
-  const [customerEmail, setCustomerEmail] = useState("");
-  const [customerPhone, setCustomerPhone] = useState("");
-  const [shippingAddress, setShippingAddress] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [checkoutError, setCheckoutError] = useState("");
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (isOpen) scrollRef.current?.scrollTo({ top: 0 });
   }, [isOpen]);
 
-  useEffect(() => {
-    const onPageShow = (event: PageTransitionEvent) => {
-      if (event.persisted) {
-        setIsLoading(false);
-        setCheckoutError("");
-      }
-    };
-    window.addEventListener("pageshow", onPageShow);
-    return () => window.removeEventListener("pageshow", onPageShow);
-  }, []);
-
   const subtotal = items.reduce(
     (sum, item) => sum + item.price * item.quantity,
     0
   );
 
-  const handleCheckout = async () => {
-    if (!customerName || !customerEmail || !customerPhone || !shippingAddress) return;
-
-    setIsLoading(true);
-    setCheckoutError("");
-
-    try {
-      const res = await fetch("/api/checkout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          items,
-          customerName,
-          customerEmail,
-          customerPhone,
-          shippingAddress,
-        }),
-      });
-
-      const data = await res.json();
-      if (res.ok && data.paymentUrl) {
-        window.location.href = data.paymentUrl;
-      } else {
-        setCheckoutError(data.error || "Checkout failed. Please try again.");
-        setIsLoading(false);
-      }
-    } catch (err) {
-      console.error("Checkout failed:", err);
-      setCheckoutError("Network error. Please try again.");
-      setIsLoading(false);
-    }
+  const handleCheckout = () => {
+    closeCart();
+    router.push("/checkout");
   };
 
   return (
@@ -196,39 +152,7 @@ export default function CartDrawer() {
 
             {items.length > 0 && (
               <div className="px-6 py-5 border-t border-[var(--color-border)] flex flex-col gap-3">
-                <input
-                  type="text"
-                  placeholder="Full Name"
-                  value={customerName}
-                  onChange={(e) => setCustomerName(e.target.value)}
-                  required
-                  className="w-full border border-[var(--color-border)] px-3 py-2 text-sm outline-none focus:border-[var(--color-text-primary)] transition-colors"
-                />
-                <input
-                  type="email"
-                  placeholder="Email"
-                  value={customerEmail}
-                  onChange={(e) => setCustomerEmail(e.target.value)}
-                  required
-                  className="w-full border border-[var(--color-border)] px-3 py-2 text-sm outline-none focus:border-[var(--color-text-primary)] transition-colors"
-                />
-                <input
-                  type="tel"
-                  placeholder="Phone"
-                  value={customerPhone}
-                  onChange={(e) => setCustomerPhone(e.target.value)}
-                  required
-                  className="w-full border border-[var(--color-border)] px-3 py-2 text-sm outline-none focus:border-[var(--color-text-primary)] transition-colors"
-                />
-                <textarea
-                  rows={3}
-                  placeholder="Shipping Address"
-                  value={shippingAddress}
-                  onChange={(e) => setShippingAddress(e.target.value)}
-                  required
-                  className="w-full border border-[var(--color-border)] px-3 py-2 text-sm outline-none focus:border-[var(--color-text-primary)] transition-colors resize-none"
-                />
-                <div className="flex items-center justify-between mt-2">
+                <div className="flex items-center justify-between">
                   <span className="text-sm font-medium text-[var(--color-text-primary)]">
                     Subtotal
                   </span>
@@ -236,32 +160,13 @@ export default function CartDrawer() {
                     {formatPrice(subtotal)}
                   </span>
                 </div>
-                <div className="flex items-center gap-2 pt-1">
-                  <span className="text-[10px] font-semibold uppercase tracking-wide text-[var(--color-text-secondary)] bg-gray-100 px-2 py-1">
-                    FPX
-                  </span>
-                  <span className="text-[10px] font-medium uppercase tracking-wide text-[var(--color-text-secondary)] bg-gray-100 px-2 py-1">
-                    Visa
-                  </span>
-                  <span className="text-[10px] font-medium uppercase tracking-wide text-[var(--color-text-secondary)] bg-gray-100 px-2 py-1">
-                    Mastercard
-                  </span>
-                  <span className="text-[10px] text-[var(--color-text-secondary)] ml-auto">
-                    Secure payment via CHIP
-                  </span>
-                </div>
-                {checkoutError && (
-                  <p className="text-xs text-red-500 text-center">{checkoutError}</p>
-                )}
-                <Button
-                  variant="primary"
-                  className="w-full"
+                <button
                   onClick={handleCheckout}
-                  disabled={isLoading || !customerName || !customerEmail || !customerPhone || !shippingAddress}
-                  status={isLoading ? "loading" : "idle"}
+                  className="w-full h-14 bg-[#1A1A1A] text-white text-[15px] font-semibold uppercase tracking-wide hover:bg-[#333] transition-colors rounded-none inline-flex items-center justify-center gap-2"
                 >
                   Checkout
-                </Button>
+                  <ArrowRight size={16} />
+                </button>
               </div>
             )}
           </motion.div>

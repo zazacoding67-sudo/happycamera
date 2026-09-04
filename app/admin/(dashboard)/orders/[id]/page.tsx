@@ -129,6 +129,9 @@ export default async function OrderDetailPage({
               currentCourier={order.courierName || ""}
               currentTracking={order.trackingNumber || ""}
               currentShippingAddress={order.shippingAddress}
+              deliveryMethod={order.deliveryMethod}
+              deliveryRegion={order.deliveryRegion}
+              deliveryCharge={order.deliveryCharge}
             />
           </div>
 
@@ -158,6 +161,16 @@ export default async function OrderDetailPage({
                   <span className="text-sm text-[var(--color-text-secondary)]">Subtotal</span>
                   <span className="text-sm text-[var(--color-text-primary)]">{formatPrice(subtotal)}</span>
                 </div>
+                {order.deliveryCharge !== null && order.deliveryCharge !== undefined && (
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-[var(--color-text-secondary)]">
+                      {order.deliveryMethod === "self_collect" ? "Self Collect" : "Delivery"}
+                    </span>
+                    <span className="text-sm text-[var(--color-text-primary)]">
+                      {order.deliveryCharge === 0 ? "Free" : formatPrice(order.deliveryCharge)}
+                    </span>
+                  </div>
+                )}
                 <div className="flex items-center justify-between pt-2 border-t border-[var(--color-border)]">
                   <span className="text-sm font-semibold text-[var(--color-text-primary)]">Total</span>
                   <span className="text-base font-bold text-[var(--color-text-primary)]">

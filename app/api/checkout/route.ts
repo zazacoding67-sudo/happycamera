@@ -1,6 +1,17 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { createOrderWithOrderNumber } from "@/lib/orderFactory";
+import {
+  isValidDeliveryMethod,
+  isValidDeliveryRegion,
+  computeDeliveryCharge,
+  type DeliveryMethod,
+  type DeliveryRegion,
+} from "@/lib/delivery";
+
+function deliveryLabel(method: DeliveryMethod): string {
+  return method === "standard" ? "Standard Shipping" : "Self Collect";
+}
 
 export async function POST(request: Request) {
   try {
@@ -9,9 +20,17 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
-    const { items, customerName, customerEmail, customerPhone, shippingAddress } = body;
+    const {
+      items,
+      customerName,
+      customerEmail,
+      customerPhone,
+      shippingAddress,
+      deliveryMethod,
+      deliveryRegion,
+    } = body;
 
-    if (!items?.length || !customerName || !customerEmail || !customerPhone || !shippingAddress) {
+    if (!items?.length || !customerName || !customerEmail || !customerPhone) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
@@ -22,6 +41,33 @@ export async function POST(request: Request) {
     if (typeof customerEmail !== "string" || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(customerEmail)) {
       return NextResponse.json({ error: "Please enter a valid email address." }, { status: 400 });
     }
+
+    if (!isValidDeliveryMethod(deliveryMethod)) {
+      return NextResponse.json({ error: "Please choose a delivery method." }, { status: 400 });
+    }
+
+    const method: DeliveryMethod = deliveryMethod;
+
+    let region: DeliveryRegion | undefined;
+    if (method === "standard") {
+      if (!isValidDeliveryRegion(deliveryRegion)) {
+        return NextResponse.json(
+          { error: "Please choose a delivery region." },
+          { status: 400 }
+        );
+      }
+      region = deliveryRegion;
+      if (typeof shippingAddress !== "string" || !shippingAddress.trim()) {
+        return NextResponse.json(
+          { error: "Please enter a shipping address." },
+          { status: 400 }
+        );
+      }
+    } else {
+      region = undefined;
+    }
+
+    const deliveryCharge = computeDeliveryCharge(method, region);
 
     const lineItems: { productId: string; quantity: number; name: string; price: number }[] = [];
 
@@ -56,17 +102,22 @@ export async function POST(request: Request) {
       });
     }
 
-    const totalAmount = lineItems.reduce(
+    const subtotal = lineItems.reduce(
       (sum: number, item: { price: number; quantity: number }) =>
         sum + item.price * item.quantity,
       0
     );
 
+    const totalAmount = subtotal + deliveryCharge;
+
     const order = await createOrderWithOrderNumber({
       customerName,
       customerEmail,
       customerPhone,
-      shippingAddress,
+      shippingAddress: method === "standard" ? shippingAddress : null,
+      deliveryMethod: method,
+      deliveryRegion: region ?? null,
+      deliveryCharge,
       totalAmount,
       status: "PENDING",
       items: {
@@ -88,11 +139,22 @@ export async function POST(request: Request) {
       },
       purchase: {
         currency: "MYR",
-        products: lineItems.map((item) => ({
-          name: item.name,
-          price: Math.round(item.price * 100),
-          quantity: item.quantity,
-        })),
+        products: [
+          ...lineItems.map((item) => ({
+            name: item.name,
+            price: Math.round(item.price * 100),
+            quantity: item.quantity,
+          })),
+          ...(deliveryCharge > 0
+            ? [
+                {
+                  name: deliveryLabel(method),
+                  price: Math.round(deliveryCharge * 100),
+                  quantity: 1,
+                },
+              ]
+            : []),
+        ],
       },
       brand_id: process.env.CHIP_BRAND_ID,
       success_redirect: `${baseUrl}/shop/success?ref=${order.id}`,
