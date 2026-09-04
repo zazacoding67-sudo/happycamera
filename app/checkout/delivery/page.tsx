@@ -152,6 +152,7 @@ export default function CheckoutDeliveryPage() {
               tabIndex={0}
               onClick={() => setMethod("standard")}
               onKeyDown={(e) => {
+                if (e.target !== e.currentTarget) return;
                 if (e.key === "Enter" || e.key === " ") {
                   e.preventDefault();
                   setMethod("standard");
@@ -261,6 +262,7 @@ export default function CheckoutDeliveryPage() {
               tabIndex={0}
               onClick={() => setMethod("self_collect")}
               onKeyDown={(e) => {
+                if (e.target !== e.currentTarget) return;
                 if (e.key === "Enter" || e.key === " ") {
                   e.preventDefault();
                   setMethod("self_collect");
