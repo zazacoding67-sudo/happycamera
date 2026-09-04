@@ -1,9 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/lib/CartContext";
 import { useCheckout } from "@/lib/CheckoutContext";
+import { standardTransition, useReducedMotion } from "@/lib/motion";
 import {
   DELIVERY_CHARGES,
   STORE_ADDRESS,
@@ -26,6 +28,7 @@ export default function CheckoutDeliveryPage() {
   const router = useRouter();
   const { items, hydrated: cartHydrated } = useCart();
   const { info, setInfo } = useCheckout();
+  const reduced = useReducedMotion();
 
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -182,31 +185,55 @@ export default function CheckoutDeliveryPage() {
                         type="button"
                         onClick={() => setRegion("west_malaysia")}
                         className={cn(
-                          "flex-1 py-2.5 text-[13px] font-medium transition-colors",
+                          "relative flex-1 py-2.5 text-[13px] font-medium transition-colors",
                           info.deliveryRegion === "west_malaysia"
-                            ? "bg-[var(--color-text-primary)] text-white"
+                            ? "text-white"
                             : "text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]"
                         )}
                       >
-                        <span className="block sm:inline">West Malaysia</span>{" "}
-                        <span className="block sm:inline text-[11px] sm:text-[13px] opacity-75 mt-0.5 sm:mt-0 sm:ml-1">
-                          ({formatPrice(DELIVERY_CHARGES.west_malaysia)})
-                        </span>
+                        {info.deliveryRegion === "west_malaysia" &&
+                          (reduced ? (
+                            <div className="absolute inset-0 bg-[var(--color-text-primary)]" />
+                          ) : (
+                            <motion.div
+                              layoutId="regionPill"
+                              className="absolute inset-0 bg-[var(--color-text-primary)]"
+                              transition={standardTransition}
+                            />
+                          ))}
+                        <div className="relative z-10">
+                          <span className="block sm:inline">West Malaysia</span>{" "}
+                          <span className="block sm:inline text-[11px] sm:text-[13px] opacity-75 mt-0.5 sm:mt-0 sm:ml-1">
+                            ({formatPrice(DELIVERY_CHARGES.west_malaysia)})
+                          </span>
+                        </div>
                       </button>
                       <button
                         type="button"
                         onClick={() => setRegion("sabah_sarawak")}
                         className={cn(
-                          "flex-1 py-2.5 text-[13px] font-medium transition-colors",
+                          "relative flex-1 py-2.5 text-[13px] font-medium transition-colors",
                           info.deliveryRegion === "sabah_sarawak"
-                            ? "bg-[var(--color-text-primary)] text-white"
+                            ? "text-white"
                             : "text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]"
                         )}
                       >
-                        <span className="block sm:inline">Sabah &amp; Sarawak</span>{" "}
-                        <span className="block sm:inline text-[11px] sm:text-[13px] opacity-75 mt-0.5 sm:mt-0 sm:ml-1">
-                          ({formatPrice(DELIVERY_CHARGES.sabah_sarawak)})
-                        </span>
+                        {info.deliveryRegion === "sabah_sarawak" &&
+                          (reduced ? (
+                            <div className="absolute inset-0 bg-[var(--color-text-primary)]" />
+                          ) : (
+                            <motion.div
+                              layoutId="regionPill"
+                              className="absolute inset-0 bg-[var(--color-text-primary)]"
+                              transition={standardTransition}
+                            />
+                          ))}
+                        <div className="relative z-10">
+                          <span className="block sm:inline">Sabah &amp; Sarawak</span>{" "}
+                          <span className="block sm:inline text-[11px] sm:text-[13px] opacity-75 mt-0.5 sm:mt-0 sm:ml-1">
+                            ({formatPrice(DELIVERY_CHARGES.sabah_sarawak)})
+                          </span>
+                        </div>
                       </button>
                     </div>
                   </div>
