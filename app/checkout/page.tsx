@@ -117,16 +117,16 @@ export default function CheckoutBasketPage() {
         </span>
       </div>
 
-      <div className="flex items-center justify-between gap-3 mt-8">
+      <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-3 mt-8">
         <Link
           href="/shop"
-          className="text-sm font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] underline underline-offset-4 transition-colors"
+          className="text-sm font-medium text-center sm:text-left text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] underline underline-offset-4 transition-colors"
         >
           Continue Shopping
         </Link>
         <Button
           variant="primary"
-          className="px-8"
+          className="px-8 w-full sm:w-auto"
           onClick={() => router.push("/checkout/delivery")}
         >
           Continue to Delivery

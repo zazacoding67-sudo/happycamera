@@ -188,7 +188,10 @@ export default function CheckoutDeliveryPage() {
                             : "text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]"
                         )}
                       >
-                        West Malaysia ({formatPrice(DELIVERY_CHARGES.west_malaysia)})
+                        <span className="block sm:inline">West Malaysia</span>{" "}
+                        <span className="block sm:inline text-[11px] sm:text-[13px] opacity-75 mt-0.5 sm:mt-0 sm:ml-1">
+                          ({formatPrice(DELIVERY_CHARGES.west_malaysia)})
+                        </span>
                       </button>
                       <button
                         type="button"
@@ -200,7 +203,10 @@ export default function CheckoutDeliveryPage() {
                             : "text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]"
                         )}
                       >
-                        Sabah &amp; Sarawak ({formatPrice(DELIVERY_CHARGES.sabah_sarawak)})
+                        <span className="block sm:inline">Sabah &amp; Sarawak</span>{" "}
+                        <span className="block sm:inline text-[11px] sm:text-[13px] opacity-75 mt-0.5 sm:mt-0 sm:ml-1">
+                          ({formatPrice(DELIVERY_CHARGES.sabah_sarawak)})
+                        </span>
                       </button>
                     </div>
                   </div>
@@ -273,14 +279,14 @@ export default function CheckoutDeliveryPage() {
           </span>
         </div>
 
-        <div className="flex items-center justify-between gap-3">
+        <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-3">
           <button
             onClick={() => router.push("/checkout")}
-            className="text-sm font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] underline underline-offset-4 transition-colors"
+            className="text-sm font-medium text-center sm:text-left text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] underline underline-offset-4 transition-colors"
           >
             Back to Basket
           </button>
-          <Button variant="primary" className="px-8" onClick={handleContinue}>
+          <Button variant="primary" className="px-8 w-full sm:w-auto" onClick={handleContinue}>
             Continue to Payment
           </Button>
         </div>

@@ -68,8 +68,9 @@ test("basket → delivery → payment navigation flow works", async ({ page }) =
   await page.locator("#email").fill("e2e-checkout@happycamera.com");
   await page.locator("#phone").fill("0123456789");
   await page.locator("#address").fill("123 Jalan Test, 50000 Kuala Lumpur");
-  // choose Sabah & Sarawak region (exact match avoids the card button)
-  await page.getByRole("button", { name: "Sabah & Sarawak (RM 30)", exact: true }).click();
+  // choose Sabah & Sarawak region (anchored regex matches only the region toggle,
+  // excluding the enclosing Standard Shipping card whose name also contains this text)
+  await page.getByRole("button", { name: /^Sabah & Sarawak\s*\(RM 30\)$/ }).click();
   await page.locator("button", { hasText: /Continue to Payment/i }).click();
   await page.waitForURL("/checkout/payment", { timeout: 10000 });
 
