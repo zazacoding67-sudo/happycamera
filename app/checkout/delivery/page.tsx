@@ -20,7 +20,7 @@ import Button from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
 
 const inputBase =
-  "w-full border border-[var(--color-border)] px-3 py-2.5 text-sm outline-none focus:border-[var(--color-text-primary)] transition-colors bg-[var(--color-surface)] rounded-none";
+  "w-full border border-[var(--color-border)] px-3 py-2.5 text-base sm:text-sm outline-none focus:border-[var(--color-text-primary)] transition-colors bg-[var(--color-surface)] rounded-none";
 const labelBase =
   "block text-[11px] font-semibold uppercase tracking-widest text-[var(--color-text-secondary)] mb-1.5";
 

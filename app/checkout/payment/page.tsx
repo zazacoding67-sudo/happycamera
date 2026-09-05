@@ -382,7 +382,6 @@ export default function CheckoutPaymentPage() {
                     ref={fileInputRef}
                     type="file"
                     accept="image/*"
-                    capture="environment"
                     onChange={handleReceiptUpload}
                     className="w-full text-sm text-[var(--color-text-secondary)] file:mr-3 file:py-2 file:px-4 file:border-0 file:text-sm file:font-medium file:bg-[#F5F5F5] file:text-[var(--color-text-primary)] hover:file:bg-[#E5E5E5] transition-colors cursor-pointer"
                   />
