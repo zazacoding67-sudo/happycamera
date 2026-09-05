@@ -68,7 +68,14 @@ export default async function OrderDetailPage({
               {order.orderNumber && (
                 <span className="font-mono mr-3">Internal ID: {order.id}</span>
               )}
-              {order.createdAt.toLocaleDateString()}
+              {order.createdAt.toLocaleString("en-MY", {
+                timeZone: "Asia/Kuala_Lumpur",
+                year: "numeric",
+                month: "2-digit",
+                day: "2-digit",
+                hour: "2-digit",
+                minute: "2-digit",
+              })}
             </p>
           </div>
           <span

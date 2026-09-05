@@ -23,22 +23,26 @@ interface Order {
   totalAmount: number;
   status: string;
   source: string;
+  paymentGateway: string;
   createdAt: string;
   items: { quantity: number }[];
 }
 
 export default function OrdersClient({ orders }: { orders: Order[] }) {
   const [search, setSearch] = useState("");
+  const [pendingBt, setPendingBt] = useState(false);
 
   const filtered = useMemo(
     () =>
       orders.filter(
         (o) =>
-          o.customerName.toLowerCase().includes(search.toLowerCase()) ||
-          o.id.toLowerCase().includes(search.toLowerCase()) ||
-          (o.orderNumber ?? "").toLowerCase().includes(search.toLowerCase())
+          (!pendingBt ||
+            (o.status === "PENDING" && o.paymentGateway === "MANUAL_BANK_TRANSFER")) &&
+          (o.customerName.toLowerCase().includes(search.toLowerCase()) ||
+            o.id.toLowerCase().includes(search.toLowerCase()) ||
+            (o.orderNumber ?? "").toLowerCase().includes(search.toLowerCase()))
       ),
-    [orders, search]
+    [orders, search, pendingBt]
   );
 
   return (
@@ -60,6 +64,19 @@ export default function OrdersClient({ orders }: { orders: Order[] }) {
             onChange={(e) => setSearch(e.target.value)}
             className="w-full sm:w-56 border border-[var(--color-border)] px-3 py-2.5 text-sm outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400 transition-colors bg-[var(--color-surface)] rounded-none"
           />
+          <button
+            type="button"
+            aria-pressed={pendingBt}
+            onClick={() => setPendingBt((v) => !v)}
+            className={cn(
+              "whitespace-nowrap px-4 py-2.5 text-sm font-medium tracking-wide transition-colors rounded-none",
+              pendingBt
+                ? "bg-yellow-400 text-black hover:bg-yellow-300"
+                : "border border-[var(--color-border)] text-[var(--color-text-primary)] hover:border-yellow-400 hover:text-yellow-600"
+            )}
+          >
+            Pending Bank Transfers
+          </button>
           <Link
             href="/admin/orders/new-manual"
             className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-4 py-2.5 text-sm font-medium tracking-wide transition-colors bg-yellow-400 text-black hover:bg-yellow-300"
@@ -72,7 +89,11 @@ export default function OrdersClient({ orders }: { orders: Order[] }) {
 
       {filtered.length === 0 ? (
         <p className="text-sm text-[var(--color-text-secondary)]">
-          {search ? `No orders matching "${search}".` : "No orders yet."}
+          {search
+            ? `No orders matching "${search}".`
+            : pendingBt
+              ? "No pending bank transfer orders."
+              : "No orders yet."}
         </p>
       ) : (
         <>
@@ -139,11 +160,13 @@ export default function OrdersClient({ orders }: { orders: Order[] }) {
                       </span>
                     </td>
                     <td className="py-3 px-4 text-xs text-[var(--color-text-secondary)]">
-                      {new Date(order.createdAt).toLocaleDateString("en-MY", {
+                      {new Date(order.createdAt).toLocaleString("en-MY", {
                         timeZone: "Asia/Kuala_Lumpur",
                         year: "numeric",
                         month: "2-digit",
                         day: "2-digit",
+                        hour: "2-digit",
+                        minute: "2-digit",
                       })}
                     </td>
                   </tr>
@@ -183,6 +206,16 @@ export default function OrdersClient({ orders }: { orders: Order[] }) {
                 </p>
                 <p className="text-xs text-[var(--color-text-secondary)]">
                   {order.customerEmail}
+                </p>
+                <p className="text-xs text-[var(--color-text-secondary)] mt-0.5">
+                  {new Date(order.createdAt).toLocaleString("en-MY", {
+                    timeZone: "Asia/Kuala_Lumpur",
+                    year: "numeric",
+                    month: "2-digit",
+                    day: "2-digit",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
                 </p>
                 <div className="flex items-center justify-between mt-3 pt-3 border-t border-[var(--color-border)] text-sm">
                   <span className="text-[var(--color-text-secondary)]">

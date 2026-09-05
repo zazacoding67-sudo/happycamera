@@ -346,9 +346,6 @@ export default function CheckoutPaymentPage() {
                   </dd>
                 </div>
               </dl>
-              <p className="mt-3 text-xs text-amber-700 bg-amber-50 border border-amber-200 px-3 py-2">
-                {bankDetails.referenceNote}
-              </p>
             </div>
 
             {/* Receipt upload */}
