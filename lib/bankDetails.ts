@@ -1,7 +1,7 @@
 export const bankDetails = {
-  accountName: "Happy Camera Sdn Bhd",
+  accountName: "HAPPY CAMERA TRADING",
   bankName: "Maybank",
-  accountNumber: "12345678901234",
+  accountNumber: "514141706521",
   referenceNote:
     "Please include your phone number as the payment reference so we can match your transfer.",
 } as const;
