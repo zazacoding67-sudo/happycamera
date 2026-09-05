@@ -98,7 +98,9 @@ export default function CheckoutDeliveryPage() {
               <label className={labelBase} htmlFor="name">Full Name</label>
               <input
                 id="name"
+                name="name"
                 type="text"
+                autoComplete="name"
                 placeholder="Your full name"
                 value={info.customerName}
                 onChange={(e) => setInfo({ customerName: e.target.value })}
@@ -112,7 +114,9 @@ export default function CheckoutDeliveryPage() {
               <label className={labelBase} htmlFor="email">Email</label>
               <input
                 id="email"
+                name="email"
                 type="email"
+                autoComplete="email"
                 placeholder="you@example.com"
                 value={info.customerEmail}
                 onChange={(e) => setInfo({ customerEmail: e.target.value })}
@@ -126,7 +130,9 @@ export default function CheckoutDeliveryPage() {
               <label className={labelBase} htmlFor="phone">Phone</label>
               <input
                 id="phone"
+                name="phone"
                 type="tel"
+                autoComplete="tel"
                 placeholder="012-345 6789"
                 value={info.customerPhone}
                 onChange={(e) => setInfo({ customerPhone: e.target.value })}
@@ -242,6 +248,8 @@ export default function CheckoutDeliveryPage() {
                     <label className={labelBase} htmlFor="address">Shipping Address</label>
                     <textarea
                       id="address"
+                      name="address"
+                      autoComplete="street-address"
                       rows={3}
                       placeholder="Full shipping address"
                       value={info.shippingAddress}
