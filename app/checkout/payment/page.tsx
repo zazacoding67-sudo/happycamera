@@ -10,6 +10,7 @@ import { bankDetails } from "@/lib/bankDetails";
 import { supabase } from "@/lib/supabase";
 import StepIndicator from "@/components/checkout/StepIndicator";
 import Button from "@/components/ui/Button";
+import { Copy, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export default function CheckoutPaymentPage() {
@@ -24,6 +25,8 @@ export default function CheckoutPaymentPage() {
   const [receiptUploading, setReceiptUploading] = useState(false);
   const [receiptError, setReceiptError] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [copied, setCopied] = useState(false);
+  const copyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const subtotal = items.reduce(
     (sum, item) => sum + item.price * item.quantity,
@@ -48,6 +51,12 @@ export default function CheckoutPaymentPage() {
     };
     window.addEventListener("pageshow", onPageShow);
     return () => window.removeEventListener("pageshow", onPageShow);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (copyTimerRef.current) clearTimeout(copyTimerRef.current);
+    };
   }, []);
 
   useEffect(() => {
@@ -103,6 +112,24 @@ export default function CheckoutPaymentPage() {
     setReceiptUrl(urlData.publicUrl);
     setReceiptUploading(false);
   }, []);
+
+  const handleCopyAccountNumber = async () => {
+    try {
+      await navigator.clipboard.writeText(bankDetails.accountNumber);
+    } catch {
+      const ta = document.createElement("textarea");
+      ta.value = bankDetails.accountNumber;
+      ta.style.position = "fixed";
+      ta.style.opacity = "0";
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      document.body.removeChild(ta);
+    }
+    setCopied(true);
+    if (copyTimerRef.current) clearTimeout(copyTimerRef.current);
+    copyTimerRef.current = setTimeout(() => setCopied(false), 1500);
+  };
 
   const handleProceed = async () => {
     setIsLoading(true);
@@ -294,7 +321,29 @@ export default function CheckoutPaymentPage() {
                 </div>
                 <div className="flex items-center justify-between gap-4">
                   <dt className="text-[var(--color-text-secondary)]">Account Number</dt>
-                  <dd className="font-mono font-medium text-[var(--color-text-primary)]">{bankDetails.accountNumber}</dd>
+                  <dd className="flex items-center gap-2">
+                    <span className="font-mono font-medium text-[var(--color-text-primary)]">
+                      {bankDetails.accountNumber}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={handleCopyAccountNumber}
+                      aria-label={copied ? "Copied" : "Copy account number"}
+                      title={copied ? "Copied" : "Copy account number"}
+                      className={cn(
+                        "flex items-center justify-center w-9 h-9 -m-1",
+                        "text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]",
+                        "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-text-primary)]",
+                        "transition-colors"
+                      )}
+                    >
+                      {copied ? (
+                        <Check size={16} className="text-green-600" />
+                      ) : (
+                        <Copy size={16} />
+                      )}
+                    </button>
+                  </dd>
                 </div>
               </dl>
               <p className="mt-3 text-xs text-amber-700 bg-amber-50 border border-amber-200 px-3 py-2">
