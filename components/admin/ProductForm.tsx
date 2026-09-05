@@ -37,7 +37,7 @@ interface ProductFormProps {
 }
 
 const sectionHeader = "text-xs font-semibold tracking-widest text-gray-400";
-const inputBase = "w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-black transition-shadow";
+const inputBase = "w-full border border-gray-200 rounded-lg px-4 py-2.5 text-base sm:text-sm focus:outline-none focus:ring-2 focus:ring-black transition-shadow";
 const inputError = "ring-2 ring-red-400 focus:ring-red-500";
 const labelBase = "text-xs font-semibold tracking-widest text-gray-400";
 const cardBase = "bg-white border border-[#E5E5E5] rounded-xl p-6";
@@ -268,7 +268,7 @@ export default function ProductForm({ categories, initialData }: ProductFormProp
                   type="text"
                   value={slug}
                   onChange={(e) => handleSlugChange(e.target.value)}
-                  className={cn("mt-1.5 font-mono text-sm", inpClass("slug"))}
+                  className={cn("mt-1.5 font-mono", inpClass("slug"))}
                 />
                 <p className={helperText}>Auto-generated. Edit only if needed.</p>
                 {errMsg("slug")}

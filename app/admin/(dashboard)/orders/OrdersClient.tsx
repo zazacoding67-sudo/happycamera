@@ -62,7 +62,7 @@ export default function OrdersClient({ orders }: { orders: Order[] }) {
             placeholder="Search by name or order ID..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full sm:w-56 border border-[var(--color-border)] px-3 py-2.5 text-sm outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400 transition-colors bg-[var(--color-surface)] rounded-none"
+            className="w-full sm:w-56 border border-[var(--color-border)] px-3 py-2.5 text-base sm:text-sm outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400 transition-colors bg-[var(--color-surface)] rounded-none"
           />
           <button
             type="button"

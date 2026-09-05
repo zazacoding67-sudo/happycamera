@@ -129,7 +129,7 @@ export default function ReviewSection({ productId, reviews }: Props) {
             value={customerName}
             onChange={(e) => setCustomerName(e.target.value)}
             required
-            className="w-full border border-[var(--color-border)] px-3 py-2 text-sm outline-none focus:ring-0 focus:border-black transition-colors"
+            className="w-full border border-[var(--color-border)] px-3 py-2 text-base sm:text-sm outline-none focus:ring-0 focus:border-black transition-colors"
           />
           <div className="flex items-center gap-2">
             <span className="text-xs text-[var(--color-text-secondary)]">
@@ -156,7 +156,7 @@ export default function ReviewSection({ productId, reviews }: Props) {
             value={comment}
             onChange={(e) => setComment(e.target.value)}
             required
-            className="w-full border border-[var(--color-border)] px-3 py-2 text-sm outline-none focus:ring-0 focus:border-black transition-colors resize-none"
+            className="w-full border border-[var(--color-border)] px-3 py-2 text-base sm:text-sm outline-none focus:ring-0 focus:border-black transition-colors resize-none"
           />
           {error && (
             <p className="text-sm text-red-500">{error}</p>

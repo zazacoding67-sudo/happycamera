@@ -80,7 +80,7 @@ export default function ProductsClient({ products }: { products: Product[] }) {
               placeholder="Search products..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full border border-[var(--color-border)] px-3 py-2.5 text-sm outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400 transition-colors bg-[var(--color-surface)] rounded-none"
+              className="w-full border border-[var(--color-border)] px-3 py-2.5 text-base sm:text-sm outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400 transition-colors bg-[var(--color-surface)] rounded-none"
             />
           </div>
           <div className="flex gap-3">

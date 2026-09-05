@@ -28,7 +28,7 @@ interface Props {
 }
 
 const inputBase =
-  "w-full border border-[var(--color-border)] px-3 py-2.5 text-sm outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400 transition-colors bg-[var(--color-surface)] rounded-none";
+  "w-full border border-[var(--color-border)] px-3 py-2.5 text-base sm:text-sm outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400 transition-colors bg-[var(--color-surface)] rounded-none";
 const labelBase =
   "text-[11px] font-semibold uppercase tracking-widest text-[var(--color-text-secondary)]";
 

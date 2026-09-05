@@ -122,7 +122,7 @@ export default function TrackPage() {
               value={orderId}
               onChange={(e) => setOrderId(e.target.value)}
               placeholder="e.g. HC-7X2K9M1Q"
-              className="w-full border border-zinc-200 px-4 py-3 text-sm text-zinc-900 placeholder:text-zinc-300 focus:outline-none focus:border-zinc-900 transition-colors rounded-none"
+              className="w-full border border-zinc-200 px-4 py-3 text-base sm:text-sm text-zinc-900 placeholder:text-zinc-300 focus:outline-none focus:border-zinc-900 transition-colors rounded-none"
               required
             />
           </div>
@@ -136,7 +136,7 @@ export default function TrackPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@example.com"
-              className="w-full border border-zinc-200 px-4 py-3 text-sm text-zinc-900 placeholder:text-zinc-300 focus:outline-none focus:border-zinc-900 transition-colors rounded-none"
+              className="w-full border border-zinc-200 px-4 py-3 text-base sm:text-sm text-zinc-900 placeholder:text-zinc-300 focus:outline-none focus:border-zinc-900 transition-colors rounded-none"
               required
             />
           </div>

@@ -10,7 +10,7 @@ import Toast from "@/components/ui/Toast";
 const sectionHeader =
   "text-xs font-semibold tracking-widest text-gray-400 uppercase";
 const inputBase =
-  "w-full border border-[var(--color-border)] px-3 py-2.5 text-sm outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400 transition-colors bg-[var(--color-surface)] rounded-none";
+  "w-full border border-[var(--color-border)] px-3 py-2.5 text-base sm:text-sm outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400 transition-colors bg-[var(--color-surface)] rounded-none";
 const inputError = "ring-2 ring-red-400 focus:ring-red-500";
 const labelBase =
   "text-[11px] font-semibold uppercase tracking-widest text-[var(--color-text-secondary)]";

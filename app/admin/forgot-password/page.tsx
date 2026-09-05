@@ -98,7 +98,7 @@ export default function ForgotPasswordPage() {
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="mt-1.5 w-full border border-[#E5E3DE] bg-white px-3 py-2.5 text-sm outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400 transition-colors rounded-none"
+                    className="mt-1.5 w-full border border-[#E5E3DE] bg-white px-3 py-2.5 text-base sm:text-sm outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400 transition-colors rounded-none"
                     required
                   />
                 </div>

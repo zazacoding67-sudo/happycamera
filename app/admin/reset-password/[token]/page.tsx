@@ -138,7 +138,7 @@ export default function ResetPasswordPage() {
                   type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full border border-[#E5E3DE] bg-white px-3 py-2.5 text-sm outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400 transition-colors rounded-none pr-10"
+                  className="w-full border border-[#E5E3DE] bg-white px-3 py-2.5 text-base sm:text-sm outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400 transition-colors rounded-none pr-10"
                   required
                   minLength={6}
                 />
@@ -167,7 +167,7 @@ export default function ResetPasswordPage() {
                   type={showConfirm ? "text" : "password"}
                   value={confirm}
                   onChange={(e) => setConfirm(e.target.value)}
-                  className="w-full border border-[#E5E3DE] bg-white px-3 py-2.5 text-sm outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400 transition-colors rounded-none pr-10"
+                  className="w-full border border-[#E5E3DE] bg-white px-3 py-2.5 text-base sm:text-sm outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400 transition-colors rounded-none pr-10"
                   required
                   minLength={6}
                 />

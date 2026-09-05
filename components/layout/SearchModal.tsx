@@ -87,7 +87,7 @@ export default function SearchModal({
                     onChange={(e) => setQuery(e.target.value)}
                     placeholder="Search gear..."
                     autoComplete="off"
-                    className="w-full pl-9 pr-4 py-2 text-sm rounded-full border border-gray-300 focus:outline-none focus:border-black"
+                    className="w-full pl-9 pr-4 py-2 text-base sm:text-sm rounded-full border border-gray-300 focus:outline-none focus:border-black"
                   />
                   {isLoading && (
                     <Loader2 className="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 animate-spin" />
@@ -146,7 +146,7 @@ export default function SearchModal({
             onFocus={() => { if (results.length > 0) setOpen(true); }}
             placeholder="Search gear..."
             autoComplete="off"
-            className="w-56 pl-9 pr-8 py-1.5 text-sm rounded-full border border-gray-300 focus:outline-none focus:border-black"
+            className="w-40 lg:w-56 pl-9 pr-8 py-1.5 text-base sm:text-sm rounded-full border border-gray-300 focus:outline-none focus:border-black"
           />
           {isLoading && (
             <Loader2 className="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 animate-spin" />
