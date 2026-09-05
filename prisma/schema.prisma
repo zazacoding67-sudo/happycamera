@@ -100,6 +100,7 @@ model Order {
   source         OrderSource     @default(WEBSITE)
   paymentReference String?
   paymentGateway   String                 @default("CHIP")
+  paymentProofUrl  String?
   courierName    String?
   trackingNumber String?
   createdAt      DateTime        @default(now())

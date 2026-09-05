@@ -24,6 +24,7 @@ interface Props {
   deliveryMethod: string | null;
   deliveryRegion: string | null;
   deliveryCharge: number | null;
+  paymentGateway: string;
 }
 
 const inputBase =
@@ -40,6 +41,7 @@ export default function OrderDetailClient({
   deliveryMethod,
   deliveryRegion,
   deliveryCharge,
+  paymentGateway,
 }: Props) {
   const router = useRouter();
   const [status, setStatus] = useState(currentStatus);
@@ -155,6 +157,11 @@ export default function OrderDetailClient({
         {showingBlockedHint && (
           <p className="text-xs text-yellow-600 mt-2">
             Add a tracking number first before marking as shipped.
+          </p>
+        )}
+        {paymentGateway === "MANUAL_BANK_TRANSFER" && currentStatus === "PENDING" && (
+          <p className="text-xs text-yellow-600 mt-2">
+            Verify the receipt, then mark PAID.
           </p>
         )}
       </div>

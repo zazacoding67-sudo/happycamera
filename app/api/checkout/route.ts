@@ -28,6 +28,8 @@ export async function POST(request: Request) {
       shippingAddress,
       deliveryMethod,
       deliveryRegion,
+      paymentMethod,
+      receiptUrl,
     } = body;
 
     if (!items?.length || !customerName || !customerEmail || !customerPhone) {
@@ -65,6 +67,18 @@ export async function POST(request: Request) {
       }
     } else {
       region = undefined;
+    }
+
+    const paymentMethodValue = paymentMethod === "bank_transfer" ? "bank_transfer" : "chip";
+
+    if (
+      paymentMethodValue === "bank_transfer" &&
+      (typeof receiptUrl !== "string" || !receiptUrl.trim())
+    ) {
+      return NextResponse.json(
+        { error: "Please upload your transfer receipt." },
+        { status: 400 }
+      );
     }
 
     const deliveryCharge = computeDeliveryCharge(method, region);
@@ -120,6 +134,9 @@ export async function POST(request: Request) {
       deliveryCharge,
       totalAmount,
       status: "PENDING",
+      ...(paymentMethodValue === "bank_transfer"
+        ? { paymentGateway: "MANUAL_BANK_TRANSFER", paymentProofUrl: receiptUrl }
+        : {}),
       items: {
         create: lineItems.map((item) => ({
           productId: item.productId,
@@ -130,6 +147,13 @@ export async function POST(request: Request) {
     });
 
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || process.env.NEXTAUTH_URL || "http://localhost:3000";
+
+    if (paymentMethodValue === "bank_transfer") {
+      return NextResponse.json(
+        { successUrl: `${baseUrl}/shop/success?ref=${order.id}` },
+        { status: 200 }
+      );
+    }
 
     const chipBody = {
       client: {

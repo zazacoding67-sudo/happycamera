@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { CheckCircle2, Mail, Package, Truck } from "lucide-react";
+import { CheckCircle2, Clock, Mail, Package, Truck } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { formatPrice } from "@/lib/format";
 import CartClearer from "@/components/ui/CartClearer";
@@ -22,31 +22,56 @@ export default async function SuccessPage({ searchParams }: Props) {
     });
   }
 
+  const isPendingBankTransfer =
+    order?.paymentGateway === "MANUAL_BANK_TRANSFER" && order.status === "PENDING";
+
   return (
     <>
       <CartClearer />
       <div className="flex flex-col items-center justify-center min-h-[60vh] px-4 py-16">
         <div className="max-w-lg w-full text-center">
           <StepIndicator currentStep={4} />
-          <CheckCircle2
-            size={48}
-            className="text-emerald-600 mx-auto mb-6 mt-10"
-            strokeWidth={1.5}
-          />
+          {isPendingBankTransfer ? (
+            <Clock
+              size={48}
+              className="text-amber-500 mx-auto mb-6 mt-10"
+              strokeWidth={1.5}
+            />
+          ) : (
+            <CheckCircle2
+              size={48}
+              className="text-emerald-600 mx-auto mb-6 mt-10"
+              strokeWidth={1.5}
+            />
+          )}
 
           <h1 className="text-4xl font-bold tracking-tight text-[var(--color-text-primary)]">
-            Payment Confirmed
+            {isPendingBankTransfer ? "Order Placed — Payment Pending" : "Payment Confirmed"}
           </h1>
 
           {order ? (
             <>
               <p className="text-sm text-[var(--color-text-secondary)] mt-4 max-w-sm mx-auto leading-relaxed">
-                Your order has been placed successfully. A confirmation email is
-                on its way to{" "}
-                <span className="font-medium text-[var(--color-text-primary)]">
-                  {order.customerEmail}
-                </span>
-                .
+                {isPendingBankTransfer ? (
+                  <>
+                    We&rsquo;ve received your order. We&rsquo;ll verify your bank
+                    transfer and confirm your payment shortly. You&rsquo;ll be
+                    notified at{" "}
+                    <span className="font-medium text-[var(--color-text-primary)]">
+                      {order.customerEmail}
+                    </span>{" "}
+                    once your order is confirmed.
+                  </>
+                ) : (
+                  <>
+                    Your order has been placed successfully. A confirmation email
+                    is on its way to{" "}
+                    <span className="font-medium text-[var(--color-text-primary)]">
+                      {order.customerEmail}
+                    </span>
+                    .
+                  </>
+                )}
               </p>
 
               <p className="mt-6 text-[11px] font-medium uppercase tracking-[0.1em] text-[var(--color-text-secondary)]">
@@ -111,7 +136,9 @@ export default async function SuccessPage({ searchParams }: Props) {
                   strokeWidth={1.5}
                 />
                 <p className="text-sm text-[var(--color-text-secondary)] leading-relaxed">
-                  You&rsquo;ll receive an email confirmation shortly.
+                  {isPendingBankTransfer
+                    ? "We&rsquo;ll confirm your payment once your transfer is verified."
+                    : "You&rsquo;ll receive an email confirmation shortly."}
                 </p>
               </div>
               <div className="flex gap-3 flex-1">
@@ -121,7 +148,9 @@ export default async function SuccessPage({ searchParams }: Props) {
                   strokeWidth={1.5}
                 />
                 <p className="text-sm text-[var(--color-text-secondary)] leading-relaxed">
-                  We&rsquo;ll prepare your order within 1&ndash;2 business days.
+                  {isPendingBankTransfer
+                    ? "We&rsquo;ll prepare your order once payment is confirmed."
+                    : "We&rsquo;ll prepare your order within 1&ndash;2 business days."}
                 </p>
               </div>
               <div className="flex gap-3 flex-1">

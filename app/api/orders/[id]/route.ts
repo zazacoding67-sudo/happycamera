@@ -12,7 +12,10 @@ export async function PATCH(
     const body = await request.json();
     const { status, courierName, trackingNumber, trackingEdited } = body;
 
-    const order = await prisma.order.findUnique({ where: { id } });
+    const order = await prisma.order.findUnique({
+      where: { id },
+      include: { items: true },
+    });
     if (!order) {
       return NextResponse.json({ error: "Order not found" }, { status: 404 });
     }
@@ -25,6 +28,24 @@ export async function PATCH(
         ...(trackingNumber !== undefined ? { trackingNumber: trackingNumber || null } : {}),
       },
     });
+
+    // For manual bank-transfer orders, decrement stock when transitioning INTO PAID
+    // (the CHIP webhook never fires for manual orders, so this is the only decrement path).
+    if (
+      status === "PAID" &&
+      order.status !== "PAID" &&
+      order.paymentGateway === "MANUAL_BANK_TRANSFER"
+    ) {
+      await prisma.$transaction(async (tx) => {
+        for (const item of order.items) {
+          if (!item.productId) continue;
+          await tx.product.updateMany({
+            where: { id: item.productId, stockQuantity: { gte: item.quantity } },
+            data: { stockQuantity: { decrement: item.quantity } },
+          });
+        }
+      });
+    }
 
     // Send email when transitioning INTO SHIPPED
     if (status === "SHIPPED" && order.status !== "SHIPPED") {

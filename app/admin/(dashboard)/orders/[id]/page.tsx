@@ -132,6 +132,7 @@ export default async function OrderDetailPage({
               deliveryMethod={order.deliveryMethod}
               deliveryRegion={order.deliveryRegion}
               deliveryCharge={order.deliveryCharge}
+              paymentGateway={order.paymentGateway}
             />
           </div>
 
@@ -181,6 +182,37 @@ export default async function OrderDetailPage({
                   <p className="pt-2 text-xs text-[var(--color-text-secondary)] font-mono">
                     Reference: {order.paymentReference}
                   </p>
+                )}
+                <div className="flex items-center justify-between pt-2 border-t border-[var(--color-border)]">
+                  <span className="text-sm text-[var(--color-text-secondary)]">Payment Method</span>
+                  <span className="text-sm font-medium text-[var(--color-text-primary)]">
+                    {order.paymentGateway === "MANUAL_BANK_TRANSFER"
+                      ? "Bank Transfer (Manual)"
+                      : "Card (CHIP)"}
+                  </span>
+                </div>
+                {order.paymentProofUrl && (
+                  <div className="pt-3 border-t border-[var(--color-border)]">
+                    <span className="text-[11px] font-semibold uppercase tracking-widest text-[var(--color-text-secondary)]">
+                      Transfer Receipt
+                    </span>
+                    <a
+                      href={order.paymentProofUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-2 block"
+                    >
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={order.paymentProofUrl}
+                        alt="Customer transfer receipt"
+                        className="w-full max-h-48 object-contain rounded-lg border border-[var(--color-border)] bg-[#f5f5f5]"
+                      />
+                    </a>
+                    <p className="mt-2 text-[11px] text-[var(--color-text-secondary)]">
+                      Click to view full receipt in a new tab.
+                    </p>
+                  </div>
                 )}
               </div>
             </div>
