@@ -184,7 +184,7 @@ export default function ProductCard({
           </div>
         )}
 
-        <div className="flex items-baseline gap-2">
+        <div className="flex items-baseline gap-2 min-w-0 flex-wrap">
           <span className="flex items-baseline">
             <span className="text-[13px] md:text-[14px] font-medium text-gray-400 leading-none">
               RM&nbsp;
