@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import { Search, Loader2, X } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
@@ -20,9 +21,14 @@ export default function SearchModal({
   const { query, setQuery, results, isLoading } = useSearch();
   const [open, setOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const mobileInputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     if (query.trim().length === 0) {
@@ -67,68 +73,92 @@ export default function SearchModal({
             <Search size={22} />
           </button>
 
-          {/* Mobile: full-screen search overlay */}
-          {mobileOpen && (
-            <div className="fixed inset-0 z-[60] bg-white md:hidden flex flex-col">
-              <div className="flex items-center gap-3 px-4 h-14 border-b border-gray-200">
-                <button
-                  onClick={closeMobile}
-                  className="p-1 text-black shrink-0"
-                  aria-label="Close search"
-                >
-                  <X size={22} />
-                </button>
-                <div className="relative flex-1">
-                  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                  <input
-                    ref={mobileInputRef}
-                    type="text"
-                    value={query}
-                    onChange={(e) => setQuery(e.target.value)}
-                    placeholder="Search gear..."
-                    autoComplete="off"
-                    className="w-full pl-9 pr-4 py-2 text-base sm:text-sm rounded-full border border-gray-300 focus:outline-none focus:border-black"
+          {/* Mobile: search top-sheet (portaled to body so it escapes the Navbar's
+              will-change:transform containing block). Dims the page and shows a slim
+              header-bar sheet; results drop in below while typing (keyboard-safe,
+              top-anchored) — no full-screen takeover, matching the desktop dropdown. */}
+          {mounted && createPortal(
+            <AnimatePresence>
+              {mobileOpen && (
+                <>
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.2, ease: materialEase }}
+                    className="fixed inset-0 z-[60] bg-black/40 md:hidden"
+                    onClick={closeMobile}
                   />
-                  {isLoading && (
-                    <Loader2 className="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 animate-spin" />
-                  )}
-                </div>
-              </div>
-              <div className="flex-1 overflow-y-auto">
-                {query.trim().length > 0 && (
-                  <>
-                    {results.length === 0 && !isLoading ? (
-                      <p className="px-4 py-6 text-sm text-gray-500 text-center">
-                        No results found for &ldquo;{query}&rdquo;
-                      </p>
-                    ) : (
-                      results.map((product) => (
-                        <Link
-                          key={product.slug}
-                          href={`/product/${product.slug}`}
-                          onClick={closeMobile}
-                          className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors border-b border-gray-100"
-                        >
-                          <img
-                            src={product.imageUrl}
-                            alt={product.name}
-                            className="w-10 h-10 object-cover shrink-0"
-                          />
-                          <div className="min-w-0 flex-1">
-                            <p className="text-sm font-medium text-[#1A1A1A] truncate">
-                              {product.name}
+                  <motion.div
+                    initial={{ opacity: 0, y: -8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -8 }}
+                    transition={{ duration: 0.2, ease: materialEase }}
+                    className="fixed inset-x-0 top-0 z-[60] bg-white shadow-lg md:hidden"
+                  >
+                    <div className="flex items-center gap-3 px-4 h-14 border-b border-gray-200">
+                      <button
+                        onClick={closeMobile}
+                        className="p-1 text-black shrink-0"
+                        aria-label="Close search"
+                      >
+                        <X size={22} />
+                      </button>
+                      <div className="relative flex-1">
+                        <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                        <input
+                          ref={mobileInputRef}
+                          type="text"
+                          value={query}
+                          onChange={(e) => setQuery(e.target.value)}
+                          placeholder="Search gear..."
+                          autoComplete="off"
+                          className="w-full pl-9 pr-4 py-2 text-base sm:text-sm rounded-full border border-gray-300 focus:outline-none focus:border-black"
+                        />
+                        {isLoading && (
+                          <Loader2 className="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 animate-spin" />
+                        )}
+                      </div>
+                    </div>
+                    <div className="overflow-y-auto max-h-[50vh]">
+                      {query.trim().length > 0 && (
+                        <>
+                          {results.length === 0 && !isLoading ? (
+                            <p className="px-4 py-6 text-sm text-gray-500 text-center">
+                              No results found for &ldquo;{query}&rdquo;
                             </p>
-                            <p className="text-xs text-gray-500">
-                              {formatPrice(product.price)}
-                            </p>
-                          </div>
-                        </Link>
-                      ))
-                    )}
-                  </>
-                )}
-              </div>
-            </div>
+                          ) : (
+                            results.map((product) => (
+                              <Link
+                                key={product.slug}
+                                href={`/product/${product.slug}`}
+                                onClick={closeMobile}
+                                className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors border-b border-gray-100"
+                              >
+                                <img
+                                  src={product.imageUrl}
+                                  alt={product.name}
+                                  className="w-10 h-10 object-cover shrink-0"
+                                />
+                                <div className="min-w-0 flex-1">
+                                  <p className="text-sm font-medium text-[#1A1A1A] truncate">
+                                    {product.name}
+                                  </p>
+                                  <p className="text-xs text-gray-500">
+                                    {formatPrice(product.price)}
+                                  </p>
+                                </div>
+                              </Link>
+                            ))
+                          )}
+                        </>
+                      )}
+                    </div>
+                  </motion.div>
+                </>
+              )}
+            </AnimatePresence>,
+            document.body
           )}
         </>
       )}
