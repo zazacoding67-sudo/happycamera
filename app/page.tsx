@@ -12,7 +12,9 @@ export default async function HomePage() {
   const homepageProducts = await getHomepageProducts();
   const newArrivals = await getNewArrivals(6);
 
-  console.log(`[homepage] ${homepageProducts.length} products for grid`);
+  console.log(
+    `[homepage] Cameras ${homepageProducts.Cameras.length} / Lenses ${homepageProducts.Lenses.length} / Accessories ${homepageProducts.Accessories.length} products for grid`
+  );
   console.log(`[homepage] ${newArrivals.length} new arrivals`);
 
   return (

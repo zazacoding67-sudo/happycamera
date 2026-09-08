@@ -1,5 +1,4 @@
 import { prisma } from "@/lib/prisma";
-import { TEST_PRODUCT_NAMES } from "@/lib/testProducts";
 import { normalizeBrand } from "@/lib/brand";
 import FilterSidebar from "@/components/shop/FilterSidebar";
 import MobileFilter from "@/components/shop/MobileFilter";
@@ -38,7 +37,7 @@ export default async function ShopPage({
 }) {
   const { q, minPrice, maxPrice, brand, condition, category, subcategory, sort } = await searchParams;
 
-  const where: Record<string, unknown> = { name: { notIn: [...TEST_PRODUCT_NAMES] } };
+  const where: Record<string, unknown> = {};
 
   if (q) {
     where.OR = [
@@ -105,7 +104,6 @@ export default async function ShopPage({
       },
     }),
     prisma.product.findMany({
-      where: { name: { notIn: [...TEST_PRODUCT_NAMES] } },
       select: { brand: true },
     }),
   ]);

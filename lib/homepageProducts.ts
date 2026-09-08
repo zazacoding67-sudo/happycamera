@@ -1,12 +1,17 @@
 import { prisma } from "@/lib/prisma";
-import { TEST_PRODUCT_NAMES } from "@/lib/testProducts";
 
-export async function getHomepageProducts() {
+export const HOME_CATEGORIES = [
+  { name: "Cameras", slug: "cameras" },
+  { name: "Lenses", slug: "lenses" },
+  { name: "Accessories", slug: "accessories" },
+] as const;
+
+export type HomeCategoryName = (typeof HOME_CATEGORIES)[number]["name"];
+
+async function fetchCategory(slug: string) {
   const products = await prisma.product.findMany({
-    where: {
-      name: { notIn: [...TEST_PRODUCT_NAMES] },
-      stockQuantity: { gt: 0 },
-    },
+    where: { stockQuantity: { gt: 0 }, category: { slug } },
+    take: 8,
     select: {
       id: true,
       slug: true,
@@ -42,4 +47,11 @@ export async function getHomepageProducts() {
   });
 }
 
-export type HomepageProduct = Awaited<ReturnType<typeof getHomepageProducts>>[number];
+export type HomepageProduct = Awaited<ReturnType<typeof fetchCategory>>[number];
+
+export async function getHomepageProducts() {
+  const entries = await Promise.all(
+    HOME_CATEGORIES.map(async (cat) => [cat.name, await fetchCategory(cat.slug)] as const)
+  );
+  return Object.fromEntries(entries) as Record<HomeCategoryName, HomepageProduct[]>;
+}

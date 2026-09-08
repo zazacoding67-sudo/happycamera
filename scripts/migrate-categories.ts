@@ -21,7 +21,7 @@ const TARGET: Record<string, { category: string; subcategory: string }> = {
   "Fujifilm X-T5":                             { category: "Cameras",     subcategory: "Mirrorless" },
   "Sony Alpha A6700":                          { category: "Cameras",     subcategory: "Mirrorless" },
   "Fujifilm X100VI":                           { category: "Cameras",     subcategory: "Compact" },
-  "Panasonic FZ100 Compact":                   { category: "Cameras",     subcategory: "Compact" },
+  "Panasonic FZ100 Compact":                   { category: "Accessories", subcategory: "Batteries Chargers and Grips" },
   "Leica M6 TTL":                              { category: "Cameras",     subcategory: "Compact" },
   "Hasselblad 500 C/M":                        { category: "Cameras",     subcategory: "Medium Format" },
   "F-Stop Tilopa 50L":                         { category: "Accessories", subcategory: "Bags" },

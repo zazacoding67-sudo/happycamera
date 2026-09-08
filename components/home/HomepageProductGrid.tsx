@@ -6,9 +6,11 @@ import { AnimatePresence, motion } from "framer-motion";
 import ProductCard from "@/components/ui/ProductCard";
 import GridSidebar from "@/components/home/GridSidebar";
 import { useReducedMotion, materialEase } from "@/lib/motion";
-import type { HomepageProduct } from "@/lib/homepageProducts";
+import type { HomeCategoryName, HomepageProduct } from "@/lib/homepageProducts";
 
 type Tab = "all" | "new" | "preloved";
+
+const CATEGORIES = ["Cameras", "Lenses", "Accessories"] as const;
 
 const tabs: { value: Tab; label: string }[] = [
   { value: "all", label: "All" },
@@ -33,26 +35,19 @@ const cardVariants = {
 export default function HomepageProductGrid({
   products,
 }: {
-  products: HomepageProduct[];
+  products: Record<HomeCategoryName, HomepageProduct[]>;
 }) {
   const [active, setActive] = useState<Tab>("all");
-  const [selectedCats, setSelectedCats] = useState<string[]>(["Cameras"]);
+  const [selectedCat, setSelectedCat] = useState<HomeCategoryName>("Cameras");
   const reduced = useReducedMotion();
 
-  const catOrder = ["Cameras", "Lenses", "Accessories"];
-  const categories = catOrder.filter((c) =>
-    products.some((p) => p.category.name === c)
-  );
+  const categories = [...CATEGORIES];
+  const current = products[selectedCat];
 
-  const filtered = products.filter((p) => {
-    const condMatch = active === "all" || p.condition === active;
-    const catMatch =
-      selectedCats.length === 0 || selectedCats.includes(p.category.name);
-    return condMatch && catMatch;
-  });
+  const filtered = current.filter((p) => active === "all" || p.condition === active);
 
   return (
-    <section className="w-full px-4 lg:px-8 pt-8 pb-12 md:pt-12 md:pb-24">
+    <section className="w-full px-3 md:px-4 lg:px-8 pt-8 pb-12 md:pt-12 md:pb-24">
       <div className="flex items-center justify-center gap-2 mb-8 md:mb-12">
         {tabs.map((tab) => (
           <button
@@ -73,8 +68,8 @@ export default function HomepageProductGrid({
       <div className="md:hidden">
         <GridSidebar
           categories={categories}
-          selected={selectedCats}
-          onChange={setSelectedCats}
+          selected={selectedCat}
+          onChange={(cat) => setSelectedCat(cat as HomeCategoryName)}
           className="hidden"
         />
       </div>
@@ -82,8 +77,8 @@ export default function HomepageProductGrid({
       <div className="flex gap-8 mt-4 md:mt-0">
         <GridSidebar
           categories={categories}
-          selected={selectedCats}
-          onChange={setSelectedCats}
+          selected={selectedCat}
+          onChange={(cat) => setSelectedCat(cat as HomeCategoryName)}
           showMobile={false}
           className="hidden md:block w-[220px] shrink-0"
         />
@@ -94,20 +89,21 @@ export default function HomepageProductGrid({
             </p>
           ) : (
             <motion.div
-              key={`${active}-${selectedCats.join(",")}`}
+              key={`${active}-${selectedCat}`}
               layout
               variants={reduced ? undefined : staggerVariants}
               initial={reduced ? false : "hidden"}
               animate={reduced ? undefined : "visible"}
-              className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6"
+              className="grid grid-cols-3 md:grid-cols-4 gap-3 md:gap-6"
             >
               <AnimatePresence>
-                {filtered.map((product) => (
+                {filtered.map((product, index) => (
                   <motion.div
                     key={product.id}
                     layout
                     variants={reduced ? undefined : cardVariants}
                     exit={reduced ? undefined : { opacity: 0, y: -12 }}
+                    className={index >= 6 ? "hidden md:block" : undefined}
                   >
                     <ProductCard
                       id={product.id}

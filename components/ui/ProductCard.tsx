@@ -170,11 +170,11 @@ export default function ProductCard({
       <Link href={`/product/${slug}`} className="block mt-2.5">
         <div className="flex items-center gap-1.5 mb-2">
           <span className={cn("w-[6px] h-[6px] rounded-full shrink-0", dotColor)} />
-          <p className="text-[13px] font-medium text-gray-400 uppercase tracking-[0.1em] leading-none">
+          <p className="text-xs md:text-[13px] font-medium text-gray-400 uppercase tracking-[0.1em] leading-none">
             {brand}
           </p>
         </div>
-        <p className="text-[15px] md:text-[18px] font-semibold text-neutral-800 line-clamp-2 md:line-clamp-1 leading-[1.3] mb-2 transition-colors duration-200 group-hover:text-black">
+        <p className="text-sm md:text-[18px] font-semibold text-neutral-800 line-clamp-2 md:line-clamp-1 leading-[1.3] mb-2 transition-colors duration-200 group-hover:text-black">
           {name}
         </p>
 
@@ -186,12 +186,12 @@ export default function ProductCard({
 
         <div className="flex items-baseline gap-2 min-w-0 flex-wrap">
           <span className="flex items-baseline">
-            <span className="text-[13px] md:text-[14px] font-medium text-gray-400 leading-none">
+            <span className="text-xs md:text-[14px] font-medium text-gray-400 leading-none">
               RM&nbsp;
             </span>
             <span
               className={cn(
-                "text-[17px] md:text-[22px] font-normal leading-none font-serif",
+                "text-base md:text-[22px] font-normal leading-none font-serif",
                 isOnSale ? "text-red-600" : "text-gray-900"
               )}
             >

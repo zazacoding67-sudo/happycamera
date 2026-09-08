@@ -1,7 +1,6 @@
 import { cache } from "react";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import { TEST_PRODUCT_NAMES } from "@/lib/testProducts";
 import BuyArea from "@/components/ui/BuyArea";
 import Gallery from "@/components/ui/Gallery";
 import ReviewSection from "@/components/ui/ReviewSection";
@@ -20,9 +19,6 @@ const getProduct = cache(async (slug: string) => {
       reviews: { where: { approved: true }, orderBy: { createdAt: "desc" } },
     },
   });
-  if (product && TEST_PRODUCT_NAMES.some((name) => name === product.name)) {
-    return null;
-  }
   return product;
 });
 
@@ -62,7 +58,6 @@ export default async function ProductPage({
           where: {
             categoryId: product.categoryId,
             id: { not: product.id },
-            name: { notIn: [...TEST_PRODUCT_NAMES] },
           },
           take: 4,
         })

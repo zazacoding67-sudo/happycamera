@@ -1,12 +1,10 @@
 import { prisma } from "@/lib/prisma";
-import { TEST_PRODUCT_NAMES } from "@/lib/testProducts";
 import type { MetadataRoute } from "next";
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://happycamera.com.my";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const products = await prisma.product.findMany({
-    where: { name: { notIn: [...TEST_PRODUCT_NAMES] } },
     select: { slug: true, updatedAt: true },
     orderBy: { slug: "asc" },
   });
