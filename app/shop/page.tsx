@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { TEST_PRODUCT_NAMES } from "@/lib/testProducts";
 import { normalizeBrand } from "@/lib/brand";
 import FilterSidebar from "@/components/shop/FilterSidebar";
 import MobileFilter from "@/components/shop/MobileFilter";
@@ -37,7 +38,7 @@ export default async function ShopPage({
 }) {
   const { q, minPrice, maxPrice, brand, condition, category, subcategory, sort } = await searchParams;
 
-  const where: Record<string, unknown> = {};
+  const where: Record<string, unknown> = { name: { notIn: [...TEST_PRODUCT_NAMES] } };
 
   if (q) {
     where.OR = [
@@ -103,7 +104,10 @@ export default async function ShopPage({
         },
       },
     }),
-    prisma.product.findMany({ select: { brand: true } }),
+    prisma.product.findMany({
+      where: { name: { notIn: [...TEST_PRODUCT_NAMES] } },
+      select: { brand: true },
+    }),
   ]);
 
   const brandMap = new Map<string, string>();
@@ -196,10 +200,29 @@ export default async function ShopPage({
           {products.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-32 text-center">
               <p className="text-[10px] tracking-[0.25em] uppercase text-[#999] mb-3">No results</p>
-              <p className="text-[15px] font-medium text-[#1A1A1A] mb-1">
-                {searchQuery ? `Nothing found for "${searchQuery}"` : "No products match your filters."}
-              </p>
-              <p className="text-[12px] text-[#999]">Try a different keyword or browse by category</p>
+              {subcategory ? (
+                <>
+                  <p className="text-[15px] font-medium text-[#1A1A1A] mb-1">
+                    Nothing available in {subcategory} right now
+                  </p>
+                  <p className="text-[12px] text-[#999]">
+                    We're restocking this category — check back soon for new arrivals.
+                  </p>
+                  <a
+                    href="/shop"
+                    className="mt-6 inline-flex items-center gap-2 border border-black px-6 py-3 text-[12px] font-semibold uppercase tracking-[0.15em] text-black hover:bg-black hover:text-white transition-colors"
+                  >
+                    Browse All Gear
+                  </a>
+                </>
+              ) : (
+                <>
+                  <p className="text-[15px] font-medium text-[#1A1A1A] mb-1">
+                    {searchQuery ? `Nothing found for "${searchQuery}"` : "No products match your filters."}
+                  </p>
+                  <p className="text-[12px] text-[#999]">Try a different keyword or browse by category</p>
+                </>
+              )}
             </div>
           ) : (
             <ProductsGrid

@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { TEST_PRODUCT_NAMES } from "@/lib/homepageProducts";
+import { TEST_PRODUCT_NAMES } from "@/lib/testProducts";
 
 export async function getNewArrivals(count = 6) {
   const cutoff = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);

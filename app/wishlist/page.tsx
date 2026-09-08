@@ -1,8 +1,11 @@
 import { prisma } from "@/lib/prisma";
+import { TEST_PRODUCT_NAMES } from "@/lib/testProducts";
 import WishlistClient from "./WishlistClient";
 
 export default async function WishlistPage() {
-  const products = await prisma.product.findMany();
+  const products = await prisma.product.findMany({
+    where: { name: { notIn: [...TEST_PRODUCT_NAMES] } },
+  });
 
   return (
     <div className="min-h-screen bg-white pt-16">

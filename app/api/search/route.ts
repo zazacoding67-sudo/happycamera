@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { TEST_PRODUCT_NAMES } from "@/lib/testProducts";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -16,6 +17,7 @@ export async function GET(request: Request) {
   }
 
   const products = await prisma.product.findMany({
+    where: { name: { notIn: [...TEST_PRODUCT_NAMES] } },
     select: { name: true, price: true, images: true, slug: true },
     take: 50,
   });
