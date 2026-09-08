@@ -1,9 +1,10 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import ProductForm from "@/components/admin/ProductForm";
+import { sortCategoriesByOrder } from "@/lib/categories";
 
 export default async function NewProductPage() {
-  const categories = await prisma.category.findMany();
+  const categories = sortCategoriesByOrder(await prisma.category.findMany());
 
   return (
     <div className="p-8">

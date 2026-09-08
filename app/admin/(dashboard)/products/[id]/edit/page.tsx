@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import ProductForm from "@/components/admin/ProductForm";
+import { sortCategoriesByOrder } from "@/lib/categories";
 
 export const dynamic = "force-dynamic";
 
@@ -33,7 +34,7 @@ export default async function EditProductPage({
         {product.name}
       </p>
       <div className="mt-8">
-        <ProductForm categories={categories} initialData={product} />
+        <ProductForm categories={sortCategoriesByOrder(categories)} initialData={product} />
       </div>
     </div>
   );

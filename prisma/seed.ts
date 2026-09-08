@@ -15,30 +15,14 @@ function slugify(name: string): string {
 }
 
 async function main() {
-  // One-time data migration: rename film-cameras -> digital-bodies, digital-bodies -> mirrorless
-  // Guards prevent double-rename on subsequent seed runs
-  await prisma.$executeRawUnsafe(`
-    UPDATE "Category" SET slug = 'digital-bodies', name = 'Digital Bodies'
-    WHERE slug = 'film-cameras'
-    AND NOT EXISTS (SELECT 1 FROM "Category" WHERE slug = 'digital-bodies')
-  `);
-  await prisma.$executeRawUnsafe(`
-    UPDATE "Category" SET slug = 'mirrorless', name = 'Mirrorless'
-    WHERE slug = 'digital-bodies'
-    AND NOT EXISTS (SELECT 1 FROM "Category" WHERE slug = 'mirrorless')
-  `);
-
-  const filmCat = await prisma.category.upsert({
-    where: { slug: "digital-bodies" },
-    update: { name: "Digital Bodies" },
-    create: { name: "Digital Bodies", slug: "digital-bodies" },
+  // Canonical category structure: exactly 3 rows, matching the storefront taxonomy.
+  // (Cameras/Lenses/Accessories — no parent/child, no legacy/duplicate rows.)
+  const camerasCat = await prisma.category.upsert({
+    where: { slug: "cameras" },
+    update: { name: "Cameras" },
+    create: { name: "Cameras", slug: "cameras" },
   });
-  const mirrorlessCat = await prisma.category.upsert({
-    where: { slug: "mirrorless" },
-    update: { name: "Mirrorless" },
-    create: { name: "Mirrorless", slug: "mirrorless" },
-  });
-  const lensCat = await prisma.category.upsert({
+  const lensesCat = await prisma.category.upsert({
     where: { slug: "lenses" },
     update: { name: "Lenses" },
     create: { name: "Lenses", slug: "lenses" },
@@ -48,26 +32,15 @@ async function main() {
     update: { name: "Accessories" },
     create: { name: "Accessories", slug: "accessories" },
   });
-  const dryBoxCat = await prisma.category.upsert({
-    where: { slug: "dry-box" },
-    update: { name: "Dry Box" },
-    create: { name: "Dry Box", slug: "dry-box" },
-  });
-  const bagCat = await prisma.category.upsert({
-    where: { slug: "bag" },
-    update: { name: "Bag" },
-    create: { name: "Bag", slug: "bag" },
-  });
-  const dslrCat = await prisma.category.upsert({
-    where: { slug: "dslr" },
-    update: { name: "DSLR" },
-    create: { name: "DSLR", slug: "dslr" },
-  });
-  const cameraCat = await prisma.category.upsert({
-    where: { slug: "camera" },
-    update: { name: "Camera" },
-    create: { name: "Camera", slug: "camera" },
-  });
+
+  // Legacy alias names used by the product list below, all pointing at the 3 canonical rows.
+  const filmCat = camerasCat;
+  const mirrorlessCat = camerasCat;
+  const cameraCat = camerasCat;
+  const dslrCat = camerasCat;
+  const bagCat = accessoriesCat;
+  const dryBoxCat = accessoriesCat;
+  const lensCat = lensesCat;
 
   const products = [
     // --- CAMERAS ---
@@ -501,12 +474,37 @@ async function main() {
     },
   ];
 
+  // Canonical subcategory for each seeded product (all within the 3-category taxonomy).
+  const SUBCATEGORY: Record<string, string> = {
+    "leica-m6-ttl": "Compact",
+    "fujifilm-x100vi": "Compact",
+    "canon-eos-r50": "Mirrorless",
+    "sony-alpha-a6700": "Mirrorless",
+    "nikon-z30": "Mirrorless",
+    "hasselblad-500-cm": "Medium Format",
+    "zeiss-35mm-f1-4": "Prime",
+    "sony-alpha-a7c-ii": "Mirrorless",
+    "fujifilm-x-t5": "Mirrorless",
+    "shimoda-explore-v2-35l": "Bags",
+    "peak-design-travel-backpack-45l": "Bags",
+    "f-stop-tilopa-50l": "Bags",
+    "lowepro-protactic-450-aw": "Bags",
+    "manfrotto-manhattan-mover-50": "Bags",
+    "ruggard-thunderhead-49l": "Bags",
+    "hiniso-electronic-dry-cabinet-30l": "Dry Box",
+    "hiniso-electronic-dry-cabinet-60l": "Dry Box",
+    "forspark-dry-box-67l": "Dry Box",
+    "peli-1510-case": "Others",
+    "digi-cabi-dhc-n150": "Dry Box",
+  };
+
   for (const product of products) {
     const { slug, brand, ...data } = product;
+    const subcategory = SUBCATEGORY[slug] ?? null;
     await prisma.product.upsert({
       where: { slug },
-      update: { ...data, brand: normalizeBrand(brand) },
-      create: { slug, ...data, brand: normalizeBrand(brand) },
+      update: { ...data, brand: normalizeBrand(brand), subcategory },
+      create: { slug, ...data, brand: normalizeBrand(brand), subcategory },
     });
   }
 

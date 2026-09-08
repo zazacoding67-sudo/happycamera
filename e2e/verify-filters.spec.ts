@@ -7,14 +7,14 @@ test.describe("shop filter fixes", () => {
     await expect(page.getByText("Filters", { exact: true })).toBeVisible();
 
     // category pill only -> no badge
-    await page.goto("/shop?category=digital-bodies");
+    await page.goto("/shop?category=cameras");
     await expect(page.getByText("Filters", { exact: true })).toBeVisible();
     await expect(page.locator("a[href^='/shop?category=']").first()).toBeVisible();
     const countWithCategoryOnly = page.locator(".border-black", { hasText: /^\d+$/ });
     await expect(countWithCategoryOnly).toHaveCount(0);
 
     // category + condition (homepage link) -> 1 (condition only)
-    await page.goto("/shop?category=digital-bodies&condition=new");
+    await page.goto("/shop?category=cameras&condition=new");
     const count1 = page.locator("span").filter({ hasText: /^1$/ }).locator("visible=true").first();
     await expect(count1).toBeVisible();
 
