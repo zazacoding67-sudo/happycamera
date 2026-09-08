@@ -14,7 +14,7 @@ export async function PATCH(
   try {
     const body = await request.json();
     const {
-      name, slug, brand, price, condition, conditionGrade, conditionNotes,
+      name, slug, brand, price, originalPrice, condition, conditionGrade, conditionNotes,
       includedAccessories, shutterCount, mount, format, warranty,
       stockQuantity, description, categoryId, subcategory, images,
     } = body;
@@ -25,6 +25,9 @@ export async function PATCH(
     else if (!SLUG_PATTERN.test(slug)) fields.slug = "Slug can only contain lowercase letters, numbers, and hyphens.";
     if (!brand || !brand.trim()) fields.brand = "Brand is required.";
     if (price === undefined || price === null || isNaN(Number(price)) || Number(price) <= 0) fields.price = "Price must be greater than 0.";
+    const opNum = originalPrice === null || originalPrice === undefined || originalPrice === "" ? null : Number(originalPrice);
+    if (opNum !== null && (isNaN(opNum) || opNum <= 0)) fields.originalPrice = "Compare-at price must be a positive number.";
+    else if (opNum !== null && !isNaN(Number(price)) && opNum <= Number(price)) fields.originalPrice = "Compare-at price must be greater than the regular price.";
     if (stockQuantity === undefined || stockQuantity === null || isNaN(Number(stockQuantity)) || Number(stockQuantity) < 0) fields.stockQty = "Stock quantity must be 0 or more.";
     if (!categoryId) fields.categoryId = "Category is required.";
     else {
@@ -56,6 +59,7 @@ export async function PATCH(
         slug: slug.trim(),
         brand: normalizeBrand(brand),
         price: Number(price),
+        originalPrice: opNum,
         condition,
         conditionGrade: conditionGrade || null,
         conditionNotes: conditionNotes || null,

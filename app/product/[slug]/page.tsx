@@ -7,6 +7,7 @@ import ReviewSection from "@/components/ui/ReviewSection";
 import StickyAddToCart from "@/components/ui/StickyAddToCart";
 import ProductCard from "@/components/ui/ProductCard";
 import { formatPrice } from "@/lib/format";
+import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
 
 export const revalidate = 300;
@@ -80,6 +81,7 @@ export default async function ProductPage({
   };
 
   const inStock = product.stockQuantity > 0;
+  const isOnSale = product.originalPrice != null && product.originalPrice > product.price;
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -116,9 +118,26 @@ export default async function ProductPage({
             <h1 className="text-2xl font-bold text-black mt-2 font-heading">
               {product.name}
             </h1>
-            <p className="text-2xl font-semibold text-black mt-4">
-              {formatPrice(product.price)}
-            </p>
+            <div className="mt-4 flex flex-wrap items-baseline gap-x-3 gap-y-1.5">
+              <p
+                className={cn(
+                  "text-2xl font-semibold",
+                  isOnSale ? "text-red-600" : "text-black"
+                )}
+              >
+                {formatPrice(product.price)}
+              </p>
+              {isOnSale && (
+                <>
+                  <span className="text-sm md:text-[15px] font-medium text-gray-400 line-through">
+                    {formatPrice(product.originalPrice!)}
+                  </span>
+                  <span className="bg-red-600 text-white text-[10px] font-bold px-2.5 py-1 rounded-[2px] uppercase leading-none tracking-wide whitespace-nowrap">
+                    ON SALE
+                  </span>
+                </>
+              )}
+            </div>
 
             <BuyArea
               product={cartProduct}

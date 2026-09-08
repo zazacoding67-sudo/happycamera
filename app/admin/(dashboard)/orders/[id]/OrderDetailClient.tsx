@@ -5,15 +5,7 @@ import { useRouter } from "next/navigation";
 import { Truck } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { formatPrice } from "@/lib/format";
-
-const ORDER_STATUSES = [
-  "PENDING",
-  "PAID",
-  "PROCESSING",
-  "SHIPPED",
-  "DELIVERED",
-  "CANCELLED",
-];
+import { ORDER_STATUSES } from "@/lib/orderStatus";
 
 interface Props {
   orderId: string;

@@ -5,15 +5,33 @@ import Link from "next/link";
 import { Plus } from "lucide-react";
 import { formatPrice } from "@/lib/format";
 import { cn } from "@/lib/utils";
+import { statusColors, ORDER_STATUSES } from "@/lib/orderStatus";
 
-const statusColors: Record<string, string> = {
-  PENDING: "bg-yellow-50 text-yellow-700 border-yellow-200",
-  PAID: "bg-blue-50 text-blue-700 border-blue-200",
-  PROCESSING: "bg-purple-50 text-purple-700 border-purple-200",
-  SHIPPED: "bg-indigo-50 text-indigo-700 border-indigo-200",
-  DELIVERED: "bg-green-50 text-green-700 border-green-200",
-  CANCELLED: "bg-red-50 text-red-700 border-red-200",
-};
+const MONTH_NAMES = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
+
+function monthKey(date: Date): string {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: "Asia/Kuala_Lumpur",
+    year: "numeric",
+    month: "2-digit",
+  }).formatToParts(date);
+  const year = parts.find((p) => p.type === "year")?.value ?? "";
+  const month = parts.find((p) => p.type === "month")?.value ?? "";
+  return `${year}-${month}`;
+}
 
 interface Order {
   id: string;
@@ -28,26 +46,91 @@ interface Order {
   items: { quantity: number }[];
 }
 
+const PAYMENT_OPTIONS: { value: string; label: string }[] = [
+  { value: "ALL", label: "All" },
+  { value: "CHIP", label: "Card (CHIP)" },
+  { value: "MANUAL_BANK_TRANSFER", label: "Bank transfer" },
+];
+
+function FilterPill({
+  active,
+  onClick,
+  children,
+}: {
+  active: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={active}
+      className={cn(
+        "whitespace-nowrap px-3 py-1.5 text-[13px] font-medium tracking-wide transition-colors rounded-none border",
+        active
+          ? "bg-yellow-400 text-black border-yellow-400 hover:bg-yellow-300"
+          : "border-[var(--color-border)] text-[var(--color-text-primary)] hover:border-yellow-400 hover:text-yellow-600"
+      )}
+    >
+      {children}
+    </button>
+  );
+}
+
 export default function OrdersClient({ orders }: { orders: Order[] }) {
   const [search, setSearch] = useState("");
-  const [pendingBt, setPendingBt] = useState(false);
+  const [status, setStatus] = useState("ALL");
+  const [month, setMonth] = useState(() => monthKey(new Date()));
+  const [payment, setPayment] = useState("ALL");
+
+  const pendingBt = status === "PENDING" && payment === "MANUAL_BANK_TRANSFER";
+
+  const togglePendingBt = () => {
+    if (pendingBt) {
+      setStatus("ALL");
+      setPayment("ALL");
+    } else {
+      setStatus("PENDING");
+      setPayment("MANUAL_BANK_TRANSFER");
+    }
+  };
+
+  const monthOptions = useMemo(() => {
+    const keys = new Set<string>();
+    keys.add(monthKey(new Date()));
+    for (const o of orders) keys.add(monthKey(new Date(o.createdAt)));
+    return [...keys]
+      .sort()
+      .reverse()
+      .map((key) => {
+        const [y, m] = key.split("-");
+        return { key, label: `${MONTH_NAMES[Number(m) - 1]} ${y}` };
+      });
+  }, [orders]);
 
   const filtered = useMemo(
     () =>
-      orders.filter(
-        (o) =>
-          (!pendingBt ||
-            (o.status === "PENDING" && o.paymentGateway === "MANUAL_BANK_TRANSFER")) &&
-          (o.customerName.toLowerCase().includes(search.toLowerCase()) ||
-            o.id.toLowerCase().includes(search.toLowerCase()) ||
-            (o.orderNumber ?? "").toLowerCase().includes(search.toLowerCase()))
-      ),
-    [orders, search, pendingBt]
+      orders.filter((o) => {
+        if (status !== "ALL" && o.status !== status) return false;
+        if (payment !== "ALL" && o.paymentGateway !== payment) return false;
+        if (month !== "ALL" && monthKey(new Date(o.createdAt)) !== month) return false;
+        const q = search.trim().toLowerCase();
+        if (!q) return true;
+        return (
+          o.customerName.toLowerCase().includes(q) ||
+          o.id.toLowerCase().includes(q) ||
+          (o.orderNumber ?? "").toLowerCase().includes(q)
+        );
+      }),
+    [orders, search, status, month, payment]
   );
+
+  const hasActiveFilters = status !== "ALL" || month !== "ALL" || payment !== "ALL";
 
   return (
     <div className="p-4 sm:p-6 lg:p-8">
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
+      <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 mb-6">
         <div>
           <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-[var(--color-text-primary)]">
             Orders
@@ -56,7 +139,7 @@ export default function OrdersClient({ orders }: { orders: Order[] }) {
             {orders.length} order(s) total
           </p>
         </div>
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full lg:w-auto">
           <input
             type="text"
             placeholder="Search by name or order ID..."
@@ -64,19 +147,19 @@ export default function OrdersClient({ orders }: { orders: Order[] }) {
             onChange={(e) => setSearch(e.target.value)}
             className="w-full sm:w-56 border border-[var(--color-border)] px-3 py-2.5 text-base sm:text-sm outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400 transition-colors bg-[var(--color-surface)] rounded-none"
           />
-          <button
-            type="button"
-            aria-pressed={pendingBt}
-            onClick={() => setPendingBt((v) => !v)}
-            className={cn(
-              "whitespace-nowrap px-4 py-2.5 text-sm font-medium tracking-wide transition-colors rounded-none",
-              pendingBt
-                ? "bg-yellow-400 text-black hover:bg-yellow-300"
-                : "border border-[var(--color-border)] text-[var(--color-text-primary)] hover:border-yellow-400 hover:text-yellow-600"
-            )}
+          <select
+            aria-label="Filter by month"
+            value={month}
+            onChange={(e) => setMonth(e.target.value)}
+            className="w-full sm:w-44 border border-[var(--color-border)] px-3 py-2.5 text-base sm:text-sm outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400 transition-colors bg-[var(--color-surface)] rounded-none"
           >
-            Pending Bank Transfers
-          </button>
+            <option value="ALL">All time</option>
+            {monthOptions.map((m) => (
+              <option key={m.key} value={m.key}>
+                {m.label}
+              </option>
+            ))}
+          </select>
           <Link
             href="/admin/orders/new-manual"
             className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-4 py-2.5 text-sm font-medium tracking-wide transition-colors bg-yellow-400 text-black hover:bg-yellow-300"
@@ -87,12 +170,52 @@ export default function OrdersClient({ orders }: { orders: Order[] }) {
         </div>
       </div>
 
+      <div className="mb-6 space-y-3">
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="text-[11px] font-semibold uppercase tracking-widest text-[var(--color-text-secondary)] mr-1">
+            Status
+          </span>
+          <FilterPill active={status === "ALL"} onClick={() => setStatus("ALL")}>
+            All
+          </FilterPill>
+          {ORDER_STATUSES.map((s) => (
+            <FilterPill key={s} active={status === s} onClick={() => setStatus(s)}>
+              {s[0] + s.slice(1).toLowerCase()}
+            </FilterPill>
+          ))}
+          <span className="hidden sm:inline-block w-px h-5 bg-[var(--color-border)] mx-1" />
+          <button
+            type="button"
+            aria-pressed={pendingBt}
+            onClick={togglePendingBt}
+            className={cn(
+              "whitespace-nowrap px-3 py-1.5 text-[13px] font-medium tracking-wide transition-colors rounded-none",
+              pendingBt
+                ? "bg-yellow-400 text-black hover:bg-yellow-300"
+                : "border border-[var(--color-border)] text-[var(--color-text-primary)] hover:border-yellow-400 hover:text-yellow-600"
+            )}
+          >
+            Pending Bank Transfers
+          </button>
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="text-[11px] font-semibold uppercase tracking-widest text-[var(--color-text-secondary)] mr-1">
+            Payment
+          </span>
+          {PAYMENT_OPTIONS.map((p) => (
+            <FilterPill key={p.value} active={payment === p.value} onClick={() => setPayment(p.value)}>
+              {p.label}
+            </FilterPill>
+          ))}
+        </div>
+      </div>
+
       {filtered.length === 0 ? (
         <p className="text-sm text-[var(--color-text-secondary)]">
-          {search
-            ? `No orders matching "${search}".`
-            : pendingBt
-              ? "No pending bank transfer orders."
+          {search.trim()
+            ? `No orders matching "${search.trim()}".`
+            : hasActiveFilters
+              ? "No orders match the current filters."
               : "No orders yet."}
         </p>
       ) : (

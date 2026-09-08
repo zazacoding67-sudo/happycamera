@@ -15,14 +15,66 @@ interface Product {
   name: string;
   brand: string;
   price: number;
+  originalPrice: number | null;
   condition: string;
   stockQuantity: number;
   images: string[];
+  categoryId: string;
+  categoryName: string;
+}
+
+function FilterPill({
+  active,
+  onClick,
+  children,
+}: {
+  active: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={active}
+      className={cn(
+        "whitespace-nowrap px-3 py-1.5 text-[13px] font-medium tracking-wide transition-colors rounded-none border",
+        active
+          ? "bg-yellow-400 text-black border-yellow-400 hover:bg-yellow-300"
+          : "border-[var(--color-border)] text-[var(--color-text-primary)] hover:border-yellow-400 hover:text-yellow-600"
+      )}
+    >
+      {children}
+    </button>
+  );
+}
+
+function PriceCell({
+  price,
+  originalPrice,
+}: {
+  price: number;
+  originalPrice: number | null;
+}) {
+  const isOnSale = originalPrice != null && originalPrice > price;
+  if (!isOnSale) {
+    return <span className="text-[var(--color-text-secondary)]">{formatPrice(price)}</span>;
+  }
+  return (
+    <span className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+      <span className="text-red-600 font-medium">{formatPrice(price)}</span>
+      <span className="text-xs text-gray-400 line-through">{formatPrice(originalPrice!)}</span>
+      <span className="text-[9px] font-bold uppercase tracking-widest bg-red-600 text-white px-1.5 py-0.5 rounded-[2px]">
+        Sale
+      </span>
+    </span>
+  );
 }
 
 export default function ProductsClient({ products }: { products: Product[] }) {
   const router = useRouter();
   const [search, setSearch] = useState("");
+  const [category, setCategory] = useState("ALL");
   const [deleteTarget, setDeleteTarget] = useState<{ id: string; name: string } | null>(null);
   const [toast, setToast] = useState<{
     message: string;
@@ -34,12 +86,23 @@ export default function ProductsClient({ products }: { products: Product[] }) {
     setToast({ message, type, visible: true });
   };
 
+  const categoryOptions = useMemo(() => {
+    const names = new Set<string>();
+    for (const p of products) if (p.categoryName) names.add(p.categoryName);
+    return [...names].sort();
+  }, [products]);
+
   const filtered = useMemo(
     () =>
-      products.filter((p) =>
-        p.name.toLowerCase().includes(search.toLowerCase())
-      ),
-    [products, search]
+      products.filter((p) => {
+        if (category !== "ALL" && p.categoryName !== category) return false;
+        const q = search.trim().toLowerCase();
+        if (!q) return true;
+        return (
+          p.name.toLowerCase().includes(q) || p.brand.toLowerCase().includes(q)
+        );
+      }),
+    [products, search, category]
   );
 
   const handleDelete = async () => {
@@ -101,9 +164,25 @@ export default function ProductsClient({ products }: { products: Product[] }) {
         </div>
       </div>
 
+      <div className="mb-6 flex flex-wrap items-center gap-2">
+        <span className="text-[11px] font-semibold uppercase tracking-widest text-[var(--color-text-secondary)] mr-1">
+          Category
+        </span>
+        <FilterPill active={category === "ALL"} onClick={() => setCategory("ALL")}>
+          All
+        </FilterPill>
+        {categoryOptions.map((c) => (
+          <FilterPill key={c} active={category === c} onClick={() => setCategory(c)}>
+            {c}
+          </FilterPill>
+        ))}
+      </div>
+
       {filtered.length === 0 ? (
         <p className="text-sm text-[var(--color-text-secondary)]">
-          {search ? `No products matching "${search}".` : "No products yet."}
+          {search.trim()
+            ? `No products matching "${search.trim()}".`
+            : "No products yet."}
         </p>
       ) : (
         <>
@@ -140,8 +219,8 @@ export default function ProductsClient({ products }: { products: Product[] }) {
                     <td className="py-3 px-4 font-medium text-[var(--color-text-primary)] max-w-[200px] truncate">
                       {product.name}
                     </td>
-                    <td className="py-3 px-4 text-[var(--color-text-secondary)]">
-                      {formatPrice(product.price)}
+                    <td className="py-3 px-4">
+                      <PriceCell price={product.price} originalPrice={product.originalPrice} />
                     </td>
                     <td className="py-3 px-4">
                       <span className="text-[10px] font-semibold uppercase tracking-widest px-2 py-1 bg-[var(--color-bg)] text-[var(--color-text-secondary)] border border-[var(--color-border)]">
@@ -197,7 +276,7 @@ export default function ProductsClient({ products }: { products: Product[] }) {
                       {product.name}
                     </p>
                     <p className="text-xs text-[var(--color-text-secondary)] mt-0.5">
-                      {formatPrice(product.price)}
+                      <PriceCell price={product.price} originalPrice={product.originalPrice} />
                     </p>
                     <div className="flex items-center gap-2 mt-2">
                       <span className="text-[10px] font-semibold uppercase tracking-widest px-2 py-0.5 bg-[var(--color-bg)] text-[var(--color-text-secondary)] border border-[var(--color-border)]">

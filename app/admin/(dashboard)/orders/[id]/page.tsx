@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ArrowLeft, User, CreditCard } from "lucide-react";
 import { formatPrice } from "@/lib/format";
 import { prisma } from "@/lib/prisma";
+import { statusColors } from "@/lib/orderStatus";
 import OrderDetailClient from "./OrderDetailClient";
 
 export const dynamic = "force-dynamic";
@@ -22,15 +23,6 @@ export default async function OrderDetailPage({
   });
 
   if (!order) notFound();
-
-  const statusColors: Record<string, string> = {
-    PENDING: "bg-yellow-50 text-yellow-700 border-yellow-200",
-    PAID: "bg-blue-50 text-blue-700 border-blue-200",
-    PROCESSING: "bg-purple-50 text-purple-700 border-purple-200",
-    SHIPPED: "bg-indigo-50 text-indigo-700 border-indigo-200",
-    DELIVERED: "bg-green-50 text-green-700 border-green-200",
-    CANCELLED: "bg-red-50 text-red-700 border-red-200",
-  };
 
   const subtotal = order.items.reduce(
     (s: number, i: { price: number; quantity: number }) => s + i.price * i.quantity,

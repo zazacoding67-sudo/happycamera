@@ -16,6 +16,7 @@ type ProductFormData = {
   slug: string;
   brand: string;
   price: number;
+  originalPrice: number | null;
   condition: string;
   conditionGrade: string | null;
   conditionNotes: string | null;
@@ -55,7 +56,7 @@ function slugify(text: string): string {
 const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
 function validate(errors: Record<string, string>, form: {
-  name: string; slug: string; brand: string; price: string; stockQty: string;
+  name: string; slug: string; brand: string; price: string; originalPrice: string; stockQty: string;
   categoryId: string; subcategory: string; categoryName: string; description: string; images: string[];
   condition: string; conditionGrade: string; shutterCount: string;
 }) {
@@ -69,6 +70,14 @@ function validate(errors: Record<string, string>, form: {
   const priceNum = parseFloat(form.price);
   if (!form.price || isNaN(priceNum) || priceNum <= 0) errors.price = "Enter a valid price greater than 0.";
   else if (priceNum > 999_999) errors.price = "Price seems unreasonably high (max RM 999,999).";
+
+  if (form.originalPrice) {
+    const opNum = parseFloat(form.originalPrice);
+    if (isNaN(opNum) || opNum <= 0) errors.originalPrice = "Compare-at price must be a positive number.";
+    else if (!isNaN(priceNum) && priceNum > 0 && opNum <= priceNum) {
+      errors.originalPrice = "Compare-at price must be greater than the regular price.";
+    }
+  }
 
   const stockNum = parseInt(form.stockQty, 10);
   if (!form.stockQty || isNaN(stockNum) || stockNum < 0) errors.stockQty = "Stock quantity must be 0 or more.";
@@ -105,6 +114,7 @@ export default function ProductForm({ categories, initialData }: ProductFormProp
   const [slug, setSlug] = useState(initialData?.slug ?? "");
   const [brand, setBrand] = useState(initialData?.brand ?? "");
   const [price, setPrice] = useState(initialData ? String(initialData.price) : "");
+  const [originalPrice, setOriginalPrice] = useState(initialData?.originalPrice ? String(initialData.originalPrice) : "");
   const [condition, setCondition] = useState<"new" | "preloved">(
     (initialData?.condition as "new" | "preloved") ?? "new"
   );
@@ -154,7 +164,7 @@ export default function ProductForm({ categories, initialData }: ProductFormProp
     const errors: Record<string, string> = {};
     const categoryName = categories.find((c) => c.id === categoryId)?.name ?? "";
     validate(errors, {
-      name, slug, brand, price, stockQty, categoryId, subcategory, categoryName, description, images,
+      name, slug, brand, price, originalPrice, stockQty, categoryId, subcategory, categoryName, description, images,
       condition, conditionGrade, shutterCount,
     });
 
@@ -178,6 +188,7 @@ export default function ProductForm({ categories, initialData }: ProductFormProp
         slug: slug.trim(),
         brand: brand.trim(),
         price: parseFloat(price),
+        originalPrice: originalPrice ? parseFloat(originalPrice) : null,
         condition,
         conditionGrade: condition === "preloved" ? conditionGrade || null : null,
         conditionNotes: condition === "preloved" ? conditionNotes || null : null,
@@ -419,6 +430,33 @@ export default function ProductForm({ categories, initialData }: ProductFormProp
                   className={cn("mt-1.5", inpClass("price"))}
                 />
                 {errMsg("price")}
+              </div>
+              <div>
+                <div className="flex items-center justify-between gap-2">
+                  <label className={labelBase}>Compare-at Price (RM)</label>
+                  {originalPrice.trim() !== "" && (
+                    <button
+                      type="button"
+                      onClick={() => { setOriginalPrice(""); clearFieldError("originalPrice"); }}
+                      className="text-xs font-medium text-gray-400 hover:text-red-500 transition-colors py-1 -my-1 shrink-0"
+                    >
+                      Remove sale price
+                    </button>
+                  )}
+                </div>
+                <input
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  value={originalPrice}
+                  onChange={(e) => { setOriginalPrice(e.target.value); clearFieldError("originalPrice"); }}
+                  placeholder="e.g. 7299 — leave blank for no sale"
+                  className={cn("mt-1.5", inpClass("originalPrice"))}
+                />
+                <p className={helperText}>
+                  When set above the regular price, the storefront shows an &ldquo;ON SALE&rdquo; badge and strikethrough. Leave blank for no sale.
+                </p>
+                {errMsg("originalPrice")}
               </div>
               <div>
                 <label className={labelBase}>Stock Quantity *</label>
