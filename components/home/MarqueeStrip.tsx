@@ -9,7 +9,7 @@ const phrase = (
     </span>
     <span className="text-yellow-400 shrink-0">·</span>
     <span className="text-white text-[13px] font-medium tracking-[0.15em] uppercase shrink-0">
-      14-DAY RETURNS
+      7-DAY RETURNS
     </span>
     <span className="text-yellow-400 shrink-0">·</span>
     <span className="text-white text-[13px] font-medium tracking-[0.15em] uppercase shrink-0">

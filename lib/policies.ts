@@ -1,10 +1,15 @@
 export const POLICIES = {
-  returnWindow: "14 days from delivery",
+  returnWindow: "7 days from delivery",
   returnConditions:
-    "Item must be in original condition with all accessories. Buyer pays return shipping.",
+    "The item must be in its original condition with all included accessories, and the buyer covers return shipping.",
   warranty: {
-    general: "6-month warranty on all products.",
-    condition: "Covers manufacturing defects. Does not cover accidental damage, wear and tear, or consumables.",
+    tiers: [
+      "Preloved display units: 3-month shop warranty",
+      "Preloved normal units (non-display): 1-month shop warranty",
+      "Brand new items: covered by the manufacturer's own warranty, which varies by product",
+    ],
+    coverage:
+      "Our shop warranty covers internal and button/control problems. It does not cover drop damage, water damage, or general wear and tear — since we specialize in preloved gear, we ask customers to handle each unit with the same care they'd give their own equipment.",
   },
   exclusions: [
     "Film and consumables are non-returnable",

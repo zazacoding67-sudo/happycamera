@@ -13,7 +13,13 @@ export default function ReturnsPage() {
       <div className="prose prose-sm prose-neutral max-w-none text-[#666] leading-relaxed space-y-4">
         <p>We accept returns within <strong>{POLICIES.returnWindow}</strong> of delivery.</p>
         <p>{POLICIES.returnConditions}</p>
-        <p>{POLICIES.warranty.general} {POLICIES.warranty.condition}</p>
+        <h3 className="text-[#1A1A1A] font-semibold mt-6">Shop Warranty</h3>
+        <ul className="list-disc pl-5 space-y-1">
+          {POLICIES.warranty.tiers.map((tier, i) => (
+            <li key={i}>{tier}</li>
+          ))}
+        </ul>
+        <p>{POLICIES.warranty.coverage}</p>
         <h3 className="text-[#1A1A1A] font-semibold mt-6">Exclusions</h3>
         <ul className="list-disc pl-5 space-y-1">
           {POLICIES.exclusions.map((exclusion, i) => (
@@ -23,7 +29,7 @@ export default function ReturnsPage() {
         <p className="mt-6">
           To start a return, email <a href="mailto:happycamerabusiness@gmail.com" className="underline underline-offset-2 text-[#1A1A1A]">happycamerabusiness@gmail.com</a> with your order number.
         </p>
-        <p className="text-xs text-[#888] pt-8">Last updated: January 2026</p>
+        <p className="text-xs text-[#888] pt-8">Last updated: September 2026</p>
       </div>
     </div>
   );
