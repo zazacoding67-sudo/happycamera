@@ -11,8 +11,8 @@ export default function StoryPage() {
       <h1 className="text-4xl font-bold tracking-tight text-[#1A1A1A] mb-6">Our Story</h1>
       <div className="prose prose-sm prose-neutral max-w-none">
         <p className="text-lg leading-relaxed text-[#666]">
-          Happy Camera was born in 2021 from a simple belief: great
-          photography should be accessible to everyone.
+          Happy Camera was born in 2021 from a simple belief — &ldquo;great
+          photography should be accessible to everyone.&rdquo;
         </p>
         <p className="text-[#666] leading-relaxed mt-6">
           What started as an online-only shop quickly grew into a trusted
