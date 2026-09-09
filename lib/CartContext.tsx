@@ -11,7 +11,8 @@ import {
 } from "react";
 import type { CartItem } from "@/types";
 
-const STORAGE_KEY = "happycamera_cart";
+export const CART_STORAGE_KEY = "happycamera_cart";
+const CART_VERSION = 2;
 
 interface CartContextValue {
   items: CartItem[];
@@ -31,9 +32,19 @@ const CartContext = createContext<CartContextValue | null>(null);
 function loadCart(): CartItem[] {
   if (typeof window === "undefined") return [];
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    const raw = localStorage.getItem(CART_STORAGE_KEY);
     if (!raw) return [];
-    return JSON.parse(raw) as CartItem[];
+    const parsed = JSON.parse(raw) as unknown;
+    if (
+      parsed !== null &&
+      typeof parsed === "object" &&
+      (parsed as { v?: unknown }).v === CART_VERSION &&
+      Array.isArray((parsed as { items?: unknown }).items)
+    ) {
+      return (parsed as { items: CartItem[] }).items;
+    }
+    localStorage.removeItem(CART_STORAGE_KEY);
+    return [];
   } catch {
     return [];
   }
@@ -42,7 +53,10 @@ function loadCart(): CartItem[] {
 function saveCart(items: CartItem[]) {
   if (typeof window === "undefined") return;
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+    localStorage.setItem(
+      CART_STORAGE_KEY,
+      JSON.stringify({ v: CART_VERSION, items })
+    );
   } catch { }
 }
 
