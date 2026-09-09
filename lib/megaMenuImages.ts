@@ -20,7 +20,7 @@ export const MEGA_MENU_IMAGES: Record<string, Record<string, string>> = {
     "Memory Cards": "/images/mega-menu/mega-sdcard.webp",
     "Handles": "/images/mega-menu/mega-handle.webp",
     "Bags": "/images/mega-menu/mega-bag.webp",
-    "Dry Box": "/images/mega-menu/mega-other.webp",
+    "Dry Box": "/images/mega-menu/mega-drybox.webp",
     "Others": "/images/mega-menu/mega-other.webp",
   },
 };

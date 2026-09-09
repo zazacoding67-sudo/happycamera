@@ -66,6 +66,7 @@ test.describe("mega menu curated images", () => {
       ["Memory Cards", "/images/mega-menu/mega-sdcard.webp"],
       ["Handles", "/images/mega-menu/mega-handle.webp"],
       ["Bags", "/images/mega-menu/mega-bag.webp"],
+      ["Dry Box", "/images/mega-menu/mega-drybox.webp"],
       ["Others", "/images/mega-menu/mega-other.webp"],
     ]);
 
