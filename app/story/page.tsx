@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Our Story — Happy Camera",
-  description: "Happy Camera is Malaysia's trusted source for premium new and preloved camera gear since 2022.",
+  description: "Happy Camera is Malaysia's trusted source for premium new and preloved camera gear since 2021.",
 };
 
 export default function StoryPage() {
@@ -11,30 +11,39 @@ export default function StoryPage() {
       <h1 className="text-4xl font-bold tracking-tight text-[#1A1A1A] mb-6">Our Story</h1>
       <div className="prose prose-sm prose-neutral max-w-none">
         <p className="text-lg leading-relaxed text-[#666]">
-          Happy Camera was born in 2022 from a simple belief: great photography should be accessible to everyone.
+          Happy Camera was born in 2021 from a simple belief: great
+          photography should be accessible to everyone.
         </p>
         <p className="text-[#666] leading-relaxed mt-6">
-          What started as a small collection of vintage film cameras shared among friends quickly grew into Malaysia&rsquo;s most curated marketplace for photography gear. Every camera we sell — new or preloved — passes through our hands first.
+          What started as an online-only shop quickly grew into a trusted
+          destination for photography gear across Malaysia — and as demand
+          grew, we opened our own physical store so customers could see,
+          hold, and try gear before taking it home.
         </p>
         <p className="text-[#666] leading-relaxed mt-4">
-          We inspect, test, and grade every preloved item against our stringent condition standards. We don&rsquo;t just flip gear; we match each piece with someone who will use it, treasure it, and pass it on.
+          Whether it&rsquo;s brand new or preloved, every camera we sell passes
+          through our hands first. We inspect, test, and grade every preloved
+          item against our own condition standards — because we don&rsquo;t just
+          want to sell gear, we want to help you find the right one.
         </p>
         <p className="text-[#666] leading-relaxed mt-4">
-          Whether you&rsquo;re a working professional or a first-time film shooter, we&rsquo;re here to help you find your perfect frame.
+          We&rsquo;re focused on one thing above all: giving our customers the
+          best experience and the best price, so every customer walks out
+          with a smile.
         </p>
       </div>
       <hr className="my-12 border-[#E5E5E5]" />
       <div className="grid grid-cols-3 gap-8 text-center">
         <div>
-          <p className="text-3xl font-bold text-[#1A1A1A]">500+</p>
+          <p className="text-3xl font-bold text-[#1A1A1A]">10,000+</p>
           <p className="text-xs text-[#888] mt-1">Cameras Sold</p>
         </div>
         <div>
-          <p className="text-3xl font-bold text-[#1A1A1A]">98%</p>
+          <p className="text-3xl font-bold text-[#1A1A1A]">100%</p>
           <p className="text-xs text-[#888] mt-1">Happy Customers</p>
         </div>
         <div>
-          <p className="text-3xl font-bold text-[#1A1A1A]">3</p>
+          <p className="text-3xl font-bold text-[#1A1A1A]">5</p>
           <p className="text-xs text-[#888] mt-1">Years Running</p>
         </div>
       </div>
