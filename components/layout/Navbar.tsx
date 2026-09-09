@@ -361,7 +361,7 @@ const Navbar = ({ navMenus }: { navMenus: MegaMenuItem[] }) => {
                 News
               </Link>
               <Link
-                href="mailto:hello@happycamera.com.my"
+                href="mailto:happycamerabusiness@gmail.com"
                 onClick={() => setMobileOpen(false)}
                 className="flex items-center h-11 text-[14px] font-medium text-black uppercase tracking-[0.12em]"
               >

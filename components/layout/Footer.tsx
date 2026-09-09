@@ -12,8 +12,8 @@ export default function Footer() {
               Happy Camera
             </h3>
             <p className="mt-2 text-xs text-gray-400 leading-relaxed">
-              Curated camera gear for the modern photographer.
-              Based in Kuala Lumpur, Malaysia.
+              Secondhand and new camera gear, focused on making
+              customers happy. Based in Kuala Lumpur, Malaysia.
             </p>
           </div>
 
@@ -22,9 +22,10 @@ export default function Footer() {
               Contact
             </h4>
             <ul className="mt-3 space-y-1 text-xs text-gray-400">
-              <li>hello@happycamera.com.my</li>
-              <li>SSM: 202401234567 (K)</li>
-              <li>KL Sentral, 50470 KL</li>
+              <li>happycamerabusiness@gmail.com</li>
+              <li>016-320 8864</li>
+              <li>SSM: 202103273052 (K)</li>
+              <li>G-01-12 &amp; 17, Kiara East Suite Dex, Jalan 3/18a, Taman Mastiara, 51200 Kuala Lumpur, Wilayah Persekutuan Kuala Lumpur</li>
             </ul>
           </div>
 

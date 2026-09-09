@@ -21,7 +21,7 @@ export default function ReturnsPage() {
           ))}
         </ul>
         <p className="mt-6">
-          To start a return, email <a href="mailto:hello@happycamera.com.my" className="underline underline-offset-2 text-[#1A1A1A]">hello@happycamera.com.my</a> with your order number.
+          To start a return, email <a href="mailto:happycamerabusiness@gmail.com" className="underline underline-offset-2 text-[#1A1A1A]">happycamerabusiness@gmail.com</a> with your order number.
         </p>
         <p className="text-xs text-[#888] pt-8">Last updated: January 2026</p>
       </div>
