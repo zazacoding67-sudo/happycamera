@@ -166,7 +166,10 @@ export default function DashboardLayout({
         message="You'll need to sign back in to access the dashboard."
         confirmLabel="Sign out"
         cancelLabel="Cancel"
-        onConfirm={() => signOut({ callbackUrl: "/admin/login" })}
+        onConfirm={() => {
+          localStorage.removeItem("happycamera_cart");
+          signOut({ callbackUrl: "/admin/login" });
+        }}
         onCancel={() => setShowSignOut(false)}
         variant="default"
       />

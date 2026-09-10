@@ -267,6 +267,7 @@ const Navbar = ({ navMenus }: { navMenus: MegaMenuItem[] }) => {
                         <button
                           onClick={() => {
                             setUserMenuOpen(false);
+                            localStorage.removeItem("happycamera_cart");
                             signOut();
                           }}
                           className="w-full text-left px-4 py-2.5 text-sm text-zinc-700 hover:bg-zinc-50 transition-colors"
