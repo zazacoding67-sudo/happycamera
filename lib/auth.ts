@@ -48,14 +48,21 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async signIn({ user, account, profile }) {
       if (account?.provider === "google" && user?.email) {
+        const email = user.email.toLowerCase();
         let dbUser = await prisma.user.findUnique({
-          where: { email: user.email },
+          where: { email },
         });
+
+        if (!dbUser) {
+          dbUser = await prisma.user.findFirst({
+            where: { email: { equals: email, mode: "insensitive" } },
+          });
+        }
 
         if (!dbUser) {
           dbUser = await prisma.user.create({
             data: {
-              email: user.email,
+              email,
               name: user.name,
               image: user.image,
               provider: "google",
@@ -77,16 +84,20 @@ export const authOptions: NextAuthOptions = {
       }
       return true;
     },
-    async jwt({ token, user }) {
+    async jwt({ token, user, account }) {
       if (user) {
         token.role = (user as unknown as Record<string, unknown>).role as string;
         token.picture = user.image;
+      }
+      if (account?.provider) {
+        token.provider = account.provider;
       }
       return token;
     },
     async session({ session, token }) {
       if (session.user) {
         (session.user as Record<string, unknown>).role = token.role;
+        (session.user as Record<string, unknown>).provider = token.provider;
         session.user.image = token.picture as string | null;
         session.user.id = token.sub!;
       }

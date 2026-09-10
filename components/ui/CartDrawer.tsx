@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { X, Trash2, ShoppingBag, Minus, Plus, ArrowRight } from "lucide-react";
+import { useSession, signIn, getSession } from "next-auth/react";
+import { X, Trash2, ShoppingBag, Minus, Plus, ArrowRight, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useCart } from "@/lib/CartContext";
 import { formatPrice } from "@/lib/format";
@@ -10,26 +11,52 @@ import { materialEase } from "@/lib/motion";
 
 export default function CartDrawer() {
   const router = useRouter();
+  const { data: session, status } = useSession();
   const { items, isOpen, closeCart, removeFromCart, updateQuantity } = useCart();
   const scrollRef = useRef<HTMLDivElement>(null);
+  const signInTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [showSignInGate, setShowSignInGate] = useState(false);
 
   useEffect(() => {
     if (isOpen) scrollRef.current?.scrollTo({ top: 0 });
   }, [isOpen]);
+
+  useEffect(() => {
+    return () => {
+      if (signInTimer.current) clearTimeout(signInTimer.current);
+    };
+  }, []);
 
   const subtotal = items.reduce(
     (sum, item) => sum + item.price * item.quantity,
     0
   );
 
-  const handleCheckout = () => {
+  const handleCheckout = async () => {
     closeCart();
-    router.push("/checkout");
+    let activeSession = session;
+    if (status === "loading") {
+      activeSession = await getSession();
+    }
+    if (activeSession?.user?.provider === "google") {
+      router.push("/checkout");
+    } else {
+      setShowSignInGate(true);
+      signInTimer.current = setTimeout(() => {
+        void signIn("google", { callbackUrl: "/checkout" });
+      }, 850);
+    }
+  };
+
+  const cancelSignInGate = () => {
+    if (signInTimer.current) clearTimeout(signInTimer.current);
+    setShowSignInGate(false);
   };
 
   return (
-    <AnimatePresence>
-      {isOpen && (
+    <>
+      <AnimatePresence>
+        {isOpen && (
         <>
           <motion.div
             initial={{ opacity: 0 }}
@@ -172,6 +199,51 @@ export default function CartDrawer() {
           </motion.div>
         </>
       )}
-    </AnimatePresence>
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {showSignInGate && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2, ease: materialEase }}
+            className="fixed inset-0 z-[70] bg-black/50 flex items-center justify-center p-6"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Google sign-in required for checkout"
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              transition={{ duration: 0.2, ease: materialEase }}
+              className="bg-white rounded-2xl p-8 w-full max-w-sm text-center shadow-2xl"
+            >
+              <Loader2
+                size={28}
+                className="mx-auto mb-4 text-[#1A1A1A] animate-spin"
+              />
+              <h3 className="text-lg font-bold tracking-tight text-[var(--color-text-primary)]">
+                Checkout requires Google sign-in
+              </h3>
+              <p className="text-sm text-[var(--color-text-secondary)] mt-2 leading-relaxed">
+                Your cart is saved. We&rsquo;ll bring you right back to checkout
+                after you sign in.
+              </p>
+              <p className="mt-5 text-[13px] font-medium text-black">
+                Redirecting to Google&hellip;
+              </p>
+              <button
+                onClick={cancelSignInGate}
+                className="mt-4 text-[13px] font-medium text-[var(--color-text-secondary)] underline underline-offset-4 hover:text-black transition-colors"
+              >
+                Cancel
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 }
