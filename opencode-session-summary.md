@@ -132,3 +132,11 @@ Key models/enums:
    - Verify sequential multi-image cropping (appends via ref)
    - Confirm `h-[480px]` gallery works consistently across portrait, square, and landscape images
    - Confirm `opacity-60` inactive thumbnail state is visually clear
+
+---
+
+## Outstanding Issues
+
+1. **`e2e/happy-path.spec.ts:26` — stale homepage selector.** The test waits for `text=Browse by Category`, which no longer exists anywhere in the app after the homepage redesign (the string only appears in the spec itself). Fails on every run; not an app bug — the spec needs updating to a current homepage landmark.
+
+2. **`/shop/success` dev-only hydration/strict-mode flake** affecting the manual-order test (`e2e/happy-path.spec.ts:106`). On the dev build, `text=Payment Confirmed` intermittently resolves to 2 nodes (the rendered `<h1>` plus a duplicate artifact tied to the RSC flight payload / double hydration), causing a strict-mode locator violation that self-heals on retry (fail → flaky). Does not reproduce on the production build. Low priority.
