@@ -29,7 +29,7 @@ export default async function HomePage() {
         title="SONY ALPHA A6700 MIRRORLESS CAMERA"
         mainImage="/images/hero-main-camera.png"
         ctaLabel="Shop Now"
-        ctaLink="/product/sony-alpha-a6700"
+        ctaLink="/shop"
       />
 
       <NewArrivals products={newArrivals} />
