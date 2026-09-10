@@ -20,11 +20,11 @@ interface HeroSlide {
 const slides: HeroSlide[] = [
   {
     brand: "Sony",
-    headline: "The Sony A6700",
+    headline: "Power meets precision",
     description:
-      "Compact APS-C power with class-leading autofocus. The mirrorless that elevates every shot.",
-    ctaLabel: "Shop Now",
-    ctaLink: "/product/sony-alpha-a6700",
+      "Cutting-edge sensors, class-leading autofocus. Sony gear built for photographers who won't wait.",
+    ctaLabel: "Shop Sony",
+    ctaLink: "/shop?brand=sony",
     image: "/images/hero-section.webp",
     objectClass: "object-[85%_center] md:object-[62%_center]",
   },
@@ -40,9 +40,9 @@ const slides: HeroSlide[] = [
   },
   {
     brand: "Fujifilm",
-    headline: "The X100VI",
+    headline: "Color in every frame",
     description:
-      "Iconic design, classic film simulations. The everyday carry that rewards intention.",
+      "Retro-inspired design, legendary film simulations. Fujifilm gear made for photographers who see differently.",
     ctaLabel: "Shop Fujifilm",
     ctaLink: "/shop?brand=fujifilm",
     image: "/images/hero-fuji.webp",
