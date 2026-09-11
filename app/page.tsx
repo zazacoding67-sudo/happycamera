@@ -8,6 +8,8 @@ import NewArrivals from "@/components/home/NewArrivals";
 import MarqueeStrip from "@/components/home/MarqueeStrip";
 import ClosingCTA from "@/components/home/ClosingCTA";
 
+export const dynamic = "force-dynamic";
+
 export default async function HomePage() {
   const homepageProducts = await getHomepageProducts();
   const newArrivals = await getNewArrivals(6);
