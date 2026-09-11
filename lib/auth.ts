@@ -49,28 +49,39 @@ export const authOptions: NextAuthOptions = {
     async signIn({ user, account, profile }) {
       if (account?.provider === "google" && user?.email) {
         const email = user.email.toLowerCase();
-        let dbUser = await prisma.user.findUnique({
-          where: { email },
+        let dbUser = await prisma.user.findFirst({
+          where: { email: { equals: email, mode: "insensitive" } },
         });
 
         if (!dbUser) {
-          dbUser = await prisma.user.findFirst({
-            where: { email: { equals: email, mode: "insensitive" } },
-          });
+          try {
+            dbUser = await prisma.user.create({
+              data: {
+                email,
+                name: user.name,
+                image: user.image,
+                provider: "google",
+                role: "customer",
+              },
+            });
+          } catch (error) {
+            const isUniqueViolation =
+              error &&
+              typeof error === "object" &&
+              (error as { code?: string }).code === "P2002";
+            if (!isUniqueViolation) throw error;
+            // Concurrent first-time sign-in: another request created the
+            // row between the lookup and the create. Re-fetch instead of
+            // failing so both attempts resolve to the same user.
+            dbUser = await prisma.user.findFirst({
+              where: { email: { equals: email, mode: "insensitive" } },
+            });
+            if (!dbUser) throw error;
+          }
         }
 
-        if (!dbUser) {
-          dbUser = await prisma.user.create({
-            data: {
-              email,
-              name: user.name,
-              image: user.image,
-              provider: "google",
-              role: "customer",
-            },
-          });
-        } else if (!dbUser.provider || dbUser.provider === "credentials") {
-          await prisma.user.update({
+        if (!dbUser.provider || dbUser.provider === "credentials") {
+          dbUser = await prisma.user.update({
             where: { id: dbUser.id },
             data: {
               provider: "google",
