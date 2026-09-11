@@ -26,7 +26,7 @@ export default async function HomePage() {
       <TrustSignals />
 
       <FeaturedProductSpotlight
-        title="SONY ALPHA A6700 MIRRORLESS CAMERA"
+        title="SONY A7 MARK V MIRRORLESS CAMERA"
         mainImage="/images/hero-main-camera.png"
         ctaLabel="Shop Now"
         ctaLink="/shop"
